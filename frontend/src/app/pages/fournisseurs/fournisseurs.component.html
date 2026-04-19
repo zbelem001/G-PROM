@@ -2,13 +2,13 @@
   <app-menu></app-menu>
   <main class="flex-1 ml-[240px] flex flex-col h-screen overflow-y-auto bg-surface relative">
     <app-header></app-header>
-    <div class="flex-1 px-8 py-6">
+    <div class="flex-1 pt-24 px-8 py-6">
       <div class="flex flex-col lg:flex-row justify-between items-start gap-6 mb-10 pt-4">
         <div>
           <p class="text-sm font-semibold text-secondary/70 uppercase tracking-wider mb-2">Répertoire</p>
           <h2 class="text-[32px] font-extrabold text-secondary tracking-tight">Fournisseurs</h2>
         </div>
-        <button class="flex items-center gap-2 bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white px-6 py-3 rounded-[10px] font-semibold text-sm shadow-[0_4px_12px_rgba(118,211,200,0.3)] hover:shadow-[0_6px_16px_rgba(118,211,200,0.4)] transition-all transform hover:-translate-y-0.5">
+        <button type="button" (click)="toggleAddFournisseur()" class="flex items-center gap-2 bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white px-6 py-3 rounded-[10px] font-semibold text-sm shadow-[0_4px_12px_rgba(118,211,200,0.3)] hover:shadow-[0_6px_16px_rgba(118,211,200,0.4)] transition-all transform hover:-translate-y-0.5">
           <span class="material-symbols-outlined text-lg">add</span>
           Ajouter un Fournisseur
         </button>
@@ -37,7 +37,7 @@
             <div class="col-span-2">Statut</div>
             <div class="col-span-1 text-right">Actions</div>
           </div>
-          <div class="grid grid-cols-12 gap-4 px-6 py-4 items-center bg-surface-container-lowest rounded-[16px] shadow-[0_2px_8px_rgba(26,46,68,0.02)] hover:shadow-[0_6px_24px_rgba(26,46,68,0.06)] transition-all cursor-pointer group">
+          <div routerLink="/fournisseurs/details" class="grid grid-cols-12 gap-4 px-6 py-4 items-center bg-surface-container-lowest rounded-[16px] shadow-[0_2px_8px_rgba(26,46,68,0.02)] hover:shadow-[0_6px_24px_rgba(26,46,68,0.06)] transition-all cursor-pointer group">
             <div class="col-span-1 text-sm font-medium text-outline">F-1042</div>
             <div class="col-span-3">
               <p class="text-sm font-bold text-[#1a2e44] font-headline">TechSolutions Afrique</p>
@@ -57,7 +57,7 @@
               <button class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">more_vert</span></button>
             </div>
           </div>
-          <div class="grid grid-cols-12 gap-4 px-6 py-4 items-center bg-surface-container-lowest rounded-[16px] shadow-[0_2px_8px_rgba(26,46,68,0.02)] hover:shadow-[0_6px_24px_rgba(26,46,68,0.06)] transition-all cursor-pointer group">
+          <div routerLink="/fournisseurs/details" class="grid grid-cols-12 gap-4 px-6 py-4 items-center bg-surface-container-lowest rounded-[16px] shadow-[0_2px_8px_rgba(26,46,68,0.02)] hover:shadow-[0_6px_24px_rgba(26,46,68,0.06)] transition-all cursor-pointer group">
             <div class="col-span-1 text-sm font-medium text-outline">F-1043</div>
             <div class="col-span-3">
               <p class="text-sm font-bold text-[#1a2e44] font-headline">BTP Construction Elite</p>
@@ -77,7 +77,7 @@
               <button class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">more_vert</span></button>
             </div>
           </div>
-          <div class="grid grid-cols-12 gap-4 px-6 py-4 items-center bg-surface-container-lowest rounded-[16px] shadow-[0_2px_8px_rgba(26,46,68,0.02)] hover:shadow-[0_6px_24px_rgba(26,46,68,0.06)] transition-all cursor-pointer group">
+          <div routerLink="/fournisseurs/details" class="grid grid-cols-12 gap-4 px-6 py-4 items-center bg-surface-container-lowest rounded-[16px] shadow-[0_2px_8px_rgba(26,46,68,0.02)] hover:shadow-[0_6px_24px_rgba(26,46,68,0.06)] transition-all cursor-pointer group">
             <div class="col-span-1 text-sm font-medium text-outline">F-1044</div>
             <div class="col-span-3">
               <p class="text-sm font-bold text-[#1a2e44] font-headline">Global Fournitures SARL</p>
@@ -109,5 +109,123 @@
         </div>
       </div>
     </div>
+    <div *ngIf="showAddFournisseur" class="fixed inset-0 z-40 bg-slate-950/20 backdrop-blur-sm"></div>
+    <aside *ngIf="showAddFournisseur" class="fixed right-0 top-0 z-50 h-screen w-full sm:w-[480px] bg-white/95 shadow-[-10px_0_30px_rgba(26,46,68,0.15)] flex flex-col overflow-hidden rounded-l-[24px]">
+      <div class="p-8 pb-4">
+        <div class="flex justify-between items-center mb-6">
+          <button type="button" (click)="toggleAddFournisseur()" class="w-10 h-10 rounded-full hover:bg-surface-container-high flex items-center justify-center transition-colors">
+            <span class="material-symbols-outlined text-secondary">close</span>
+          </button>
+          <span class="px-3 py-1 bg-surface-container-highest text-secondary-fixed-variant text-xs font-bold rounded-full">Nouveau Fournisseur</span>
+        </div>
+        <h2 class="text-3xl font-black text-primary leading-tight">Ajouter un fournisseur</h2>
+        <p class="text-secondary font-medium mt-2">Renseignez les informations du prestataire.</p>
+      </div>
+      <form class="flex-1 overflow-y-auto px-8 pb-32 space-y-8">
+        <section class="space-y-5 bg-surface-container-low p-6 rounded-[16px]">
+          <h3 class="text-xs font-headline font-bold text-on-secondary-container uppercase tracking-wider mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined text-sm">business</span>
+            Général
+          </h3>
+          <div class="space-y-1">
+            <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Raison Sociale <span class="text-error">*</span></label>
+            <input class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="Nom de l'entreprise" type="text" />
+          </div>
+          <div class="space-y-1">
+            <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Forme Juridique</label>
+            <div class="relative">
+              <select class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 pr-10 text-sm text-on-surface appearance-none focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors">
+                <option disabled selected value="">Sélectionner...</option>
+                <option value="sarl">SARL</option>
+                <option value="sa">SA</option>
+                <option value="sas">SAS</option>
+                <option value="ei">Entreprise Individuelle</option>
+                <option value="autre">Autre</option>
+              </select>
+              <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+            </div>
+          </div>
+          <div class="space-y-1">
+            <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Domaine d'Activité</label>
+            <input class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="Ex: Fourniture de matériel" type="text" />
+          </div>
+        </section>
+        <section class="space-y-5">
+          <h3 class="text-xs font-headline font-bold text-on-secondary-container uppercase tracking-wider mb-2 flex items-center gap-2">
+            <span class="material-symbols-outlined text-sm">location_on</span>
+            Coordonnées
+          </h3>
+          <div class="space-y-1">
+            <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Adresse Géo</label>
+            <input class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="Rue, Quartier..." type="text" />
+          </div>
+          <div class="space-y-1">
+            <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Adresse Postale</label>
+            <input class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="01 BP 0000..." type="text" />
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-1 max-w-[320px]">
+              <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Ville</label>
+              <input class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="Ville" type="text" />
+            </div>
+            <div class="space-y-1 max-w-[320px]">
+              <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Pays</label>
+              <div class="relative">
+                <select class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 pr-10 text-sm text-on-surface appearance-none focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors">
+                  <option selected value="bf">Burkina Faso</option>
+                  <option value="bj">Bénin</option>
+                  <option value="cv">Cabo Verde</option>
+                  <option value="ci">Côte d'Ivoire</option>
+                  <option value="gm">Gambie</option>
+                  <option value="gh">Ghana</option>
+                  <option value="gn">Guinée</option>
+                  <option value="gw">Guinée-Bissau</option>
+                  <option value="lr">Libéria</option>
+                  <option value="ml">Mali</option>
+                  <option value="mr">Mauritanie</option>
+                  <option value="ne">Niger</option>
+                  <option value="ng">Nigeria</option>
+                  <option value="sn">Sénégal</option>
+                  <option value="sl">Sierra Leone</option>
+                  <option value="tg">Togo</option>
+                </select>
+                <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="space-y-5 bg-surface-container-low p-6 rounded-[16px]">
+          <h3 class="text-xs font-headline font-bold text-on-secondary-container uppercase tracking-wider mb-2 flex items-center gap-2">
+            <span class="material-symbols-outlined text-sm">call</span>
+            Contacts
+          </h3>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-1">
+              <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Téléphone 1 <span class="text-error">*</span></label>
+              <input class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="+226..." type="tel" />
+            </div>
+            <div class="space-y-1">
+              <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Téléphone 2</label>
+              <input class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="Optionnel" type="tel" />
+            </div>
+          </div>
+          <div class="space-y-1">
+            <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Email <span class="text-error">*</span></label>
+            <input class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="contact@entreprise.com" type="email" />
+          </div>
+          <div class="space-y-1">
+            <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Site Web</label>
+            <input class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="www.entreprise.com" type="url" />
+          </div>
+        </section>
+      </form>
+      <footer class="p-6 bg-surface-container-lowest border-t border-outline-variant/10 shrink-0 flex justify-end gap-4 shadow-[0_-4px_20px_rgba(26,46,68,0.05)]">
+        <button type="button" (click)="toggleAddFournisseur()" class="px-6 py-3 rounded-[10px] text-on-secondary-container font-semibold hover:bg-surface-container-high transition-colors text-sm">Annuler</button>
+        <button type="submit" class="bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white px-8 py-3 rounded-[10px] font-headline font-bold shadow-[0_4px_14px_rgba(118,211,200,0.4)] hover:opacity-95 transition-opacity text-sm flex items-center gap-2">
+          Enregistrer
+          <span class="material-symbols-outlined text-sm">check</span>
+        </button>
+      </footer>
+    </aside>
   </main>
 </div>
