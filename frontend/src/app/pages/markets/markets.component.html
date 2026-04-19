@@ -2,13 +2,13 @@
   <app-menu></app-menu>
   <main class="flex-1 ml-[240px] flex flex-col h-screen overflow-y-auto bg-surface relative">
     <app-header></app-header>
-    <div class="flex-1 px-8 py-6">
+    <div class="flex-1 pt-24 px-8 py-6">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-10 pt-4">
         <div>
           <h2 class="text-[28px] font-headline font-extrabold text-secondary tracking-tight mb-2">Gestion des Marchés</h2>
           <p class="text-sm text-on-surface-variant font-medium">Consultez et gérez le registre des marchés publics de l'Institut.</p>
         </div>
-        <button class="bg-[#039CD3] text-white px-6 py-3 rounded-[10px] shadow-[0_6px_24px_rgba(3,156,211,0.25)] hover:bg-[#0278a8] hover:shadow-[0_8px_32px_rgba(3,156,211,0.35)] transition-all font-semibold flex items-center gap-2 group hover:-translate-y-0.5">
+        <button type="button" (click)="toggleAddMarket()" class="bg-[#039CD3] text-white px-6 py-3 rounded-[10px] shadow-[0_6px_24px_rgba(3,156,211,0.25)] hover:bg-[#0278a8] hover:shadow-[0_8px_32px_rgba(3,156,211,0.35)] transition-all font-semibold flex items-center gap-2 group hover:-translate-y-0.5">
           <span class="material-symbols-outlined text-xl transition-transform group-hover:rotate-90">add</span>
           Nouveau Marché
         </button>
@@ -55,7 +55,7 @@
               </tr>
             </thead>
             <tbody class="text-sm font-medium text-on-surface divide-y divide-surface-container-low/50">
-              <tr class="hover:bg-[#f0fdfb] transition-colors group">
+              <tr routerLink="/marches/details" class="hover:bg-[#f0fdfb] transition-colors group cursor-pointer">
                 <td class="px-6 py-4 whitespace-nowrap font-headline font-bold text-secondary">MAR-2023-045</td>
                 <td class="px-6 py-4 text-on-surface-variant leading-relaxed">Fourniture de matériel informatique pour les laboratoires de recherche...</td>
                 <td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">Fournitures<br/><span class="text-xs text-outline font-normal">Appel d'Offres Ouvert</span></td>
@@ -79,7 +79,7 @@
                   </button>
                 </td>
               </tr>
-              <tr class="hover:bg-[#f0fdfb] transition-colors group">
+              <tr routerLink="/marches/details" class="hover:bg-[#f0fdfb] transition-colors group cursor-pointer">
                 <td class="px-6 py-4 whitespace-nowrap font-headline font-bold text-secondary">MAR-2023-042</td>
                 <td class="px-6 py-4 text-on-surface-variant leading-relaxed">Réhabilitation des bâtiments administratifs du campus principal</td>
                 <td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">Travaux<br/><span class="text-xs text-outline font-normal">Gré à Gré</span></td>
@@ -103,7 +103,7 @@
                   </button>
                 </td>
               </tr>
-              <tr class="hover:bg-[#f0fdfb] transition-colors group">
+              <tr routerLink="/marches/details" class="hover:bg-[#f0fdfb] transition-colors group cursor-pointer">
                 <td class="px-6 py-4 whitespace-nowrap font-headline font-bold text-secondary">MAR-2023-038</td>
                 <td class="px-6 py-4 text-on-surface-variant leading-relaxed">Acquisition de licences logicielles d'ingénierie (AutoCAD, etc.)</td>
                 <td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">Services<br/><span class="text-xs text-outline font-normal">Consultation Restreinte</span></td>
@@ -127,7 +127,7 @@
                   </button>
                 </td>
               </tr>
-              <tr class="hover:bg-[#f0fdfb] transition-colors group">
+              <tr routerLink="/marches/details" class="hover:bg-[#f0fdfb] transition-colors group cursor-pointer">
                 <td class="px-6 py-4 whitespace-nowrap font-headline font-bold text-secondary">MAR-2023-050</td>
                 <td class="px-6 py-4 text-on-surface-variant leading-relaxed">Étude d'impact environnemental pour le nouveau pôle technologique</td>
                 <td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">Prestations Intellectuelles<br/><span class="text-xs text-outline font-normal">Appel à Manifestation</span></td>
@@ -172,5 +172,88 @@
         </div>
       </div>
     </div>
+    <div *ngIf="showAddMarket" class="fixed inset-0 z-40 bg-slate-950/20 backdrop-blur-sm"></div>
+    <aside *ngIf="showAddMarket" class="fixed right-0 top-0 z-50 h-screen w-[480px] bg-white/95 shadow-[-10px_0_30px_rgba(26,46,68,0.15)] flex flex-col p-0 overflow-hidden rounded-l-[24px]">
+      <div class="p-8 pb-4">
+        <div class="flex justify-between items-center mb-6">
+          <button type="button" (click)="toggleAddMarket()" class="w-10 h-10 rounded-full hover:bg-surface-container-high flex items-center justify-center transition-colors">
+            <span class="material-symbols-outlined text-secondary">close</span>
+          </button>
+          <span class="px-3 py-1 bg-surface-container-highest text-secondary-fixed-variant text-xs font-bold rounded-full">Nouveau Marché</span>
+        </div>
+        <h2 class="text-3xl font-black text-primary leading-tight">Ajouter un marché</h2>
+        <p class="text-secondary font-medium mt-2">Renseignez les informations du marché pour ouvrir un nouveau dossier.</p>
+      </div>
+      <form class="flex-1 overflow-y-auto px-8 pb-32 space-y-8">
+        <div class="space-y-5">
+          <div class="flex items-center gap-2 text-primary/60 border-b border-outline-variant/15 pb-2">
+            <span class="material-symbols-outlined text-sm">fingerprint</span>
+            <span class="text-xs font-bold uppercase tracking-widest">Identification du Marché</span>
+          </div>
+          <div class="space-y-2">
+            <label class="text-sm font-semibold text-secondary ml-1">Numéro de Marché <span class="text-error">*</span></label>
+            <input class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="Ex: MAR-2024-001" required type="text" />
+          </div>
+          <div class="space-y-2">
+            <label class="text-sm font-semibold text-secondary ml-1">Description de l'objet <span class="text-error">*</span></label>
+            <textarea class="w-full p-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none resize-none" placeholder="Détails du marché..." required rows="3"></textarea>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-2">
+            <label class="text-sm font-semibold text-secondary ml-1">Nombre de Lots <span class="text-error">*</span></label>
+            <input class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" min="1" required type="number" value="1" />
+          </div>
+          <div class="space-y-2">
+            <label class="text-sm font-semibold text-secondary ml-1">Mode de passation</label>
+            <select class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none appearance-none">
+              <option>Appel d'Offres Ouvert</option>
+              <option>Appel d'Offres Restreint</option>
+              <option>Gré à Gré</option>
+            </select>
+          </div>
+        </div>
+        <div class="space-y-5">
+          <div class="flex items-center gap-2 text-primary/60 border-b border-outline-variant/15 pb-2">
+            <span class="material-symbols-outlined text-sm">payments</span>
+            <span class="text-xs font-bold uppercase tracking-widest">Modalités de Financement</span>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-secondary ml-1">Source de financement</label>
+              <input class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="Ex: Fonds Propres" type="text" />
+            </div>
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-secondary ml-1">Budget estimatif</label>
+              <input class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="45 000 000 XOF" type="text" />
+            </div>
+          </div>
+        </div>
+        <div class="space-y-5">
+          <div class="flex items-center gap-2 text-primary/60 border-b border-outline-variant/15 pb-2">
+            <span class="material-symbols-outlined text-sm">badge</span>
+            <span class="text-xs font-bold uppercase tracking-widest">Responsable</span>
+          </div>
+          <div class="space-y-4">
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-secondary ml-1">Demandeur du Marché</label>
+              <input class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="Département" type="text" />
+            </div>
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-secondary ml-1">Responsable Suivi</label>
+              <input class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="Nom complet" type="text" />
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="absolute bottom-0 left-0 w-full p-8 bg-white/95 backdrop-blur-md border-t border-outline-variant/15 flex items-center gap-4">
+        <button type="button" (click)="toggleAddMarket()" class="flex-1 h-14 rounded-[10px] border-2 border-[#1a2e44] text-[#1a2e44] font-bold hover:bg-surface-container-low transition-all">
+          Annuler
+        </button>
+        <button type="button" class="flex-[2] h-14 rounded-[10px] bg-gradient-to-br from-[#039CD3] to-[#0278a8] text-white font-bold shadow-[0_4px_14px_rgba(3,156,211,0.3)] hover:opacity-95 active:scale-[0.98] transition-all">
+          Enregistrer le Marché
+        </button>
+      </div>
+    </aside>
   </main>
 </div>
