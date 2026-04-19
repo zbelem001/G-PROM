@@ -4,9 +4,9 @@ import { MenuComponent } from '../../components/menu/menu.component';
 
 @Component({
   standalone: true,
-  selector: 'app-dashboard',
+  selector: 'app-markets',
   imports: [HeaderComponent, MenuComponent],
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css'],
+  templateUrl: './markets.component.html',
+  styleUrls: ['./markets.component.css'],
 })
-export class DashboardComponent {}
+export class MarketsComponent {}

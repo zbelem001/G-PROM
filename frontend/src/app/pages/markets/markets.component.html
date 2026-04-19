@@ -1,0 +1,176 @@
+<div class="bg-surface font-body text-on-surface min-h-screen flex overflow-hidden">
+  <app-menu></app-menu>
+  <main class="flex-1 ml-[240px] flex flex-col h-screen overflow-y-auto bg-surface relative">
+    <app-header></app-header>
+    <div class="flex-1 px-8 py-6">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-10 pt-4">
+        <div>
+          <h2 class="text-[28px] font-headline font-extrabold text-secondary tracking-tight mb-2">Gestion des Marchés</h2>
+          <p class="text-sm text-on-surface-variant font-medium">Consultez et gérez le registre des marchés publics de l'Institut.</p>
+        </div>
+        <button class="bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white px-6 py-3 rounded-[10px] shadow-[0_6px_24px_rgba(118,211,200,0.25)] hover:shadow-[0_8px_32px_rgba(118,211,200,0.35)] transition-all font-semibold flex items-center gap-2 group hover:-translate-y-0.5">
+          <span class="material-symbols-outlined text-xl transition-transform group-hover:rotate-90">add</span>
+          Nouveau Marché
+        </button>
+      </div>
+      <div class="bg-surface-container-low rounded-[16px] p-2 mb-6 flex flex-col lg:flex-row gap-2">
+        <div class="flex-1 relative min-w-[250px]">
+          <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+          <input class="w-full bg-transparent border-none rounded-[12px] pl-12 pr-4 py-3.5 text-sm focus:ring-1 focus:ring-outline-variant/20 focus:bg-surface-container-lowest transition-all placeholder:text-on-surface-variant/70 text-on-surface font-medium" placeholder="Rechercher par N°, Description..." type="text" />
+        </div>
+        <div class="hidden lg:block w-px bg-outline-variant/20 my-2"></div>
+        <div class="flex flex-wrap lg:flex-nowrap gap-2 items-center px-2">
+          <button class="flex items-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-medium text-on-surface hover:bg-surface-container-highest transition-colors">
+            <span class="text-on-surface-variant">Statut:</span>
+            <span class="font-semibold">Tous</span>
+            <span class="material-symbols-outlined text-[18px] text-on-surface-variant">expand_more</span>
+          </button>
+          <button class="flex items-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-medium text-on-surface hover:bg-surface-container-highest transition-colors">
+            <span class="text-on-surface-variant">Financement:</span>
+            <span class="font-semibold">Tous</span>
+            <span class="material-symbols-outlined text-[18px] text-on-surface-variant">expand_more</span>
+          </button>
+          <button class="flex items-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-medium text-on-surface hover:bg-surface-container-highest transition-colors">
+            <span class="material-symbols-outlined text-[18px] text-on-surface-variant">calendar_today</span>
+            <span class="font-semibold">Date</span>
+          </button>
+          <button class="ml-auto lg:ml-2 flex items-center justify-center w-10 h-10 rounded-[10px] text-secondary hover:bg-surface-container-high transition-colors bg-white shadow-sm border border-outline-variant/10">
+            <span class="material-symbols-outlined text-[20px]">filter_list</span>
+          </button>
+        </div>
+      </div>
+      <div class="bg-surface-container-lowest rounded-[16px] shadow-[0_6px_24px_rgba(26,46,68,0.06)] overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-surface-container-lowest border-b border-surface-container-low">
+                <th class="px-6 py-5 text-xs font-bold text-secondary uppercase tracking-widest whitespace-nowrap">N° Marché</th>
+                <th class="px-6 py-5 text-xs font-bold text-secondary uppercase tracking-widest min-w-[250px]">Description</th>
+                <th class="px-6 py-5 text-xs font-bold text-secondary uppercase tracking-widest whitespace-nowrap">Nature / Mode</th>
+                <th class="px-6 py-5 text-xs font-bold text-secondary uppercase tracking-widest whitespace-nowrap">Financement</th>
+                <th class="px-6 py-5 text-xs font-bold text-secondary uppercase tracking-widest whitespace-nowrap">Responsable</th>
+                <th class="px-6 py-5 text-xs font-bold text-secondary uppercase tracking-widest whitespace-nowrap">Statut</th>
+                <th class="px-6 py-5 text-xs font-bold text-secondary uppercase tracking-widest whitespace-nowrap">Date Enregistrement</th>
+                <th class="px-6 py-5 text-xs font-bold text-secondary uppercase tracking-widest text-right whitespace-nowrap">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="text-sm font-medium text-on-surface divide-y divide-surface-container-low/50">
+              <tr class="hover:bg-[#f0fdfb] transition-colors group">
+                <td class="px-6 py-4 whitespace-nowrap font-headline font-bold text-secondary">MAR-2023-045</td>
+                <td class="px-6 py-4 text-on-surface-variant leading-relaxed">Fourniture de matériel informatique pour les laboratoires de recherche...</td>
+                <td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">Fournitures<br/><span class="text-xs text-outline font-normal">Appel d'Offres Ouvert</span></td>
+                <td class="px-6 py-4 whitespace-nowrap">Banque Mondiale</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center gap-2">
+                    <div class="w-6 h-6 rounded-full bg-tertiary-fixed text-tertiary-container flex items-center justify-center text-[10px] font-bold">DT</div>
+                    <span>D. Traoré</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-[6px] text-xs font-bold bg-[#76d3c8]/15 text-[#006a62]">En Cours</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">12 Oct 2023</td>
+                <td class="px-6 py-4 whitespace-nowrap text-right">
+                  <button class="p-1.5 text-outline hover:text-primary hover:bg-primary-fixed/20 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 mr-1">
+                    <span class="material-symbols-outlined text-[20px]">visibility</span>
+                  </button>
+                  <button class="p-1.5 text-outline hover:text-secondary hover:bg-secondary-fixed/50 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+                    <span class="material-symbols-outlined text-[20px]">edit</span>
+                  </button>
+                </td>
+              </tr>
+              <tr class="hover:bg-[#f0fdfb] transition-colors group">
+                <td class="px-6 py-4 whitespace-nowrap font-headline font-bold text-secondary">MAR-2023-042</td>
+                <td class="px-6 py-4 text-on-surface-variant leading-relaxed">Réhabilitation des bâtiments administratifs du campus principal</td>
+                <td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">Travaux<br/><span class="text-xs text-outline font-normal">Gré à Gré</span></td>
+                <td class="px-6 py-4 whitespace-nowrap">Fonds Propres</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center gap-2">
+                    <div class="w-6 h-6 rounded-full bg-secondary-container text-secondary flex items-center justify-center text-[10px] font-bold">AK</div>
+                    <span>A. Koné</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-[6px] text-xs font-bold bg-[#76d3c8]/15 text-[#006a62]">En Cours</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">28 Sep 2023</td>
+                <td class="px-6 py-4 whitespace-nowrap text-right">
+                  <button class="p-1.5 text-outline hover:text-primary hover:bg-primary-fixed/20 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 mr-1">
+                    <span class="material-symbols-outlined text-[20px]">visibility</span>
+                  </button>
+                  <button class="p-1.5 text-outline hover:text-secondary hover:bg-secondary-fixed/50 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+                    <span class="material-symbols-outlined text-[20px]">edit</span>
+                  </button>
+                </td>
+              </tr>
+              <tr class="hover:bg-[#f0fdfb] transition-colors group">
+                <td class="px-6 py-4 whitespace-nowrap font-headline font-bold text-secondary">MAR-2023-038</td>
+                <td class="px-6 py-4 text-on-surface-variant leading-relaxed">Acquisition de licences logicielles d'ingénierie (AutoCAD, etc.)</td>
+                <td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">Services<br/><span class="text-xs text-outline font-normal">Consultation Restreinte</span></td>
+                <td class="px-6 py-4 whitespace-nowrap">Partenariat AFD</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center gap-2">
+                    <div class="w-6 h-6 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center text-[10px] font-bold">SO</div>
+                    <span>S. Ouédraogo</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-[6px] text-xs font-bold bg-secondary/10 text-secondary">Clôturé</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">05 Sep 2023</td>
+                <td class="px-6 py-4 whitespace-nowrap text-right">
+                  <button class="p-1.5 text-outline hover:text-primary hover:bg-primary-fixed/20 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 mr-1">
+                    <span class="material-symbols-outlined text-[20px]">visibility</span>
+                  </button>
+                  <button class="p-1.5 text-outline hover:text-secondary hover:bg-secondary-fixed/50 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+                    <span class="material-symbols-outlined text-[20px]">edit</span>
+                  </button>
+                </td>
+              </tr>
+              <tr class="hover:bg-[#f0fdfb] transition-colors group">
+                <td class="px-6 py-4 whitespace-nowrap font-headline font-bold text-secondary">MAR-2023-050</td>
+                <td class="px-6 py-4 text-on-surface-variant leading-relaxed">Étude d'impact environnemental pour le nouveau pôle technologique</td>
+                <td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">Prestations Intellectuelles<br/><span class="text-xs text-outline font-normal">Appel à Manifestation</span></td>
+                <td class="px-6 py-4 whitespace-nowrap">BAD</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center gap-2">
+                    <div class="w-6 h-6 rounded-full bg-tertiary-fixed text-tertiary-container flex items-center justify-center text-[10px] font-bold">DT</div>
+                    <span>D. Traoré</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-[6px] text-xs font-bold bg-[#e8a317]/15 text-[#b0780a]">En Préparation</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">22 Oct 2023</td>
+                <td class="px-6 py-4 whitespace-nowrap text-right">
+                  <button class="p-1.5 text-outline hover:text-primary hover:bg-primary-fixed/20 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 mr-1">
+                    <span class="material-symbols-outlined text-[20px]">visibility</span>
+                  </button>
+                  <button class="p-1.5 text-outline hover:text-secondary hover:bg-secondary-fixed/50 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+                    <span class="material-symbols-outlined text-[20px]">edit</span>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="px-6 py-4 border-t border-surface-container-low flex items-center justify-between bg-surface-container-lowest">
+          <span class="text-sm text-on-surface-variant font-medium">Affichage de 1 à 4 sur 24 éléments</span>
+          <div class="flex items-center gap-1">
+            <button class="w-8 h-8 flex items-center justify-center rounded-md text-outline hover:bg-surface-container-low transition-colors disabled:opacity-50" disabled>
+              <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+            </button>
+            <button class="w-8 h-8 flex items-center justify-center rounded-md bg-[#76d3c8]/10 text-[#006a62] font-semibold text-sm">1</button>
+            <button class="w-8 h-8 flex items-center justify-center rounded-md text-on-surface-variant hover:bg-surface-container-low transition-colors font-medium text-sm">2</button>
+            <button class="w-8 h-8 flex items-center justify-center rounded-md text-on-surface-variant hover:bg-surface-container-low transition-colors font-medium text-sm">3</button>
+            <span class="text-outline mx-1">...</span>
+            <button class="w-8 h-8 flex items-center justify-center rounded-md text-on-surface-variant hover:bg-surface-container-low transition-colors font-medium text-sm">6</button>
+            <button class="w-8 h-8 flex items-center justify-center rounded-md text-outline hover:bg-surface-container-low transition-colors">
+              <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
