@@ -2,11 +2,12 @@
   <app-menu></app-menu>
   <main class="flex-1 ml-[240px] flex flex-col h-screen overflow-y-auto bg-surface relative">
     <app-header></app-header>
-    <main class="flex-1 pt-24 p-8 bg-surface">
-      <div class="mb-8 flex justify-between items-start">
+    <main class="flex-1 pt-28 p-8 bg-surface">
+      <div class="mx-auto w-full max-w-[1600px]">
+        <div class="mb-8 flex justify-between items-start">
         <div>
           <div class="flex items-center gap-3 mb-2">
-            <h2 class="font-headline text-[22px] font-bold text-on-surface">MAR-2023-001</h2>
+            <h2 class="font-headline text-[18px] font-bold text-on-surface">MAR-2023-001</h2>
             <span class="px-2.5 py-1 rounded-[6px] text-xs font-medium bg-[rgba(118,211,200,0.15)] text-primary-fixed-dim flex items-center gap-1.5">
               <span class="w-1.5 h-1.5 rounded-full bg-primary-fixed-dim"></span>
               Réception
@@ -26,10 +27,10 @@
           type="button"
           (click)="setActiveTab('Informations générales')"
           [ngClass]="{
-            'bg-[#039CD3] text-white border-transparent': activeTab === 'Informations générales',
+            'bg-[#E42819] text-white border-transparent': activeTab === 'Informations générales',
             'bg-white text-on-surface-variant border-surface-container-lowest hover:text-on-surface': activeTab !== 'Informations générales'
           }"
-          class="font-medium text-sm rounded-full px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
+          class="font-medium text-sm rounded-[12px] px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
         >
           Informations générales
         </button>
@@ -37,10 +38,10 @@
           type="button"
           (click)="setActiveTab('Lots')"
           [ngClass]="{
-            'bg-[#039CD3] text-white border-transparent': activeTab === 'Lots',
+            'bg-[#E42819] text-white border-transparent': activeTab === 'Lots',
             'bg-white text-on-surface-variant border-surface-container-lowest hover:text-on-surface': activeTab !== 'Lots'
           }"
-          class="font-medium text-sm rounded-full px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
+          class="font-medium text-sm rounded-[12px] px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
         >
           Lots
         </button>
@@ -48,10 +49,10 @@
           type="button"
           (click)="setActiveTab('Consultation')"
           [ngClass]="{
-            'bg-[#039CD3] text-white border-transparent': activeTab === 'Consultation',
+            'bg-[#E42819] text-white border-transparent': activeTab === 'Consultation',
             'bg-white text-on-surface-variant border-surface-container-lowest hover:text-on-surface': activeTab !== 'Consultation'
           }"
-          class="font-medium text-sm rounded-full px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
+          class="font-medium text-sm rounded-[12px] px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
         >
           Consultation
         </button>
@@ -59,10 +60,10 @@
           type="button"
           (click)="setActiveTab('Soumissions')"
           [ngClass]="{
-            'bg-[#039CD3] text-white border-transparent': activeTab === 'Soumissions',
+            'bg-[#E42819] text-white border-transparent': activeTab === 'Soumissions',
             'bg-white text-on-surface-variant border-surface-container-lowest hover:text-on-surface': activeTab !== 'Soumissions'
           }"
-          class="font-medium text-sm rounded-full px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
+          class="font-medium text-sm rounded-[12px] px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
         >
           Soumissions
         </button>
@@ -70,10 +71,10 @@
           type="button"
           (click)="setActiveTab('Analyse (SCT)')"
           [ngClass]="{
-            'bg-[#039CD3] text-white border-transparent': activeTab === 'Analyse (SCT)',
+            'bg-[#E42819] text-white border-transparent': activeTab === 'Analyse (SCT)',
             'bg-white text-on-surface-variant border-surface-container-lowest hover:text-on-surface': activeTab !== 'Analyse (SCT)'
           }"
-          class="font-medium text-sm rounded-full px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
+          class="font-medium text-sm rounded-[12px] px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
         >
           Analyse (SCT)
         </button>
@@ -81,10 +82,10 @@
           type="button"
           (click)="setActiveTab('Documents')"
           [ngClass]="{
-            'bg-[#039CD3] text-white border-transparent': activeTab === 'Documents',
+            'bg-[#E42819] text-white border-transparent': activeTab === 'Documents',
             'bg-white text-on-surface-variant border-surface-container-lowest hover:text-on-surface': activeTab !== 'Documents'
           }"
-          class="font-medium text-sm rounded-full px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
+          class="font-medium text-sm rounded-[12px] px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
         >
           Documents
         </button>
@@ -92,10 +93,10 @@
           type="button"
           (click)="setActiveTab('Attribution')"
           [ngClass]="{
-            'bg-[#039CD3] text-white border-transparent': activeTab === 'Attribution',
+            'bg-[#E42819] text-white border-transparent': activeTab === 'Attribution',
             'bg-white text-on-surface-variant border-surface-container-lowest hover:text-on-surface': activeTab !== 'Attribution'
           }"
-          class="font-medium text-sm rounded-full px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
+          class="font-medium text-sm rounded-[12px] px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
         >
           Attribution
         </button>
@@ -103,124 +104,350 @@
           type="button"
           (click)="setActiveTab('Avenants')"
           [ngClass]="{
-            'bg-[#039CD3] text-white border-transparent': activeTab === 'Avenants',
+            'bg-[#E42819] text-white border-transparent': activeTab === 'Avenants',
             'bg-white text-on-surface-variant border-surface-container-lowest hover:text-on-surface': activeTab !== 'Avenants'
           }"
-          class="font-medium text-sm rounded-full px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
+          class="font-medium text-sm rounded-[12px] px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
         >
           Avenants
         </button>
       </div>
       <div class="bg-surface-container-low rounded-xl p-1">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-1">
-          <div class="bg-surface-container-lowest rounded-[16px] p-6 col-span-2 shadow-[0_2px_12px_rgba(26,46,68,0.02)]">
-            <h3 class="font-headline font-bold text-lg text-secondary mb-6 flex items-center gap-2">
-              <span class="material-symbols-outlined text-[20px]">info</span>
-              Détails du projet
-            </h3>
-            <div class="grid grid-cols-2 gap-y-6 gap-x-8">
-              <div>
-                <p class="text-xs text-on-surface-variant mb-1 font-medium uppercase tracking-wider">Nature du marché</p>
-                <p class="text-sm text-on-surface font-medium">Fournitures et Équipements</p>
-              </div>
-              <div>
-                <p class="text-xs text-on-surface-variant mb-1 font-medium uppercase tracking-wider">Mode de passation</p>
-                <p class="text-sm text-on-surface font-medium">Appel d'Offres Ouvert (AOO)</p>
-              </div>
-              <div>
-                <p class="text-xs text-on-surface-variant mb-1 font-medium uppercase tracking-wider">Source de financement</p>
-                <div class="flex items-center gap-2">
-                  <span class="w-2 h-2 rounded-full bg-secondary-fixed-dim"></span>
-                  <p class="text-sm text-on-surface font-medium">Fonds Propres 2iE</p>
+        <ng-container *ngIf="activeTab === 'Informations générales'">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-1">
+            <div class="bg-surface-container-lowest rounded-[16px] p-6 col-span-2 shadow-[0_2px_12px_rgba(26,46,68,0.02)]">
+              <h3 class="font-headline font-bold text-lg text-secondary mb-6 flex items-center gap-2">
+                <span class="material-symbols-outlined text-[20px]">info</span>
+                Détails du projet
+              </h3>
+              <div class="grid grid-cols-2 gap-y-6 gap-x-8">
+                <div>
+                  <p class="text-xs text-on-surface-variant mb-1 font-medium uppercase tracking-wider">Nature du marché</p>
+                  <p class="text-sm text-on-surface font-medium">Fournitures et Équipements</p>
                 </div>
-              </div>
-              <div>
-                <p class="text-xs text-on-surface-variant mb-1 font-medium uppercase tracking-wider">Budget estimatif</p>
-                <p class="font-headline text-lg font-bold text-on-surface">45 000 000 XOF</p>
-              </div>
-              <div class="col-span-2 pt-4 mt-2 border-t border-outline-variant/15">
-                <p class="text-xs text-on-surface-variant mb-3 font-medium uppercase tracking-wider">Acteurs clés</p>
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                  <div class="bg-surface p-3 rounded-[10px]">
-                    <p class="text-[11px] text-on-surface-variant mb-1">Service Demandeur</p>
-                    <p class="text-sm font-medium text-secondary">Département Informatique (DIT)</p>
+                <div>
+                  <p class="text-xs text-on-surface-variant mb-1 font-medium uppercase tracking-wider">Mode de passation</p>
+                  <p class="text-sm text-on-surface font-medium">Appel d'Offres Ouvert (AOO)</p>
+                </div>
+                <div>
+                  <p class="text-xs text-on-surface-variant mb-1 font-medium uppercase tracking-wider">Source de financement</p>
+                  <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-secondary-fixed-dim"></span>
+                    <p class="text-sm text-on-surface font-medium">Fonds Propres 2iE</p>
                   </div>
-                  <div class="bg-surface p-3 rounded-[10px]">
-                    <p class="text-[11px] text-on-surface-variant mb-1">Responsable Marché</p>
-                    <div class="flex items-center gap-2 mt-1">
-                      <div class="w-6 h-6 rounded-full bg-tertiary-container text-white flex items-center justify-center text-xs font-bold">AK</div>
-                      <p class="text-sm font-medium text-secondary">Amadou Koné</p>
+                </div>
+                <div>
+                  <p class="text-xs text-on-surface-variant mb-1 font-medium uppercase tracking-wider">Budget estimatif</p>
+                  <p class="font-headline text-lg font-bold text-on-surface">45 000 000 XOF</p>
+                </div>
+                <div class="col-span-2 pt-4 mt-2 border-t border-outline-variant/15">
+                  <p class="text-xs text-on-surface-variant mb-3 font-medium uppercase tracking-wider">Acteurs clés</p>
+                  <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="bg-surface p-3 rounded-[10px]">
+                      <p class="text-[11px] text-on-surface-variant mb-1">Service Demandeur</p>
+                      <p class="text-sm font-medium text-secondary">Département Informatique (DIT)</p>
+                    </div>
+                    <div class="bg-surface p-3 rounded-[10px]">
+                      <p class="text-[11px] text-on-surface-variant mb-1">Responsable Marché</p>
+                      <div class="flex items-center gap-2 mt-1">
+                        <div class="w-6 h-6 rounded-full bg-tertiary-container text-white flex items-center justify-center text-xs font-bold">AK</div>
+                        <p class="text-sm font-medium text-secondary">Amadou Koné</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-surface p-4 rounded-[14px] shadow-[0_2px_12px_rgba(26,46,68,0.04)]">
+                      <p class="text-xs text-on-surface-variant mb-2 uppercase tracking-wider font-medium">Nombre de lots</p>
+                      <p class="text-3xl font-bold text-secondary">4</p>
+                      <p class="text-sm text-on-surface-variant mt-1">Lots enregistrés pour ce marché</p>
+                    </div>
+                    <div class="bg-surface p-4 rounded-[14px] shadow-[0_2px_12px_rgba(26,46,68,0.04)]">
+                      <p class="text-xs text-on-surface-variant mb-2 uppercase tracking-wider font-medium">Soumissions effectuées</p>
+                      <p class="text-3xl font-bold text-secondary">18</p>
+                      <p class="text-sm text-on-surface-variant mt-1">Soumissions reçues pour ce marché</p>
                     </div>
                   </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                  <div class="bg-surface p-4 rounded-[14px] shadow-[0_2px_12px_rgba(26,46,68,0.04)]">
-                    <p class="text-xs text-on-surface-variant mb-2 uppercase tracking-wider font-medium">Nombre de lots</p>
-                    <p class="text-3xl font-bold text-secondary">4</p>
-                    <p class="text-sm text-on-surface-variant mt-1">Lots enregistrés pour ce marché</p>
+              </div>
+            </div>
+            <div class="flex flex-col gap-1">
+              <div class="bg-surface-container-lowest rounded-[16px] p-6 shadow-[0_2px_12px_rgba(26,46,68,0.02)] flex-1">
+                <h3 class="font-headline font-bold text-lg text-secondary mb-6 flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[20px]">calendar_month</span>
+                  Chronologie
+                </h3>
+                <div class="relative pl-4 border-l-2 border-surface-variant space-y-6">
+                  <div class="relative">
+                    <div class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-primary-fixed-dim outline outline-4 outline-surface-container-lowest"></div>
+                    <p class="text-xs text-on-surface-variant mb-0.5">Date de lancement</p>
+                    <p class="text-sm font-medium text-on-surface">12 Septembre 2023</p>
                   </div>
-                  <div class="bg-surface p-4 rounded-[14px] shadow-[0_2px_12px_rgba(26,46,68,0.04)]">
-                    <p class="text-xs text-on-surface-variant mb-2 uppercase tracking-wider font-medium">Soumissions effectuées</p>
-                    <p class="text-3xl font-bold text-secondary">18</p>
-                    <p class="text-sm text-on-surface-variant mt-1">Soumissions reçues pour ce marché</p>
+                  <div class="relative">
+                    <div class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-primary-fixed-dim outline outline-4 outline-surface-container-lowest"></div>
+                    <p class="text-xs text-on-surface-variant mb-0.5">Date limite de dépôt</p>
+                    <p class="text-sm font-medium text-on-surface">15 Octobre 2023</p>
+                  </div>
+                  <div class="relative">
+                    <div class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-surface-variant outline outline-4 outline-surface-container-lowest"></div>
+                    <p class="text-xs text-on-surface-variant mb-0.5">Date d'attribution prévue</p>
+                    <p class="text-sm font-medium text-on-surface-variant">05 Novembre 2023</p>
                   </div>
                 </div>
+              </div>
+              <div class="bg-surface-container-lowest rounded-[16px] p-6 shadow-[0_2px_12px_rgba(26,46,68,0.02)] flex-1">
+                <h3 class="font-headline font-bold text-lg text-secondary mb-4 flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[20px]">groups</span>
+                  Membres SCT
+                </h3>
+                <div class="space-y-3">
+                  <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-surface transition-colors">
+                    <div class="w-8 h-8 rounded-full bg-secondary-fixed text-secondary flex items-center justify-center text-xs font-bold">SO</div>
+                    <div>
+                      <p class="text-sm font-medium text-on-surface">Sarah Ouédraogo</p>
+                      <p class="text-[11px] text-on-surface-variant">Présidente</p>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-surface transition-colors">
+                    <div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center text-xs font-bold">JD</div>
+                    <div>
+                      <p class="text-sm font-medium text-on-surface">Jean Diarra</p>
+                      <p class="text-[11px] text-on-surface-variant">Membre Technique</p>
+                    </div>
+                  </div>
+                </div>
+                <button class="mt-4 w-full py-2 text-xs font-medium text-primary-fixed-dim hover:text-primary transition-colors flex items-center justify-center gap-1">
+                  <span class="material-symbols-outlined text-[16px]">add</span>
+                  Gérer les membres
+                </button>
               </div>
             </div>
           </div>
-          <div class="flex flex-col gap-1">
-            <div class="bg-surface-container-lowest rounded-[16px] p-6 shadow-[0_2px_12px_rgba(26,46,68,0.02)] flex-1">
-              <h3 class="font-headline font-bold text-lg text-secondary mb-6 flex items-center gap-2">
-                <span class="material-symbols-outlined text-[20px]">calendar_month</span>
-                Chronologie
-              </h3>
-              <div class="relative pl-4 border-l-2 border-surface-variant space-y-6">
-                <div class="relative">
-                  <div class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-primary-fixed-dim outline outline-4 outline-surface-container-lowest"></div>
-                  <p class="text-xs text-on-surface-variant mb-0.5">Date de lancement</p>
-                  <p class="text-sm font-medium text-on-surface">12 Septembre 2023</p>
-                </div>
-                <div class="relative">
-                  <div class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-primary-fixed-dim outline outline-4 outline-surface-container-lowest"></div>
-                  <p class="text-xs text-on-surface-variant mb-0.5">Date limite de dépôt</p>
-                  <p class="text-sm font-medium text-on-surface">15 Octobre 2023</p>
-                </div>
-                <div class="relative">
-                  <div class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-surface-variant outline outline-4 outline-surface-container-lowest"></div>
-                  <p class="text-xs text-on-surface-variant mb-0.5">Date d'attribution prévue</p>
-                  <p class="text-sm font-medium text-on-surface-variant">05 Novembre 2023</p>
-                </div>
+        </ng-container>
+
+        <ng-container *ngIf="activeTab === 'Lots'">
+          <div class="bg-surface-container-low rounded-[24px] p-6 md:p-8 flex flex-col gap-6 relative">
+            <div class="flex justify-between items-end mb-2">
+              <div>
+                <h2 class="text-xl font-bold text-[#1a2e44] font-headline">Liste des Lots</h2>
+                <p class="text-sm text-on-surface-variant mt-1">Gestion et suivi des lots associés à ce marché.</p>
               </div>
-            </div>
-            <div class="bg-surface-container-lowest rounded-[16px] p-6 shadow-[0_2px_12px_rgba(26,46,68,0.02)] flex-1">
-              <h3 class="font-headline font-bold text-lg text-secondary mb-4 flex items-center gap-2">
-                <span class="material-symbols-outlined text-[20px]">groups</span>
-                Membres SCT
-              </h3>
-              <div class="space-y-3">
-                <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-surface transition-colors">
-                  <div class="w-8 h-8 rounded-full bg-secondary-fixed text-secondary flex items-center justify-center text-xs font-bold">SO</div>
-                  <div>
-                    <p class="text-sm font-medium text-on-surface">Sarah Ouédraogo</p>
-                    <p class="text-[11px] text-on-surface-variant">Présidente</p>
-                  </div>
-                </div>
-                <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-surface transition-colors">
-                  <div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center text-xs font-bold">JD</div>
-                  <div>
-                    <p class="text-sm font-medium text-on-surface">Jean Diarra</p>
-                    <p class="text-[11px] text-on-surface-variant">Membre Technique</p>
-                  </div>
-                </div>
-              </div>
-              <button class="mt-4 w-full py-2 text-xs font-medium text-primary-fixed-dim hover:text-primary transition-colors flex items-center justify-center gap-1">
-                <span class="material-symbols-outlined text-[16px]">add</span>
-                Gérer les membres
+              <button type="button" (click)="toggleAddLot()" class="px-5 py-2.5 rounded-lg bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white font-medium text-sm shadow-[0_4px_12px_rgba(118,211,200,0.2)] hover:shadow-[0_6px_16px_rgba(118,211,200,0.3)] transition-all duration-300 flex items-center gap-2 active:scale-95">
+                <span class="material-symbols-outlined text-[18px]">add</span>
+                Ajouter un Lot
               </button>
             </div>
+            <div class="bg-surface-container-lowest rounded-[16px] overflow-hidden shadow-[0_4px_20px_rgba(26,46,68,0.03)] border border-white/50">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-surface-container/50 border-b border-surface-container-high">
+                    <th class="py-4 px-6 text-xs font-semibold text-on-surface-variant uppercase tracking-wider w-16">#</th>
+                    <th class="py-4 px-6 text-xs font-semibold text-on-surface-variant uppercase tracking-wider w-48">N° Lot</th>
+                    <th class="py-4 px-6 text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Description</th>
+                    <th class="py-4 px-6 text-xs font-semibold text-on-surface-variant uppercase tracking-wider w-48">N° Contrat</th>
+                    <th class="py-4 px-6 text-xs font-semibold text-on-surface-variant uppercase tracking-wider w-24 text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody class="text-sm divide-y divide-surface-container-high/50">
+                  <tr class="group hover:bg-[#76d3c8]/5 transition-colors duration-200">
+                    <td class="py-4 px-6 font-medium text-[#1a2e44]">1</td>
+                    <td class="py-4 px-6">
+                      <span class="inline-flex items-center px-2.5 py-1 rounded-[6px] bg-[#1a2e44]/10 text-[#1a2e44] font-semibold text-xs tracking-wide">MAR001_LOT1</span>
+                    </td>
+                    <td class="py-4 px-6 text-on-surface">Fourniture de matériel informatique</td>
+                    <td class="py-4 px-6 text-on-surface-variant font-medium">CTR-2024-01</td>
+                    <td class="py-4 px-6 text-center">
+                      <button class="w-8 h-8 rounded-full bg-transparent hover:bg-white text-on-surface-variant hover:text-[#76d3c8] shadow-none hover:shadow-sm transition-all duration-200 flex items-center justify-center mx-auto">
+                        <span class="material-symbols-outlined text-[20px]">visibility</span>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr class="group hover:bg-[#76d3c8]/5 transition-colors duration-200">
+                    <td class="py-4 px-6 font-medium text-[#1a2e44]">2</td>
+                    <td class="py-4 px-6">
+                      <span class="inline-flex items-center px-2.5 py-1 rounded-[6px] bg-[#1a2e44]/10 text-[#1a2e44] font-semibold text-xs tracking-wide">MAR001_LOT2</span>
+                    </td>
+                    <td class="py-4 px-6 text-on-surface">Installation et configuration</td>
+                    <td class="py-4 px-6 text-outline-variant font-medium">—</td>
+                    <td class="py-4 px-6 text-center">
+                      <button class="w-8 h-8 rounded-full bg-transparent hover:bg-white text-on-surface-variant hover:text-[#76d3c8] shadow-none hover:shadow-sm transition-all duration-200 flex items-center justify-center mx-auto">
+                        <span class="material-symbols-outlined text-[20px]">visibility</span>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="pt-2">
+              <span class="text-sm text-on-surface-variant font-medium">2 lot(s) enregistré(s)</span>
+            </div>
           </div>
+        </ng-container>
+
+        <ng-container *ngIf="activeTab === 'Consultation'">
+          <div class="bg-surface-container-low rounded-[24px] p-6 md:p-8 flex flex-col gap-6 relative">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-6">
+              <div>
+                <h2 class="text-xl font-bold text-[#1a2e44] font-headline">Consultations Fournisseurs</h2>
+                <p class="text-sm text-on-surface-variant mt-1">Gérez et suivez les demandes de cotation envoyées aux différents fournisseurs du marché.</p>
+              </div>
+              <button type="button" (click)="toggleConsultationDrawer()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-[10px] bg-[#E42819] text-white font-medium shadow-sm hover:bg-[#c81913] transition-all">
+                <span class="material-symbols-outlined text-[18px]">add</span>
+                Consulter un Fournisseur
+              </button>
+            </div>
+            <div class="bg-surface-container-low rounded-[16px] p-4 mb-6 flex flex-wrap gap-3">
+              <span class="text-sm font-medium text-on-surface-variant flex items-center gap-2">
+                <span class="material-symbols-outlined">filter_list</span>
+                Filtrer par Lot :
+              </span>
+              <button class="px-4 py-1.5 rounded-full text-sm font-medium bg-[#76d3c8] text-[#1a2e44] shadow-sm">Tous</button>
+              <button class="px-4 py-1.5 rounded-full text-sm font-medium bg-surface-container-lowest text-on-surface hover:bg-surface-container-high transition-all border border-outline-variant/15">Lot 1 - Matériel Informatique</button>
+              <button class="px-4 py-1.5 rounded-full text-sm font-medium bg-surface-container-lowest text-on-surface hover:bg-surface-container-high transition-all border border-outline-variant/15">Lot 2 - Mobilier de Bureau</button>
+              <button class="px-4 py-1.5 rounded-full text-sm font-medium bg-surface-container-lowest text-on-surface hover:bg-surface-container-high transition-all border border-outline-variant/15">Lot 3 - Fournitures</button>
+            </div>
+            <div class="bg-surface-container-lowest rounded-[16px] overflow-hidden shadow-[0_4px_20px_rgba(26,46,68,0.03)] border border-white/50">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-surface-container/50 border-b border-surface-container-high text-xs uppercase tracking-wider font-headline font-semibold text-on-surface-variant">
+                    <th class="px-6 py-4">Lot</th>
+                    <th class="px-6 py-4">Fournisseur</th>
+                    <th class="px-6 py-4">Domaine</th>
+                    <th class="px-6 py-4">Date</th>
+                    <th class="px-6 py-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="text-sm divide-y divide-surface-container-high/50">
+                  <tr class="hover:bg-surface-bright transition-colors group">
+                    <td class="px-6 py-4"><span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-[#76d3c8]/15 text-[#43a399]">Lot 1</span></td>
+                    <td class="px-6 py-4 font-medium text-[#1a2e44]">Tech Solutions S.A.</td>
+                    <td class="px-6 py-4 text-on-surface-variant">Équipement Informatique</td>
+                    <td class="px-6 py-4 text-on-surface-variant">12 Oct 2023</td>
+                    <td class="px-6 py-4 text-right">
+                      <button type="button" (click)="toggleConsultationDrawer()" class="text-slate-400 hover:text-[#E42819] transition-colors p-1 opacity-0 group-hover:opacity-100">
+                        <span class="material-symbols-outlined text-[20px]">visibility</span>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-surface-bright transition-colors group">
+                    <td class="px-6 py-4"><span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-[#76d3c8]/15 text-[#43a399]">Lot 1</span></td>
+                    <td class="px-6 py-4 font-medium text-[#1a2e44]">Innova Systems</td>
+                    <td class="px-6 py-4 text-on-surface-variant">Équipement Informatique</td>
+                    <td class="px-6 py-4 text-on-surface-variant">12 Oct 2023</td>
+                    <td class="px-6 py-4 text-right">
+                      <button type="button" (click)="toggleConsultationDrawer()" class="text-slate-400 hover:text-[#E42819] transition-colors p-1 opacity-0 group-hover:opacity-100">
+                        <span class="material-symbols-outlined text-[20px]">visibility</span>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-surface-bright transition-colors group">
+                    <td class="px-6 py-4"><span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-[#76d3c8]/15 text-[#43a399]">Lot 2</span></td>
+                    <td class="px-6 py-4 font-medium text-[#1a2e44]">Bureau Plus</td>
+                    <td class="px-6 py-4 text-on-surface-variant">Aménagement Espace</td>
+                    <td class="px-6 py-4 text-on-surface-variant">14 Oct 2023</td>
+                    <td class="px-6 py-4 text-right">
+                      <button type="button" (click)="toggleConsultationDrawer()" class="text-slate-400 hover:text-[#E42819] transition-colors p-1 opacity-0 group-hover:opacity-100">
+                        <span class="material-symbols-outlined text-[20px]">visibility</span>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </ng-container>
         </div>
       </div>
     </main>
-  </main>
-</div>
+    <div *ngIf="showAddLot" class="fixed inset-0 z-50 flex justify-end">
+      <div class="absolute inset-0 bg-surface/40 backdrop-blur-sm" (click)="toggleAddLot()"></div>
+      <aside class="relative right-0 top-0 h-full w-full max-w-[450px] bg-white shadow-[-20px_0_40px_rgba(26,46,68,0.15)] flex flex-col p-8 gap-8 overflow-y-auto">
+        <header class="flex justify-between items-start mb-8">
+          <div>
+            <h2 class="text-[22px] font-headline font-bold text-on-surface tracking-tight">Ajouter un Lot</h2>
+            <p class="text-sm text-on-surface-variant mt-1">Subdivision du marché MAR-2023-001</p>
+          </div>
+          <button type="button" aria-label="Fermer" class="text-outline hover:text-on-surface transition-colors p-1" (click)="toggleAddLot()">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </header>
+        <div class="flex-1 overflow-y-auto">
+          <form class="space-y-6">
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-on-surface" for="lotNumber">Numéro du Lot</label>
+              <div class="relative">
+                <input id="lotNumber" type="text" value="Lot 03" readonly class="w-full bg-surface-container-highest border border-transparent rounded-[10px] text-sm text-on-surface-variant px-4 py-3 focus:ring-0 cursor-not-allowed" />
+                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                  <span class="material-symbols-outlined text-outline-variant text-[20px]">lock</span>
+                </div>
+              </div>
+              <p class="text-xs text-outline">Généré automatiquement.</p>
+            </div>
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-on-surface" for="description">Description <span class="text-error">*</span></label>
+              <textarea id="description" rows="4" required class="w-full bg-surface-container-highest border border-transparent rounded-[10px] text-sm text-on-surface px-4 py-3 focus:bg-surface-container-lowest focus:border-primary/20 focus:ring-0 transition-colors resize-none" placeholder="Détaillez les spécifications du lot..."></textarea>
+            </div>
+            <div class="space-y-2">
+              <label class="block text-sm font-medium text-on-surface" for="contractNumber">Numéro de Contrat</label>
+              <input id="contractNumber" type="text" placeholder="Ex: CTR-2024-01" class="w-full bg-surface-container-highest border border-transparent rounded-[10px] text-sm text-on-surface px-4 py-3 focus:bg-surface-container-lowest focus:border-primary/20 focus:ring-0 transition-colors" />
+            </div>
+          </form>
+        </div>
+        <footer class="pt-6 flex items-center justify-end gap-4 mt-auto">
+          <button type="button" class="px-5 py-2.5 text-sm font-medium text-on-secondary-container bg-transparent hover:bg-surface-container-high rounded-[10px] transition-colors" (click)="toggleAddLot()">Annuler</button>
+          <button type="button" class="px-5 py-2.5 text-sm font-medium text-on-primary bg-[#039CD3] hover:bg-[#0284b6] rounded-[10px] transition-all" (click)="toggleAddLot()">Enregistrer le Lot</button>
+        </footer>
+      </aside>
+    </div>
+      <div *ngIf="showConsultationDrawer" class="fixed inset-0 z-50 flex justify-end">
+        <div class="absolute inset-0 bg-surface/40 backdrop-blur-sm" (click)="toggleConsultationDrawer()"></div>
+        <aside class="relative right-0 top-0 h-full w-full max-w-[450px] bg-white shadow-[-20px_0_40px_rgba(26,46,68,0.15)] flex flex-col p-8 gap-8 overflow-y-auto">
+          <header class="flex justify-between items-start mb-8">
+            <div>
+              <h2 class="text-[22px] font-headline font-bold text-on-surface tracking-tight">Consulter un Fournisseur</h2>
+              <p class="text-sm text-on-surface-variant mt-1">Enregistrer une invitation à soumissionner</p>
+            </div>
+            <button type="button" aria-label="Fermer" class="text-outline hover:text-on-surface transition-colors p-1" (click)="toggleConsultationDrawer()">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </header>
+          <div class="flex-1 overflow-y-auto">
+            <div class="bg-[#f0fdfb] rounded-[10px] p-4 mb-6 relative before:absolute before:inset-0 before:rounded-[10px] before:border before:border-primary before:opacity-15 pointer-events-none">
+              <span class="material-symbols-outlined text-primary-container shrink-0 mt-0.5">info</span>
+              <p class="text-sm text-primary-container leading-relaxed mt-2">
+                Un fournisseur peut être consulté sur plusieurs lots distincts du même marché.
+              </p>
+            </div>
+            <form class="space-y-6">
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-on-surface" for="numbLot">Numéro de Lot</label>
+                <div class="relative">
+                  <select id="numbLot" class="w-full appearance-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
+                    <option disabled selected value="">Sélectionner un lot...</option>
+                    <option value="lot1">Lot 01 - Matériel Informatique</option>
+                    <option value="lot2">Lot 02 - Fournitures de Bureau</option>
+                    <option value="lot3">Lot 03 - Mobilier</option>
+                  </select>
+                  <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant">expand_more</span>
+                </div>
+              </div>
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-on-surface" for="idFournisseur">Fournisseur</label>
+                <div class="relative">
+                  <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+                  <input id="idFournisseur" type="text" placeholder="Rechercher un fournisseur..." class="w-full bg-surface-container-highest border-0 rounded-[10px] pl-11 pr-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors" />
+                </div>
+              </div>
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-on-surface" for="DateConsultation">Date de Consultation</label>
+                <div class="relative">
+                  <input id="DateConsultation" type="date" class="w-full bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors" />
+                </div>
+              </div>
+            </form>
+          </div>
+          <footer class="pt-6 flex items-center justify-end gap-4 mt-auto">
+            <button type="button" class="px-5 py-2.5 text-sm font-medium text-on-secondary-container bg-transparent hover:bg-surface-container-high rounded-[10px] transition-colors" (click)="toggleConsultationDrawer()">Annuler</button>
+            <button type="button" class="px-5 py-2.5 text-sm font-medium text-white bg-[#039CD3] hover:bg-[#0284b6] rounded-[10px] transition-all" (click)="toggleConsultationDrawer()">Enregistrer la Consultation</button>
+          </footer>
+        </aside>
+      </div>

@@ -12,8 +12,18 @@ import { MenuComponent } from '../../components/menu/menu.component';
 })
 export class DetailsMarchesComponent {
   activeTab = 'Informations générales';
+  showAddLot = false;
+  showConsultationDrawer = false;
 
   setActiveTab(tab: string) {
     this.activeTab = tab;
+  }
+
+  toggleAddLot() {
+    this.showAddLot = !this.showAddLot;
+  }
+
+  toggleConsultationDrawer() {
+    this.showConsultationDrawer = !this.showConsultationDrawer;
   }
 }
