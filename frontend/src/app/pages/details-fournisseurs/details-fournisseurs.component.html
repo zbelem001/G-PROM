@@ -1,0 +1,217 @@
+<div class="bg-surface font-body text-on-surface min-h-screen flex overflow-hidden">
+  <app-menu></app-menu>
+  <main class="flex-1 ml-[240px] flex flex-col h-screen overflow-y-auto bg-surface relative">
+    <app-header></app-header>
+    <div class="flex-1 p-8 bg-surface">
+      <div class="w-full">
+        <section class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+          <div class="space-y-2">
+            <div class="flex flex-wrap items-center gap-3">
+              <span class="bg-green-100 text-[#1E7A4E] text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest flex items-center gap-2">
+                <span class="h-1.5 w-1.5 bg-[#1E7A4E] rounded-full"></span>
+                Conforme
+              </span>
+              <span class="text-slate-500 text-sm font-medium">ID: F-2024-0089</span>
+            </div>
+            <h2 class="text-[32px] font-black text-primary leading-tight tracking-tight">TECH-SOLUTIONS SARL</h2>
+            <p class="text-on-surface-variant max-w-2xl text-lg font-medium opacity-80">Expertise en infrastructures informatiques et solutions de cybersécurité pour les institutions publiques.</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-3">
+            <button class="h-10 px-6 rounded-lg border border-[#1A3F6F]/20 text-primary font-semibold text-sm hover:bg-primary/5 transition-all flex items-center gap-2">
+              <span class="material-symbols-outlined text-lg">edit</span>
+              Modifier
+            </button>
+            <button class="h-10 px-6 rounded-lg bg-[#1A3F6F] text-white font-semibold text-sm shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2">
+              <span class="material-symbols-outlined text-lg">file_download</span>
+              Exporter la fiche
+            </button>
+          </div>
+        </section>
+
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <div class="bg-surface-container-lowest p-6 rounded-xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Marchés gagnés</p>
+            <div class="flex items-end justify-between gap-4">
+              <span class="text-4xl font-black text-primary tracking-tight">24</span>
+              <span class="text-green-600 bg-green-50 px-2 py-1 rounded text-xs font-bold">+12% vs LY</span>
+            </div>
+          </div>
+          <div class="bg-surface-container-lowest p-6 rounded-xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Valeur totale contrats</p>
+            <div class="flex items-end justify-between gap-4">
+              <span class="text-4xl font-black text-primary tracking-tight">412.5M <span class="text-lg font-bold opacity-40">FCFA</span></span>
+            </div>
+          </div>
+          <div class="bg-surface-container-lowest p-6 rounded-xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Taux de succès</p>
+            <div class="flex items-end justify-between gap-4">
+              <span class="text-4xl font-black text-primary tracking-tight">68.4<span class="text-lg font-bold opacity-40">%</span></span>
+              <div class="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
+                <div class="bg-primary h-full" style="width: 68%;"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100 overflow-hidden mb-12">
+          <div class="flex border-b border-slate-100 bg-surface-container-low/30">
+            <button class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-primary border-b-2 border-primary relative">Profil</button>
+            <button class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-primary transition-colors">Offres &amp; Candidatures</button>
+            <button class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-primary transition-colors">Documents Légaux</button>
+          </div>
+          <div class="p-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+              <div class="space-y-8">
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em] mb-4">Informations de Contact</p>
+                  <div class="space-y-4">
+                    <div class="flex flex-col">
+                      <span class="text-xs text-slate-500 font-medium">Adresse Siège</span>
+                      <span class="text-primary font-semibold">Rue 14.52, Zone Industrielle, Ouagadougou, BF</span>
+                    </div>
+                    <div class="flex flex-col">
+                      <span class="text-xs text-slate-500 font-medium">Téléphone Principal</span>
+                      <span class="text-primary font-semibold">+226 25 30 00 12</span>
+                    </div>
+                    <div class="flex flex-col">
+                      <span class="text-xs text-slate-500 font-medium">Email Professionnel</span>
+                      <span class="text-primary font-semibold">contact@techsolutions.bf</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-6 bg-surface-container-low rounded-lg flex items-center gap-6">
+                  <div class="h-16 w-16 bg-white rounded-lg flex items-center justify-center border border-slate-200">
+                    <span class="material-symbols-outlined text-primary text-3xl">map</span>
+                  </div>
+                  <div>
+                    <p class="text-xs font-bold text-primary uppercase">Localisation</p>
+                    <p class="text-sm text-slate-600 mt-1">Secteur 22, Arrondissement 5</p>
+                    <a class="text-xs font-bold text-primary underline mt-2 block" href="#">Voir sur la carte</a>
+                  </div>
+                </div>
+              </div>
+              <div class="space-y-8">
+                <div>
+                  <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em] mb-4">Données Administratives</p>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="flex flex-col">
+                      <span class="text-xs text-slate-500 font-medium">Numéro IFU</span>
+                      <span class="text-primary font-semibold">00045612X</span>
+                    </div>
+                    <div class="flex flex-col">
+                      <span class="text-xs text-slate-500 font-medium">Capital Social</span>
+                      <span class="text-primary font-semibold">50.000.000 FCFA</span>
+                    </div>
+                    <div class="flex flex-col">
+                      <span class="text-xs text-slate-500 font-medium">RCCM</span>
+                      <span class="text-primary font-semibold">BF OUA 2018 B 442</span>
+                    </div>
+                    <div class="flex flex-col">
+                      <span class="text-xs text-slate-500 font-medium">Date de Création</span>
+                      <span class="text-primary font-semibold">12 Mars 2018</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="border-t border-slate-100 pt-8">
+                  <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em] mb-4">Gérant / Signataire</p>
+                  <div class="flex items-center gap-4">
+                    <img alt="Profile" class="h-12 w-12 rounded-full object-cover grayscale brightness-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbupZ5jSH-dwHzOlXM2kTF7w1P7FU1Y5ocoGGh8eOblwpeA5ZPpZIcXTShyGbLg_usEcLHX6H3E9FJCjx1U3D4kBIVVFcHJGOrbgLboGQY7vy66HjTXbiKQTniH5bxoMjie78l_Q2ZYZMos19jKzZ8fNiu5b2ACx7wFBalpFhi6LkRXQ4eikziUBucelFgx2Pxuc5T6wkKkcCq96V_bIMv6gfgicAe6gmZYADql2YZ6ls9TXRrbc_DD3STSWYHmmHmVtBVYfqCSww" />
+                    <div>
+                      <p class="text-sm font-bold text-primary">M. Ibrahim TRAORE</p>
+                      <p class="text-xs text-slate-500">Directeur Général</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="mt-16 space-y-8">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-bold text-primary">Offres &amp; Candidatures Récentes</h3>
+            <button class="text-xs font-bold text-primary uppercase tracking-widest">Tout voir</button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-separate border-spacing-0">
+              <thead>
+                <tr class="bg-surface-container-low text-slate-500 text-[10px] font-bold uppercase tracking-widest">
+                  <th class="px-6 py-4 rounded-tl-lg">N° Marché</th>
+                  <th class="px-6 py-4">Titre du Lot</th>
+                  <th class="px-6 py-4">Date Soumission</th>
+                  <th class="px-6 py-4">Montant Proposé</th>
+                  <th class="px-6 py-4 rounded-tr-lg">Statut</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-50">
+                <tr class="group hover:bg-slate-50/50 transition-colors">
+                  <td class="px-6 py-4 text-xs font-bold text-primary">DAO-2023-015</td>
+                  <td class="px-6 py-4 text-xs font-medium">Infrastructures Réseau 2iE Kamboinsé</td>
+                  <td class="px-6 py-4 text-xs text-slate-500">14/11/2023</td>
+                  <td class="px-6 py-4 text-xs font-bold">124.000.000 FCFA</td>
+                  <td class="px-6 py-4">
+                    <span class="bg-green-100 text-[#1E7A4E] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter">Adjugé</span>
+                  </td>
+                </tr>
+                <tr class="group hover:bg-slate-50/50 transition-colors">
+                  <td class="px-6 py-4 text-xs font-bold text-primary">DAO-2024-002</td>
+                  <td class="px-6 py-4 text-xs font-medium">Fourniture de Serveurs Haute Performance</td>
+                  <td class="px-6 py-4 text-xs text-slate-500">02/01/2024</td>
+                  <td class="px-6 py-4 text-xs font-bold">85.500.000 FCFA</td>
+                  <td class="px-6 py-4">
+                    <span class="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter">En analyse</span>
+                  </td>
+                </tr>
+                <tr class="group hover:bg-slate-50/50 transition-colors">
+                  <td class="px-6 py-4 text-xs font-bold text-primary">DAO-2023-088</td>
+                  <td class="px-6 py-4 text-xs font-medium">Maintenance Parc Informatique (Lot 2)</td>
+                  <td class="px-6 py-4 text-xs text-slate-500">12/10/2023</td>
+                  <td class="px-6 py-4 text-xs font-bold">12.200.000 FCFA</td>
+                  <td class="px-6 py-4">
+                    <span class="bg-red-100 text-[#C0392B] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter">Rejeté</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="mt-16">
+          <h3 class="text-lg font-bold text-primary mb-8">Dossier Administratif</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="p-4 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-between hover:border-primary/20 transition-all cursor-pointer">
+              <div class="flex items-center gap-4">
+                <span class="material-symbols-outlined text-slate-400">description</span>
+                <div>
+                  <p class="text-xs font-bold text-primary">RCCM Certification</p>
+                  <p class="text-[10px] text-slate-500 uppercase tracking-tighter">Expire le: 12/03/2025</p>
+                </div>
+              </div>
+              <span class="material-symbols-outlined text-green-500 text-lg">check_circle</span>
+            </div>
+            <div class="p-4 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-between hover:border-primary/20 transition-all cursor-pointer">
+              <div class="flex items-center gap-4">
+                <span class="material-symbols-outlined text-slate-400">assignment_turned_in</span>
+                <div>
+                  <p class="text-xs font-bold text-primary">Quitus Fiscal 2024</p>
+                  <p class="text-[10px] text-slate-500 uppercase tracking-tighter">Valide</p>
+                </div>
+              </div>
+              <span class="material-symbols-outlined text-green-500 text-lg">check_circle</span>
+            </div>
+            <div class="p-4 rounded-xl bg-red-50/30 border border-red-100 shadow-sm flex items-center justify-between hover:border-red-200 transition-all cursor-pointer">
+              <div class="flex items-center gap-4">
+                <span class="material-symbols-outlined text-red-400">warning</span>
+                <div>
+                  <p class="text-xs font-bold text-red-900">Attestation CNSS</p>
+                  <p class="text-[10px] text-red-500 uppercase tracking-tighter">Expiré (30/05/2024)</p>
+                </div>
+              </div>
+              <span class="material-symbols-outlined text-red-500 text-lg">error</span>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
