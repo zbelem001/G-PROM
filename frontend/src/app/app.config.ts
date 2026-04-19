@@ -6,6 +6,7 @@ import { MarketsComponent } from './pages/markets/markets.component';
 import { DetailsMarchesComponent } from './pages/details-marches/details-marches.component';
 import { FournisseursComponent } from './pages/fournisseurs/fournisseurs.component';
 import { DetailsFournisseursComponent } from './pages/details-fournisseurs/details-fournisseurs.component';
+import { RapportsComponent } from './pages/rapports/rapports.component';
 
 const routes: Route[] = [
   { path: '', component: DashboardComponent },
@@ -13,6 +14,7 @@ const routes: Route[] = [
   { path: 'marches/details', component: DetailsMarchesComponent },
   { path: 'fournisseurs', component: FournisseursComponent },
   { path: 'fournisseurs/details', component: DetailsFournisseursComponent },
+  { path: 'rapports', component: RapportsComponent },
 ];
 
 export const appConfig: ApplicationConfig = {

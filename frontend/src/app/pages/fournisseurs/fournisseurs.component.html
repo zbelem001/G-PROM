@@ -5,10 +5,9 @@
     <div class="flex-1 pt-24 px-8 py-6">
       <div class="flex flex-col lg:flex-row justify-between items-start gap-6 mb-10 pt-4">
         <div>
-          <p class="text-sm font-semibold text-secondary/70 uppercase tracking-wider mb-2">Répertoire</p>
-          <h2 class="text-[32px] font-extrabold text-secondary tracking-tight">Fournisseurs</h2>
+          <h2 class="text-[22px] font-headline font-bold text-[#43a399] tracking-tight">FOURNISSEURS</h2>
         </div>
-        <button type="button" (click)="toggleAddFournisseur()" class="flex items-center gap-2 bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white px-6 py-3 rounded-[10px] font-semibold text-sm shadow-[0_4px_12px_rgba(118,211,200,0.3)] hover:shadow-[0_6px_16px_rgba(118,211,200,0.4)] transition-all transform hover:-translate-y-0.5">
+        <button type="button" (click)="toggleAddFournisseur()" class="flex items-center gap-2 bg-[#039CD3] text-white px-6 py-3 rounded-[10px] font-semibold text-sm shadow-[0_4px_12px_rgba(3,156,211,0.25)] hover:bg-[#0278a8] transition-all transform hover:-translate-y-0.5">
           <span class="material-symbols-outlined text-lg">add</span>
           Ajouter un Fournisseur
         </button>
@@ -134,7 +133,7 @@
           <div class="space-y-1">
             <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Forme Juridique</label>
             <div class="relative">
-              <select class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 pr-10 text-sm text-on-surface appearance-none focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors">
+              <select class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 pr-10 text-sm text-on-surface appearance-none focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost custom-select transition-colors">
                 <option disabled selected value="">Sélectionner...</option>
                 <option value="sarl">SARL</option>
                 <option value="sa">SA</option>
@@ -171,7 +170,7 @@
             <div class="space-y-1 max-w-[320px]">
               <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Pays</label>
               <div class="relative">
-                <select class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 pr-10 text-sm text-on-surface appearance-none focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors">
+                <select class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 pr-10 text-sm text-on-surface appearance-none focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost custom-select transition-colors">
                   <option selected value="bf">Burkina Faso</option>
                   <option value="bj">Bénin</option>
                   <option value="cv">Cabo Verde</option>
@@ -221,7 +220,7 @@
       </form>
       <footer class="p-6 bg-surface-container-lowest border-t border-outline-variant/10 shrink-0 flex justify-end gap-4 shadow-[0_-4px_20px_rgba(26,46,68,0.05)]">
         <button type="button" (click)="toggleAddFournisseur()" class="px-6 py-3 rounded-[10px] text-on-secondary-container font-semibold hover:bg-surface-container-high transition-colors text-sm">Annuler</button>
-        <button type="submit" class="bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white px-8 py-3 rounded-[10px] font-headline font-bold shadow-[0_4px_14px_rgba(118,211,200,0.4)] hover:opacity-95 transition-opacity text-sm flex items-center gap-2">
+        <button type="submit" class="bg-[#039CD3] text-white px-8 py-3 rounded-[10px] font-headline font-bold shadow-[0_4px_14px_rgba(3,156,211,0.25)] hover:bg-[#0278a8] transition-all text-sm flex items-center gap-2">
           Enregistrer
           <span class="material-symbols-outlined text-sm">check</span>
         </button>

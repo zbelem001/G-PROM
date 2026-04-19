@@ -1,0 +1,141 @@
+<div class="bg-surface font-body text-on-surface min-h-screen flex overflow-hidden">
+  <app-menu></app-menu>
+  <main class="flex-1 ml-[240px] flex flex-col h-screen overflow-y-auto bg-surface relative">
+    <app-header></app-header>
+    <main class="flex-1 pt-24 p-8 bg-surface">
+      <div class="flex justify-between items-end mb-8">
+        <div>
+          <h2 class="font-headline text-[22px] font-bold text-[#43a399] mb-2">RAPPORTS & STATISTIQUES</h2>
+          <p class="text-on-surface-variant font-medium">Analyse globale des données de marché pour l'année en cours.</p>
+        </div>
+        <div class="flex gap-4">
+          <div class="flex bg-surface-container-high rounded-[10px] p-1">
+            <button class="px-4 py-2 text-sm font-semibold rounded-md bg-surface-container-lowest text-secondary shadow-sm">2023</button>
+            <button class="px-4 py-2 text-sm font-medium rounded-md text-on-surface-variant hover:text-secondary">2024</button>
+          </div>
+          <button class="flex items-center gap-2 px-5 py-2.5 bg-[#039CD3] text-white rounded-[10px] font-medium shadow-[0_6px_16px_rgba(26,46,68,0.1)] hover:bg-[#0284b6] hover:shadow-[0_8px_24px_rgba(26,46,68,0.15)] transition-all">
+            <span class="material-symbols-outlined text-sm">download</span>
+            Exporter
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-12 gap-6">
+        <div class="col-span-12 grid grid-cols-4 gap-6">
+          <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-[0_4px_12px_rgba(26,46,68,0.03)] border border-outline-variant/10">
+            <p class="text-sm font-medium text-on-surface-variant mb-1">Volume Total Engagé</p>
+            <h3 class="font-headline text-[28px] font-bold text-secondary">4.2B FCFA</h3>
+            <p class="text-xs text-[#76d3c8] font-medium mt-2 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[14px]">trending_up</span>
+              +12% vs l'année dernière
+            </p>
+          </div>
+          <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-[0_4px_12px_rgba(26,46,68,0.03)] border border-outline-variant/10">
+            <p class="text-sm font-medium text-on-surface-variant mb-1">Marchés Actifs</p>
+            <h3 class="font-headline text-[28px] font-bold text-secondary">45</h3>
+            <p class="text-xs text-on-surface-variant font-medium mt-2">Sur 120 prévus</p>
+          </div>
+        </div>
+
+        <div class="col-span-12 lg:col-span-8 bg-surface-container-lowest rounded-2xl p-6 shadow-[0_4px_12px_rgba(26,46,68,0.03)] border border-outline-variant/10 min-h-[360px]">
+          <h4 class="font-headline text-lg font-bold text-secondary mb-6">Évolution Mensuelle des Attributions</h4>
+          <div class="w-full h-[240px] bg-surface-container-low rounded-xl border border-outline-variant/15 p-6">
+            <div class="flex h-full items-end gap-3">
+              <div class="flex-1 flex flex-col justify-end">
+                <div class="h-[30px] bg-[#76d3c8] rounded-t-xl"></div>
+                <p class="text-xs text-on-surface-variant text-center mt-2">Jan</p>
+              </div>
+              <div class="flex-1 flex flex-col justify-end">
+                <div class="h-[90px] bg-[#4fa7be] rounded-t-xl"></div>
+                <p class="text-xs text-on-surface-variant text-center mt-2">Fév</p>
+              </div>
+              <div class="flex-1 flex flex-col justify-end">
+                <div class="h-[140px] bg-[#1f7a90] rounded-t-xl"></div>
+                <p class="text-xs text-on-surface-variant text-center mt-2">Mar</p>
+              </div>
+              <div class="flex-1 flex flex-col justify-end">
+                <div class="h-[120px] bg-[#039cd3] rounded-t-xl"></div>
+                <p class="text-xs text-on-surface-variant text-center mt-2">Avr</p>
+              </div>
+              <div class="flex-1 flex flex-col justify-end">
+                <div class="h-[180px] bg-[#026b8a] rounded-t-xl"></div>
+                <p class="text-xs text-on-surface-variant text-center mt-2">Mai</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-span-12 lg:col-span-4 bg-surface-container-lowest rounded-2xl p-6 shadow-[0_4px_12px_rgba(26,46,68,0.03)] border border-outline-variant/10 min-h-[360px]">
+          <h4 class="font-headline text-lg font-bold text-secondary mb-6">Répartition par Mode</h4>
+          <div class="w-full h-[240px] bg-surface-container-low rounded-xl border border-outline-variant/15 p-6 flex flex-col items-center justify-center">
+            <div class="relative w-40 h-40 rounded-full bg-surface-container-high flex items-center justify-center">
+              <div class="absolute inset-0 rounded-full bg-[conic-gradient(at_top,_#76d3c8_0deg_120deg,_#1f7a90_120deg_240deg,_#d8e2ff_240deg_360deg)]"></div>
+              <div class="w-20 h-20 rounded-full bg-surface flex flex-col items-center justify-center text-xs font-semibold text-on-surface">
+                100%
+                <span class="text-[10px] text-on-surface-variant">Total</span>
+              </div>
+            </div>
+            <div class="mt-6 w-full space-y-3 text-sm text-on-surface">
+              <div class="flex items-center justify-between">
+                <span>Appel d'Offres</span>
+                <span class="font-semibold text-secondary">60%</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span>Gré à Gré</span>
+                <span class="font-semibold text-secondary">30%</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span>Autres</span>
+                <span class="font-semibold text-secondary">10%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-span-12 bg-surface-container-lowest rounded-2xl p-6 shadow-[0_4px_12px_rgba(26,46,68,0.03)] border border-outline-variant/10">
+          <div class="flex justify-between items-center mb-6">
+            <h4 class="font-headline text-lg font-bold text-secondary">Dernières Attributions</h4>
+            <button class="text-sm font-medium text-[#76d3c8] hover:text-[#43a399] transition-colors">Voir tout</button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr>
+                  <th class="pb-4 pt-2 px-4 font-semibold text-sm text-on-surface-variant border-b border-outline-variant/15">Fournisseur</th>
+                  <th class="pb-4 pt-2 px-4 font-semibold text-sm text-on-surface-variant border-b border-outline-variant/15">Lot / Description</th>
+                  <th class="pb-4 pt-2 px-4 font-semibold text-sm text-on-surface-variant border-b border-outline-variant/15">Montant (FCFA)</th>
+                  <th class="pb-4 pt-2 px-4 font-semibold text-sm text-on-surface-variant border-b border-outline-variant/15">Délai</th>
+                  <th class="pb-4 pt-2 px-4 font-semibold text-sm text-on-surface-variant border-b border-outline-variant/15 text-right">Statut</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="hover:bg-surface-container-low/50 transition-colors">
+                  <td class="py-4 px-4 border-b border-outline-variant/10">
+                    <div class="font-medium text-secondary text-sm">Entreprise ALPHA</div>
+                  </td>
+                  <td class="py-4 px-4 border-b border-outline-variant/10 text-sm text-on-surface">Fourniture de matériel informatique</td>
+                  <td class="py-4 px-4 border-b border-outline-variant/10 text-sm font-semibold text-secondary">45 000 000</td>
+                  <td class="py-4 px-4 border-b border-outline-variant/10 text-sm text-on-surface-variant">45 jours</td>
+                  <td class="py-4 px-4 border-b border-outline-variant/10 text-right">
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-[#76d3c8]/15 text-[#76d3c8]">En Cours</span>
+                  </td>
+                </tr>
+                <tr class="hover:bg-surface-container-low/50 transition-colors">
+                  <td class="py-4 px-4 border-b border-outline-variant/10">
+                    <div class="font-medium text-secondary text-sm">BTP Construction SA</div>
+                  </td>
+                  <td class="py-4 px-4 border-b border-outline-variant/10 text-sm text-on-surface">Rénovation du bâtiment central</td>
+                  <td class="py-4 px-4 border-b border-outline-variant/10 text-sm font-semibold text-secondary">120 500 000</td>
+                  <td class="py-4 px-4 border-b border-outline-variant/10 text-sm text-on-surface-variant">6 mois</td>
+                  <td class="py-4 px-4 border-b border-outline-variant/10 text-right">
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-tertiary-container/10 text-tertiary-container">Attribué</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </main>
+</div>
