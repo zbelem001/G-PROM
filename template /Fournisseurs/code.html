@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>G-PROM - Fournisseurs</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-error": "#ffffff",
+                        "primary-container": "#00332f",
+                        "secondary-container": "#cde1fe",
+                        "tertiary-fixed": "#d8e2ff",
+                        "tertiary-fixed-dim": "#adc6ff",
+                        "tertiary": "#00173c",
+                        "error": "#ba1a1a",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#43a399",
+                        "surface-container-high": "#e8e8ea",
+                        "secondary": "#4c6078",
+                        "on-tertiary-container": "#5692ff",
+                        "inverse-primary": "#79d6cb",
+                        "surface-container": "#eeeef0",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "surface-dim": "#d9dadc",
+                        "secondary-fixed": "#d1e4ff",
+                        "tertiary-container": "#002b63",
+                        "surface-container-low": "#f3f3f5",
+                        "surface": "#f9f9fb",
+                        "primary": "#001c1a",
+                        "surface-variant": "#e2e2e4",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#96f3e7",
+                        "outline-variant": "#c4c6cd",
+                        "inverse-on-surface": "#f0f0f2",
+                        "surface-bright": "#f9f9fb",
+                        "on-secondary-container": "#51647d",
+                        "on-tertiary-fixed": "#001a42",
+                        "on-surface": "#1a1c1d",
+                        "on-primary-fixed": "#00201d",
+                        "on-surface-variant": "#43474d",
+                        "on-primary-fixed-variant": "#00504a",
+                        "on-primary": "#ffffff",
+                        "outline": "#74777d",
+                        "surface-tint": "#006a62",
+                        "primary-fixed-dim": "#79d6cb",
+                        "secondary-fixed-dim": "#b4c8e4",
+                        "on-secondary-fixed": "#061d32",
+                        "on-tertiary-fixed-variant": "#004395",
+                        "inverse-surface": "#2f3132",
+                        "on-background": "#1a1c1d",
+                        "surface-container-highest": "#e2e2e4",
+                        "on-secondary-fixed-variant": "#35485f",
+                        "background": "#f9f9fb"
+                    },
+                    fontFamily: {
+                        "headline": ["Manrope", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body antialiased min-h-screen flex">
+<!-- SideNavBar -->
+<nav class="fixed left-0 top-0 h-screen w-[240px] rounded-r-[20px] bg-[#1a2e44] shadow-[0_6px_24px_rgba(26,46,68,0.08)] z-50 flex flex-col h-full py-8">
+<div class="px-6 mb-12">
+<h1 class="text-2xl font-bold tracking-tight text-[#76d3c8] font-headline">G-PROM</h1>
+<p class="text-sm text-slate-400 mt-1">Institut 2iE</p>
+</div>
+<ul class="flex flex-col gap-2 w-full font-headline">
+<li>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400/80 hover:text-white hover:bg-white/5 transition-all duration-200 scale-95 active:scale-100 transition-transform rounded-r-full mr-4" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                    Dashboard
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400/80 hover:text-white hover:bg-white/5 transition-all duration-200 scale-95 active:scale-100 transition-transform rounded-r-full mr-4" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+                    Marchés
+                </a>
+</li>
+<li>
+<a class="relative flex items-center gap-3 px-6 py-3 text-[#76d3c8] before:content-[''] before:absolute before:left-0 before:w-1 before:h-6 before:bg-[#76d3c8] before:rounded-r-full bg-white/5 scale-95 active:scale-100 transition-transform rounded-r-full mr-4" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">groups</span>
+                    Fournisseurs
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400/80 hover:text-white hover:bg-white/5 transition-all duration-200 scale-95 active:scale-100 transition-transform rounded-r-full mr-4" href="#">
+<span class="material-symbols-outlined">assessment</span>
+                    Rapports
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400/80 hover:text-white hover:bg-white/5 transition-all duration-200 scale-95 active:scale-100 transition-transform rounded-r-full mr-4" href="#">
+<span class="material-symbols-outlined">settings</span>
+                    Paramètres
+                </a>
+</li>
+</ul>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 ml-[240px] flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="docked full-width top-0 sticky z-40 bg-white/90 backdrop-blur-xl shadow-[0_4px_12px_rgba(26,46,68,0.04)] flex justify-between items-center px-8 py-4">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-10 pr-4 py-2 rounded-lg bg-surface-container-highest border-none focus:ring-1 focus:ring-primary/20 focus:bg-surface-container-lowest transition-colors text-sm font-body outline-none placeholder:text-outline" placeholder="Rechercher..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-500 hover:bg-[#f3f3f5] rounded-lg transition-colors tap-highlight-transparent">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-[#f3f3f5] rounded-lg transition-colors tap-highlight-transparent">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-high overflow-hidden ml-2 ring-2 ring-surface-container-low">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="close up headshot of professional man with short dark hair wearing a blue shirt against a neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxyZlcL66KB4ZlRpfkxKQYJdMU25zZKTQiLuBR6GO52EIePcvtIu9oiAuJO9m55h3XaFkVm4CRtE0aKVLowL_kxMFeqiqghxARyprZgKjyOzNpZZxMu350fUI9gOzMlg_lq_0DbJoOul3LIFLqwqvZjtt0s5v4USxNleIeaUEndHxilhZ1zkLqoGLi885cZ8--G1tSkMCaJE7ZIpaUnM5sdGayYU4veXfU_AW9gXhpnZjaAvxXUd9BnK7vgBeZMJAvNlcr5Fb9ErK2"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<main class="flex-1 p-8 lg:p-12 max-w-7xl mx-auto w-full">
+<!-- Page Header -->
+<div class="flex justify-between items-end mb-10 pt-4">
+<div>
+<p class="text-sm font-semibold text-primary/60 font-body mb-2 uppercase tracking-wider">Répertoire</p>
+<h2 class="text-[32px] leading-tight font-extrabold text-[#1a2e44] font-headline">Fournisseurs</h2>
+</div>
+<button class="flex items-center gap-2 bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white px-6 py-3 rounded-[10px] font-semibold text-sm shadow-[0_4px_12px_rgba(118,211,200,0.3)] hover:shadow-[0_6px_16px_rgba(118,211,200,0.4)] transition-all transform hover:-translate-y-0.5">
+<span class="material-symbols-outlined text-lg">add</span>
+                    Ajouter un Fournisseur
+                </button>
+</div>
+<!-- Content Area (Level 1 Surface) -->
+<div class="bg-surface-container-low rounded-2xl p-6 lg:p-8">
+<!-- Table Controls -->
+<div class="flex flex-wrap gap-4 justify-between items-center mb-6">
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-4 py-2 bg-surface-container-lowest text-on-surface-variant text-sm font-medium rounded-lg shadow-sm hover:bg-surface-bright transition-colors border border-outline-variant/15">
+<span class="material-symbols-outlined text-lg">filter_list</span>
+                            Filtres
+                        </button>
+<select class="px-4 py-2 bg-surface-container-lowest text-on-surface-variant text-sm font-medium rounded-lg shadow-sm border border-outline-variant/15 focus:ring-1 focus:ring-primary/20 outline-none">
+<option>Domaine d'activité</option>
+<option>BTP</option>
+<option>Informatique</option>
+<option>Fournitures de bureau</option>
+</select>
+<select class="px-4 py-2 bg-surface-container-lowest text-on-surface-variant text-sm font-medium rounded-lg shadow-sm border border-outline-variant/15 focus:ring-1 focus:ring-primary/20 outline-none">
+<option>Statut</option>
+<option>Classique</option>
+<option>Externe</option>
+</select>
+</div>
+<div class="text-sm text-outline font-medium">
+                        Affichage de 1 à 10 sur 45 fournisseurs
+                    </div>
+</div>
+<!-- Data Table (Level 2 Surfaces) -->
+<div class="flex flex-col gap-2">
+<!-- Table Header -->
+<div class="grid grid-cols-12 gap-4 px-6 py-3 text-xs font-semibold text-on-surface-variant uppercase tracking-wider font-headline border-b border-outline-variant/10">
+<div class="col-span-1">ID</div>
+<div class="col-span-3">Raison Sociale</div>
+<div class="col-span-2">Domaine d'activité</div>
+<div class="col-span-1">Ville</div>
+<div class="col-span-2">Contact</div>
+<div class="col-span-2">Statut</div>
+<div class="col-span-1 text-right">Actions</div>
+</div>
+<!-- Table Row 1 -->
+<div class="grid grid-cols-12 gap-4 px-6 py-4 items-center bg-surface-container-lowest rounded-[16px] shadow-[0_2px_8px_rgba(26,46,68,0.02)] hover:shadow-[0_6px_24px_rgba(26,46,68,0.06)] transition-all cursor-pointer group">
+<div class="col-span-1 text-sm font-medium text-outline">F-1042</div>
+<div class="col-span-3">
+<p class="text-sm font-bold text-[#1a2e44] font-headline">TechSolutions Afrique</p>
+</div>
+<div class="col-span-2 text-sm text-on-surface-variant">Informatique &amp; IT</div>
+<div class="col-span-1 text-sm text-on-surface-variant">Ouagadougou</div>
+<div class="col-span-2">
+<p class="text-sm text-on-surface-variant">70 12 34 56</p>
+<p class="text-xs text-outline truncate">contact@techafrique.bf</p>
+</div>
+<div class="col-span-2">
+<span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-[#76d3c8]/15 text-[#43a399]">
+                                Classique
+                            </span>
+</div>
+<div class="col-span-1 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">more_vert</span></button>
+</div>
+</div>
+<!-- Table Row 2 -->
+<div class="grid grid-cols-12 gap-4 px-6 py-4 items-center bg-surface-container-lowest rounded-[16px] shadow-[0_2px_8px_rgba(26,46,68,0.02)] hover:shadow-[0_6px_24px_rgba(26,46,68,0.06)] transition-all cursor-pointer group">
+<div class="col-span-1 text-sm font-medium text-outline">F-1043</div>
+<div class="col-span-3">
+<p class="text-sm font-bold text-[#1a2e44] font-headline">BTP Construction Elite</p>
+</div>
+<div class="col-span-2 text-sm text-on-surface-variant">Génie Civil &amp; BTP</div>
+<div class="col-span-1 text-sm text-on-surface-variant">Bobo-Dioulasso</div>
+<div class="col-span-2">
+<p class="text-sm text-on-surface-variant">78 90 12 34</p>
+<p class="text-xs text-outline truncate">info@btpelite.com</p>
+</div>
+<div class="col-span-2">
+<span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-[#4c6078]/15 text-[#4c6078]">
+                                Externe
+                            </span>
+</div>
+<div class="col-span-1 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">more_vert</span></button>
+</div>
+</div>
+<!-- Table Row 3 -->
+<div class="grid grid-cols-12 gap-4 px-6 py-4 items-center bg-surface-container-lowest rounded-[16px] shadow-[0_2px_8px_rgba(26,46,68,0.02)] hover:shadow-[0_6px_24px_rgba(26,46,68,0.06)] transition-all cursor-pointer group">
+<div class="col-span-1 text-sm font-medium text-outline">F-1044</div>
+<div class="col-span-3">
+<p class="text-sm font-bold text-[#1a2e44] font-headline">Global Fournitures SARL</p>
+</div>
+<div class="col-span-2 text-sm text-on-surface-variant">Fournitures de bureau</div>
+<div class="col-span-1 text-sm text-on-surface-variant">Koudougou</div>
+<div class="col-span-2">
+<p class="text-sm text-on-surface-variant">60 55 44 33</p>
+<p class="text-xs text-outline truncate">ventes@globalfournitures.bf</p>
+</div>
+<div class="col-span-2">
+<span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-[#76d3c8]/15 text-[#43a399]">
+                                Classique
+                            </span>
+</div>
+<div class="col-span-1 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+<button class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">more_vert</span></button>
+</div>
+</div>
+</div>
+<!-- Pagination -->
+<div class="flex justify-center items-center gap-2 mt-8">
+<button class="p-2 text-outline hover:bg-surface-container-highest rounded-lg transition-colors"><span class="material-symbols-outlined">chevron_left</span></button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg bg-primary/5 text-primary font-semibold text-sm">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg text-outline hover:bg-surface-container-highest transition-colors text-sm font-medium">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg text-outline hover:bg-surface-container-highest transition-colors text-sm font-medium">3</button>
+<span class="text-outline">...</span>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg text-outline hover:bg-surface-container-highest transition-colors text-sm font-medium">5</button>
+<button class="p-2 text-outline hover:bg-surface-container-highest rounded-lg transition-colors"><span class="material-symbols-outlined">chevron_right</span></button>
+</div>
+</div>
+</main>
+</div>
+</body></html>

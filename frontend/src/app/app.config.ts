@@ -1,0 +1,14 @@
+import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { provideRouter, Route } from '@angular/router';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+
+const routes: Route[] = [{ path: '', component: DashboardComponent }];
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideBrowserGlobalErrorListeners(),
+    provideClientHydration(withEventReplay()),
+    provideRouter(routes),
+  ],
+};

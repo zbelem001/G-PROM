@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>G-PROM Dashboard</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              'on-error': '#ffffff',
+              'primary-container': '#00332f',
+              'secondary-container': '#cde1fe',
+              'tertiary-fixed': '#d8e2ff',
+              'tertiary-fixed-dim': '#adc6ff',
+              'tertiary': '#00173c',
+              'error': '#ba1a1a',
+              'on-secondary': '#ffffff',
+              'on-primary-container': '#43a399',
+              'surface-container-high': '#e8e8ea',
+              'secondary': '#4c6078',
+              'on-tertiary-container': '#5692ff',
+              'inverse-primary': '#79d6cb',
+              'surface-container': '#eeeef0',
+              'secondary-fixed': '#d1e4ff',
+              'tertiary-container': '#002b63',
+              'surface-container-lowest': '#ffffff',
+              'error-container': '#ffdad6',
+              'on-tertiary': '#ffffff',
+              'surface-dim': '#d9dadc',
+              'secondary-fixed-dim': '#b4c8e4',
+              'on-secondary-fixed': '#061d32',
+              'on-tertiary-fixed-variant': '#004395',
+              'inverse-surface': '#2f3132',
+              'on-background': '#1a1c1d',
+              'surface-container-highest': '#e2e2e4',
+              'on-secondary-fixed-variant': '#35485f',
+              'background': '#f9f9fb',
+              'surface': '#f9f9fb',
+              'primary': '#001c1a',
+              'surface-variant': '#e2e2e4',
+              'on-error-container': '#93000a',
+              'primary-fixed': '#96f3e7',
+              'outline-variant': '#c4c6cd',
+              'inverse-on-surface': '#f0f0f2',
+              'on-surface': '#1a1c1d',
+              'on-primary-fixed': '#00201d',
+              'on-surface-variant': '#43474d',
+              'on-primary-fixed-variant': '#00504a',
+              'on-primary': '#ffffff',
+              'outline': '#74777d',
+              'surface-tint': '#006a62',
+              'primary-fixed-dim': '#79d6cb'
+            },
+            borderRadius: {
+              DEFAULT: '0.25rem',
+              lg: '0.5rem',
+              xl: '0.75rem',
+              full: '9999px',
+            },
+            fontFamily: {
+              headline: ['"Bockhold Bold"', 'Manrope', 'sans-serif'],
+              body: ['"Bockhold Bold"', 'Inter', 'sans-serif'],
+              label: ['"Bockhold Bold"', 'Inter', 'sans-serif'],
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+  <body>
+    <app-root></app-root>
+  </body>
+</html>

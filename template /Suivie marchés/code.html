@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>G-PROM - Workflow des Marchés</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#ffffff",
+                        "primary-container": "#00332f",
+                        "secondary-container": "#cde1fe",
+                        "tertiary-fixed": "#d8e2ff",
+                        "tertiary-fixed-dim": "#adc6ff",
+                        "tertiary": "#00173c",
+                        "error": "#ba1a1a",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#43a399",
+                        "surface-container-high": "#e8e8ea",
+                        "secondary": "#4c6078",
+                        "on-tertiary-container": "#5692ff",
+                        "inverse-primary": "#79d6cb",
+                        "surface-container": "#eeeef0",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "surface-dim": "#d9dadc",
+                        "secondary-fixed": "#d1e4ff",
+                        "tertiary-container": "#002b63",
+                        "surface-container-low": "#f3f3f5",
+                        "surface": "#f9f9fb",
+                        "primary": "#001c1a",
+                        "surface-variant": "#e2e2e4",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#96f3e7",
+                        "outline-variant": "#c4c6cd",
+                        "inverse-on-surface": "#f0f0f2",
+                        "surface-bright": "#f9f9fb",
+                        "on-secondary-container": "#51647d",
+                        "on-tertiary-fixed": "#001a42",
+                        "on-surface": "#1a1c1d",
+                        "on-primary-fixed": "#00201d",
+                        "on-surface-variant": "#43474d",
+                        "on-primary-fixed-variant": "#00504a",
+                        "on-primary": "#ffffff",
+                        "outline": "#74777d",
+                        "surface-tint": "#006a62",
+                        "primary-fixed-dim": "#79d6cb",
+                        "secondary-fixed-dim": "#b4c8e4",
+                        "on-secondary-fixed": "#061d32",
+                        "on-tertiary-fixed-variant": "#004395",
+                        "inverse-surface": "#2f3132",
+                        "on-background": "#1a1c1d",
+                        "surface-container-highest": "#e2e2e4",
+                        "on-secondary-fixed-variant": "#35485f",
+                        "background": "#f9f9fb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .kanban-scrollbar::-webkit-scrollbar {
+            height: 6px;
+        }
+        .kanban-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .kanban-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #d9dadc;
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body antialiased min-h-screen flex">
+<!-- Shared Component: SideNavBar -->
+<nav class="bg-[#1a2e44] font-['Manrope'] antialiased fixed left-0 top-0 h-screen w-[240px] rounded-r-[20px] shadow-[0_6px_24px_rgba(26,46,68,0.08)] flex flex-col h-full py-8 z-50">
+<!-- Brand Header -->
+<div class="px-6 mb-10 flex items-center gap-4">
+<div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[#76d3c8]">account_balance</span>
+</div>
+<div>
+<h1 class="text-2xl font-bold tracking-tight text-[#76d3c8]">G-PROM</h1>
+<p class="text-xs text-slate-400/80 uppercase tracking-wider font-semibold mt-0.5">Institut 2iE</p>
+</div>
+</div>
+<!-- Navigation Links -->
+<ul class="flex flex-col gap-1 flex-1 mt-4">
+<li>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400/80 hover:text-white transition-colors hover:bg-white/5 transition-all duration-200 scale-95 active:scale-100 transition-transform" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-semibold text-sm">Dashboard</span>
+</a>
+</li>
+<li>
+<!-- Active State applied to Marchés based on Semantic Mapping logic -->
+<a class="relative flex items-center gap-3 px-6 py-3 text-[#76d3c8] before:content-[''] before:absolute before:left-0 before:w-1 before:h-6 before:bg-[#76d3c8] before:rounded-r-full bg-white/5" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+<span class="font-bold text-sm">Marchés</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400/80 hover:text-white transition-colors hover:bg-white/5 transition-all duration-200 scale-95 active:scale-100 transition-transform" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span class="font-semibold text-sm">Fournisseurs</span>
+</a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-400/80 hover:text-white transition-colors hover:bg-white/5 transition-all duration-200 scale-95 active:scale-100 transition-transform" href="#">
+<span class="material-symbols-outlined">assessment</span>
+<span class="font-semibold text-sm">Rapports</span>
+</a>
+</li>
+</ul>
+<div class="mt-auto px-6 pt-6 border-t border-white/5">
+<a class="flex items-center gap-3 py-3 text-slate-400/80 hover:text-white transition-colors hover:bg-white/5 transition-all duration-200 scale-95 active:scale-100 transition-transform -mx-6 px-6" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-semibold text-sm">Paramètres</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<main class="ml-[240px] w-[calc(100%-240px)] flex flex-col h-screen overflow-hidden">
+<!-- Shared Component: TopAppBar -->
+<header class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl docked full-width top-0 sticky z-40 shadow-[0_4px_12px_rgba(26,46,68,0.04)] flex justify-between items-center px-8 py-4 shrink-0">
+<!-- Search -->
+<div class="relative w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[20px]">search</span>
+<input class="w-full bg-[#f3f3f5] border-none rounded-xl py-2.5 pl-10 pr-4 text-sm font-['Manrope'] focus:ring-1 focus:ring-[#76d3c8]/30 placeholder:text-slate-500 text-[#1a2e44]" placeholder="Rechercher un marché, ID..." type="text"/>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-slate-500 hover:bg-[#f3f3f5] transition-colors relative">
+<span class="material-symbols-outlined text-[22px]">notifications</span>
+<span class="absolute top-2 right-2.5 w-2 h-2 bg-[#ba1a1a] rounded-full border-2 border-white"></span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-slate-500 hover:bg-[#f3f3f5] transition-colors">
+<span class="material-symbols-outlined text-[22px]">help_outline</span>
+</button>
+<div class="w-px h-6 bg-slate-200 mx-2"></div>
+<button class="flex items-center gap-3 hover:bg-[#f3f3f5] p-1.5 pr-4 rounded-full transition-colors">
+<img alt="User Profile" class="w-8 h-8 rounded-full object-cover shadow-sm" data-alt="portrait of a professional man in a tailored suit smiling confidently in a modern bright office space" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAu8nNvetZIsF_w5alcIupMSD7JLgqfU8qchJ1rVQ6yTLkaF2Va8FLD67I2muaHYHbzEm8R8QItx_RPNShoutxG30oFex2JBBHY2EFwCBIVpIe188JqXyvQm5_OcVBSyf6qLYwRpn1PDWDxqxdjsjIzRu_-r5nzf-qN1kQADOmTNkJKO1dmyiAym91Aj0jquRDGivbN7v56CFRbqvZEswOYsFhlACo-PVr-8df-EUTQQyOdA3tk8PtIF6ALp5w3Id58o3ODc-mPtfEb"/>
+<span class="text-sm font-semibold font-['Manrope'] text-[#1a2e44]">Dir. Achats</span>
+<span class="material-symbols-outlined text-[18px] text-slate-400">expand_more</span>
+</button>
+</div>
+</header>
+<!-- Canvas: Kanban Board -->
+<div class="flex-1 flex flex-col p-8 pb-0 overflow-hidden">
+<!-- Section Header (Asymmetric padding, editorial style) -->
+<div class="mb-8 flex justify-between items-end shrink-0 pl-2">
+<div>
+<h2 class="font-headline text-[28px] font-extrabold text-on-surface tracking-tight leading-none mb-2">Suivi des Marchés</h2>
+<p class="font-label text-on-surface-variant text-sm">Vue globale du cycle de vie des dossiers d'acquisition.</p>
+</div>
+<div class="flex gap-3">
+<button class="h-10 px-4 rounded-xl font-headline text-sm font-semibold text-on-surface-variant bg-surface-container-high hover:bg-surface-dim transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+                        Filtrer
+                    </button>
+<button class="h-10 px-5 rounded-[10px] font-headline text-sm font-bold text-on-primary-container bg-gradient-to-br from-primary-fixed-dim to-on-primary-container shadow-sm hover:shadow-[0_6px_16px_rgba(118,211,200,0.3)] transition-all flex items-center gap-2" style="background-image: linear-gradient(135deg, #76d3c8, #43a399);">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">add</span>
+                        Nouveau Dossier
+                    </button>
+</div>
+</div>
+<!-- Kanban Board Container (Horizontal Scroll) -->
+<div class="flex-1 overflow-x-auto pb-8 kanban-scrollbar flex gap-6 snap-x">
+<!-- Column 1: À lancer -->
+<div class="w-[340px] shrink-0 flex flex-col snap-start">
+<div class="flex items-center justify-between mb-4 px-2">
+<h3 class="font-headline font-bold text-on-surface text-[15px] tracking-wide flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-outline-variant"></span>
+                            À lancer
+                        </h3>
+<span class="bg-surface-container-high text-on-surface-variant font-label text-xs font-semibold px-2.5 py-1 rounded-full">3</span>
+</div>
+<div class="flex-1 bg-surface-container-low rounded-xl p-3 flex flex-col gap-3 min-h-[200px]">
+<!-- Card -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm hover:shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-300 cursor-grab group relative z-10 border border-transparent hover:border-outline-variant/15">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label text-[11px] font-bold text-on-surface-variant tracking-wider uppercase bg-surface-container px-2 py-1 rounded-md">M-2024-089</span>
+<button class="text-outline hover:text-on-surface transition-colors opacity-0 group-hover:opacity-100"><span class="material-symbols-outlined text-[18px]">more_horiz</span></button>
+</div>
+<h4 class="font-headline font-semibold text-on-surface text-sm leading-snug mb-4 line-clamp-2">Acquisition de serveurs haute performance pour le laboratoire de calcul.</h4>
+<div class="flex items-center justify-between pt-3 border-t border-surface-container/50">
+<div class="flex items-center gap-2">
+<img alt="Responsable" class="w-6 h-6 rounded-full object-cover" data-alt="professional portrait of a woman with short hair wearing glasses in a brightly lit office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUnk1kvlycYS2bs4AoYrEIVKZyy0zqf69KEdaFd5sZq7zkQKADeWzX-5JcpZY4myZ4bTRgeqrNu3Dcy6YO-oReKsMCWSr06EHHAvSJ0u60sj8PFujBemhUUKm-Kvi-PtgtafmbEqfPGVigtTE0p7Yiav-hqX2k7hFl55MMCzDeopGRAG55q29BfdaSE5xDWIcOeB6NtLkxLd6YM0ckwoetE9PRIevfS7ouvTB5Evdh9mR3j9q1gtQzxB1Hik0sC65LXwGUZApK0_b8"/>
+<span class="font-body text-xs text-on-surface-variant font-medium">S. Traoré</span>
+</div>
+<span class="font-label text-xs text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                    12 Oct
+                                </span>
+</div>
+</div>
+<!-- Card -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm hover:shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-300 cursor-grab group border border-transparent hover:border-outline-variant/15">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label text-[11px] font-bold text-on-surface-variant tracking-wider uppercase bg-surface-container px-2 py-1 rounded-md">M-2024-092</span>
+<span class="bg-[#ffdad6] text-[#93000a] text-[10px] font-bold px-2 py-0.5 rounded-lg flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">bolt</span>Urgent</span>
+</div>
+<h4 class="font-headline font-semibold text-on-surface text-sm leading-snug mb-4 line-clamp-2">Renouvellement des licences logicielles d'ingénierie (AutoCAD, MATLAB).</h4>
+<div class="flex items-center justify-between pt-3 border-t border-surface-container/50">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold text-[10px]">IB</div>
+<span class="font-body text-xs text-on-surface-variant font-medium">I. Barry</span>
+</div>
+<span class="font-label text-xs text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                    15 Oct
+                                </span>
+</div>
+</div>
+</div>
+</div>
+<!-- Column 2: Réception -->
+<div class="w-[340px] shrink-0 flex flex-col snap-start">
+<div class="flex items-center justify-between mb-4 px-2">
+<h3 class="font-headline font-bold text-on-surface text-[15px] tracking-wide flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary-fixed-dim"></span>
+                            Réception
+                        </h3>
+<span class="bg-surface-container-high text-on-surface-variant font-label text-xs font-semibold px-2.5 py-1 rounded-full">1</span>
+</div>
+<div class="flex-1 bg-surface-container-low rounded-xl p-3 flex flex-col gap-3 min-h-[200px]">
+<!-- Card -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm hover:shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-300 cursor-grab group border border-transparent hover:border-outline-variant/15">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label text-[11px] font-bold text-on-surface-variant tracking-wider uppercase bg-surface-container px-2 py-1 rounded-md">M-2024-081</span>
+</div>
+<h4 class="font-headline font-semibold text-on-surface text-sm leading-snug mb-4 line-clamp-2">Fourniture de mobilier de bureau pour le nouveau pavillon administratif.</h4>
+<div class="mb-3">
+<div class="flex justify-between text-[10px] font-label text-outline mb-1">
+<span>Ouverture des plis</span>
+<span>2/3 Reçus</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-tertiary-fixed-dim h-full w-[66%]"></div>
+</div>
+</div>
+<div class="flex items-center justify-between pt-3 border-t border-surface-container/50">
+<div class="flex items-center gap-2">
+<img alt="Responsable" class="w-6 h-6 rounded-full object-cover" data-alt="portrait of a serious man with a beard wearing a dark shirt in a well lit studio" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzX0iY7h4UJUopAhAdbv1zI3mqD5RI1_hdvMuSUxki1upKe1m11hZghl3UBkDRmyHShYFgPSO0TrrVuTfx17zCShUYXTBaQNaimKlnTmoIPK0-uZWaBKigAmiyrDdBCd8YKSTN0XSpS85WzW4Z20Lt3Xd8A89aTYheeCTDxgAp-b-9xlcem5GuiI85ZnzkbRQpBorSsLUI4dce8Tdp3wcDvK2CNfW6ihDu_dmr6urqjRSbHQtmcPLViY-jo6xmTAYfGibQiM-4jtzp"/>
+<span class="font-body text-xs text-on-surface-variant font-medium">K. Diallo</span>
+</div>
+<span class="font-label text-xs text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                                    08 Oct
+                                </span>
+</div>
+</div>
+</div>
+</div>
+<!-- Column 3: Analyse -->
+<div class="w-[340px] shrink-0 flex flex-col snap-start">
+<div class="flex items-center justify-between mb-4 px-2">
+<h3 class="font-headline font-bold text-on-surface text-[15px] tracking-wide flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#fbbc04]"></span>
+                            Analyse
+                        </h3>
+<span class="bg-surface-container-high text-on-surface-variant font-label text-xs font-semibold px-2.5 py-1 rounded-full">2</span>
+</div>
+<div class="flex-1 bg-surface-container-low rounded-xl p-3 flex flex-col gap-3 min-h-[200px]">
+<!-- Card -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm hover:shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-300 cursor-grab group border border-transparent hover:border-outline-variant/15 border-l-4 border-l-[#fbbc04]">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label text-[11px] font-bold text-on-surface-variant tracking-wider uppercase bg-surface-container px-2 py-1 rounded-md">M-2024-075</span>
+</div>
+<h4 class="font-headline font-semibold text-on-surface text-sm leading-snug mb-3 line-clamp-2">Étude de faisabilité pour l'installation de panneaux solaires sur le campus.</h4>
+<div class="flex gap-1 mb-4">
+<span class="px-2 py-0.5 bg-surface-container-high text-on-surface-variant text-[10px] font-label rounded-md">Technique</span>
+<span class="px-2 py-0.5 bg-surface-container-high text-on-surface-variant text-[10px] font-label rounded-md">Financière</span>
+</div>
+<div class="flex items-center justify-between pt-3 border-t border-surface-container/50">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center font-bold text-[10px]">MC</div>
+<span class="font-body text-xs text-on-surface-variant font-medium">M. Coulibaly</span>
+</div>
+<span class="font-label text-xs text-[#b8860b] font-medium flex items-center gap-1 bg-[#fbbc04]/10 px-2 py-0.5 rounded-lg">
+                                    Comité demain
+                                </span>
+</div>
+</div>
+</div>
+</div>
+<!-- Column 4: En cours (Active/Primary) -->
+<div class="w-[340px] shrink-0 flex flex-col snap-start">
+<div class="flex items-center justify-between mb-4 px-2">
+<h3 class="font-headline font-bold text-on-surface text-[15px] tracking-wide flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-fixed-dim"></span>
+                            En cours
+                        </h3>
+<span class="bg-primary-fixed-dim/20 text-on-primary-container font-label text-xs font-bold px-2.5 py-1 rounded-full">4</span>
+</div>
+<!-- Tonal shift is slightly different here to highlight the active phase slightly, keeping within the architectural ledger rules -->
+<div class="flex-1 bg-surface-container-low rounded-xl p-3 flex flex-col gap-3 min-h-[200px] border border-primary-fixed-dim/20 shadow-inner">
+<!-- Card -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm hover:shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-300 cursor-grab group border border-transparent hover:border-primary-fixed-dim/30">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label text-[11px] font-bold text-on-surface-variant tracking-wider uppercase bg-surface-container px-2 py-1 rounded-md">M-2024-062</span>
+<span class="text-on-primary-container text-[10px] font-bold px-2 py-0.5 rounded-lg flex items-center gap-1" style="background-color: rgba(118, 211, 200, 0.15);"><span class="material-symbols-outlined text-[12px]">published_with_changes</span>Exécution</span>
+</div>
+<h4 class="font-headline font-semibold text-on-surface text-sm leading-snug mb-4 line-clamp-2">Construction du nouveau centre de documentation et de recherche.</h4>
+<div class="flex items-center justify-between pt-3 border-t border-surface-container/50">
+<div class="flex items-center gap-2">
+<img alt="Responsable" class="w-6 h-6 rounded-full object-cover" data-alt="portrait of a professional man in a tailored suit smiling confidently in a modern bright office space" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBY23Xkm9okmi9EnizoIJ42GLog-HiwvJW3Jyi6sTH0EFHQCxE-foyET2oDUbj1kZWKyucvfCZDI-yLqfFFxD8bj3oAgPHGPR_KeOc8hVA3Liga61alH9y0jxgOkAYfQP9zCuZ29HHvfLUPGDuYBuW1E7qmUp1TtBAwK0WYiGgXqwJEFHVgKNMqPOFvVEh41GPoM2iFWEgq8EdbLJJZuLIPH7lU9XLIpzewbakrfIYQM_wQJxNyLiaEIO2exh90v4LxMR-m7X3B4G8E"/>
+<span class="font-body text-xs text-on-surface-variant font-medium">Dir. Achats</span>
+</div>
+<span class="font-label text-xs text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">flag</span>
+                                    Lot 1/3
+                                </span>
+</div>
+</div>
+<!-- Card -->
+<div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm hover:shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-300 cursor-grab group border border-transparent hover:border-primary-fixed-dim/30">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label text-[11px] font-bold text-on-surface-variant tracking-wider uppercase bg-surface-container px-2 py-1 rounded-md">M-2024-068</span>
+<span class="text-on-primary-container text-[10px] font-bold px-2 py-0.5 rounded-lg flex items-center gap-1" style="background-color: rgba(118, 211, 200, 0.15);">Validation</span>
+</div>
+<h4 class="font-headline font-semibold text-on-surface text-sm leading-snug mb-4 line-clamp-2">Prestation de gardiennage et sécurité pour l'année 2024-2025.</h4>
+<div class="flex items-center justify-between pt-3 border-t border-surface-container/50">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold text-[10px]">AS</div>
+<span class="font-body text-xs text-on-surface-variant font-medium">A. Sanou</span>
+</div>
+<span class="font-label text-xs text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">flag</span>
+                                    Final
+                                </span>
+</div>
+</div>
+</div>
+</div>
+<!-- Column 5: Exécuté -->
+<div class="w-[340px] shrink-0 flex flex-col snap-start">
+<div class="flex items-center justify-between mb-4 px-2">
+<h3 class="font-headline font-bold text-outline text-[15px] tracking-wide flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+                            Exécuté
+                        </h3>
+</div>
+<div class="flex-1 bg-surface-container-low/50 rounded-xl p-3 flex flex-col gap-3 min-h-[200px]">
+<!-- Card (Subdued) -->
+<div class="bg-surface-container-lowest/80 rounded-xl p-4 shadow-sm opacity-70 hover:opacity-100 transition-all duration-300 group">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label text-[11px] font-bold text-outline tracking-wider uppercase bg-surface-container px-2 py-1 rounded-md">M-2024-041</span>
+</div>
+<h4 class="font-headline font-semibold text-on-surface-variant text-sm leading-snug mb-4 line-clamp-2 line-through decoration-outline/50">Fourniture de véhicules utilitaires pour le département logistique.</h4>
+<div class="flex items-center justify-between pt-3 border-t border-surface-container/50">
+<div class="flex items-center gap-2 grayscale">
+<img alt="Responsable" class="w-6 h-6 rounded-full object-cover" data-alt="professional portrait of a woman with short hair wearing glasses in a brightly lit office" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCquliOtYScg97gDVuUe7M2mTInS2wR2DbHlW7anGVBvcAY7TAsFm4-fFBnop30w0xjAgtHhUzl65W8L4hpm8HQdGbyQe5w6Bob-iZ4A-RZRgrklei-E7W4O_PBl-QYHRwwU63XOJWmsH9Txs2B2DVWec_jXMNHW6tI3uzWcgFgBENcscObOwKHzt-jfndEM7LFZPo3DxtNuBGhxyp9unt8JHDByKQCIK1SAbyKIrT9YdjGOgLjpkcts3_X05C1nuRZg4vbOI52n0tM"/>
+<span class="font-body text-xs text-outline font-medium">S. Traoré</span>
+</div>
+<span class="font-label text-xs text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">done_all</span>
+                                    Archivé
+                                </span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

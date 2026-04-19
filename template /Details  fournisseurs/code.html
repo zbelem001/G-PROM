@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Fiche Détail Fournisseur - 2iE Public Procurement</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-dim": "#d8dadd",
+                        "on-surface-variant": "#43474f",
+                        "on-primary-fixed-variant": "#244778",
+                        "surface-bright": "#f7f9fc",
+                        "tertiary": "#412100",
+                        "on-background": "#191c1e",
+                        "secondary-fixed-dim": "#a9c7ff",
+                        "on-error": "#ffffff",
+                        "surface-container": "#eceef1",
+                        "primary-fixed-dim": "#a8c8ff",
+                        "on-secondary-fixed-variant": "#144685",
+                        "background": "#f7f9fc",
+                        "on-secondary-container": "#154785",
+                        "secondary-fixed": "#d6e3ff",
+                        "on-secondary-fixed": "#001b3d",
+                        "secondary-container": "#8fb7fd",
+                        "on-secondary": "#ffffff",
+                        "secondary": "#335e9e",
+                        "primary": "#002954",
+                        "on-tertiary-fixed-variant": "#693c06",
+                        "surface-container-low": "#f2f4f7",
+                        "inverse-on-surface": "#eff1f4",
+                        "on-surface": "#191c1e",
+                        "tertiary-fixed-dim": "#fdb87a",
+                        "surface-tint": "#3e5f91",
+                        "surface-container-high": "#e6e8eb",
+                        "surface-container-highest": "#e0e3e6",
+                        "inverse-surface": "#2d3133",
+                        "outline-variant": "#c3c6d0",
+                        "tertiary-fixed": "#ffdcc0",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-variant": "#e0e3e6",
+                        "inverse-primary": "#a8c8ff",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#8babe2",
+                        "outline": "#737780",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed": "#001b3c",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-container": "#dd9d61",
+                        "on-tertiary": "#ffffff",
+                        "surface": "#f7f9fc",
+                        "on-tertiary-fixed": "#2d1600",
+                        "primary-fixed": "#d5e3ff",
+                        "error-container": "#ffdad6",
+                        "tertiary-container": "#603400",
+                        "primary-container": "#1a3f6f"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    fontFamily: {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f7f9fc; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-effect { backdrop-filter: blur(12px); background-color: rgba(255, 255, 255, 0.7); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- SideNavBar Integration -->
+<aside class="fixed left-0 top-0 h-screen w-[240px] bg-[#1A3F6F] transition-all duration-300 shadow-xl flex flex-col z-50">
+<div class="p-6">
+<h1 class="text-white text-xl font-bold tracking-tight">2iE</h1>
+<p class="text-white/60 text-[10px] uppercase tracking-widest font-semibold mt-1">Public Procurement</p>
+</div>
+<nav class="mt-8 flex-1">
+<div class="px-3 space-y-1">
+<a class="flex items-center px-4 py-3 text-white/70 hover:bg-white/5 transition-colors rounded-lg group" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="dashboard">dashboard</span>
+<span class="uppercase tracking-wider text-[10px] font-semibold">Dashboard</span>
+</a>
+<a class="flex items-center px-4 py-3 text-white/70 hover:bg-white/5 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="gavel">gavel</span>
+<span class="uppercase tracking-wider text-[10px] font-semibold">Marchés</span>
+</a>
+<a class="flex items-center px-4 py-3 bg-white/10 border-l-[3px] border-white text-white font-medium rounded-r-lg" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="groups">groups</span>
+<span class="uppercase tracking-wider text-[10px] font-semibold">Fournisseurs</span>
+</a>
+<a class="flex items-center px-4 py-3 text-white/70 hover:bg-white/5 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="account_tree">account_tree</span>
+<span class="uppercase tracking-wider text-[10px] font-semibold">Transformer BDD</span>
+</a>
+<a class="flex items-center px-4 py-3 text-white/70 hover:bg-white/5 transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined mr-3 text-lg" data-icon="settings">settings</span>
+<span class="uppercase tracking-wider text-[10px] font-semibold">Paramètres</span>
+</a>
+</div>
+</nav>
+<div class="p-6 mt-auto">
+<div class="flex items-center space-x-3 bg-white/5 p-3 rounded-xl">
+<div class="h-8 w-8 rounded-full bg-primary-container flex items-center justify-center text-[10px] font-bold text-white">JD</div>
+<div>
+<p class="text-[10px] font-bold text-white leading-none">Jean Dupont</p>
+<p class="text-[9px] text-white/50 mt-1 uppercase tracking-tighter">Admin Central</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- TopNavBar Integration -->
+<header class="fixed top-0 right-0 w-[calc(100%-240px)] h-14 bg-white/70 backdrop-blur-md border-b border-slate-200/20 flex items-center justify-between px-8 z-40">
+<div class="flex items-center gap-4">
+<nav class="flex text-[11px] font-medium text-slate-500 uppercase tracking-widest">
+<a class="hover:text-primary" href="#">Accueil</a>
+<span class="mx-2 text-slate-300">/</span>
+<a class="hover:text-primary" href="#">Fournisseurs</a>
+<span class="mx-2 text-slate-300">/</span>
+<span class="text-primary font-bold">TECH-SOLUTIONS SARL</span>
+</nav>
+</div>
+<div class="flex items-center gap-6">
+<button class="text-slate-500 hover:text-primary transition-colors relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-0 right-0 h-2 w-2 bg-error rounded-full border-2 border-white"></span>
+</button>
+<div class="h-8 w-px bg-slate-200"></div>
+<p class="text-[12px] font-black text-[#1A3F6F] tracking-tight uppercase">Gestion des Marchés Publics</p>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[240px] pt-14 min-h-screen">
+<div class="max-w-[1280px] mx-auto p-8">
+<!-- Sovereign Header Section -->
+<section class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+<div class="space-y-2">
+<div class="flex items-center gap-3">
+<span class="bg-green-100 text-[#1E7A4E] text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest flex items-center gap-1">
+<span class="h-1.5 w-1.5 bg-[#1E7A4E] rounded-full"></span>
+                            Conforme
+                        </span>
+<span class="text-slate-400 text-sm font-medium">ID: F-2024-0089</span>
+</div>
+<h2 class="text-[2.75rem] font-black text-primary leading-tight tracking-tight -ml-0.5">TECH-SOLUTIONS SARL</h2>
+<p class="text-on-surface-variant max-w-2xl text-lg font-medium opacity-70">Expertise en infrastructures informatiques et solutions de cybersécurité pour les institutions publiques.</p>
+</div>
+<div class="flex items-center gap-3">
+<button class="h-10 px-6 rounded-lg border border-[#1A3F6F]/20 text-primary font-semibold text-sm hover:bg-primary/5 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-lg" data-icon="edit">edit</span>
+                        Modifier
+                    </button>
+<button class="h-10 px-6 rounded-lg bg-[#1A3F6F] text-white font-semibold text-sm shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-lg" data-icon="file_download">file_download</span>
+                        Exporter la fiche
+                    </button>
+</div>
+</section>
+<!-- KPI Bento Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
+<p class="label-md text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Marchés gagnés</p>
+<div class="flex items-end justify-between">
+<span class="text-4xl font-black text-primary tracking-tight">24</span>
+<span class="text-green-600 bg-green-50 px-2 py-1 rounded text-xs font-bold">+12% vs LY</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
+<p class="label-md text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Valeur totale contrats</p>
+<div class="flex items-end justify-between">
+<span class="text-4xl font-black text-primary tracking-tight">412.5M <span class="text-lg font-bold opacity-40">FCFA</span></span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
+<p class="label-md text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Taux de succès</p>
+<div class="flex items-end justify-between">
+<span class="text-4xl font-black text-primary tracking-tight">68.4<span class="text-lg font-bold opacity-40">%</span></span>
+<div class="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
+<div class="bg-primary h-full" style="width: 68%;"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Tabbed Content Section -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+<!-- Tab Headers -->
+<div class="flex border-b border-slate-100 bg-surface-container-low/30">
+<button class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-primary border-b-2 border-primary relative">
+                        Profil
+                    </button>
+<button class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-primary transition-colors">
+                        Offres &amp; Candidatures
+                    </button>
+<button class="px-8 py-5 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-primary transition-colors">
+                        Documents Légaux
+                    </button>
+</div>
+<!-- Tab Panels -->
+<div class="p-8">
+<!-- Profile Panel (Active) -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+<div class="space-y-8">
+<div>
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em] mb-4">Informations de Contact</p>
+<div class="space-y-4">
+<div class="flex flex-col">
+<span class="text-xs text-slate-500 font-medium">Adresse Siège</span>
+<span class="text-primary font-semibold">Rue 14.52, Zone Industrielle, Ouagadougou, BF</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs text-slate-500 font-medium">Téléphone Principal</span>
+<span class="text-primary font-semibold">+226 25 30 00 12</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs text-slate-500 font-medium">Email Professionnel</span>
+<span class="text-primary font-semibold">contact@techsolutions.bf</span>
+</div>
+</div>
+</div>
+<div class="p-6 bg-surface-container-low rounded-lg flex items-center gap-6">
+<div class="h-16 w-16 bg-white rounded-lg flex items-center justify-center border border-slate-200">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="map">map</span>
+</div>
+<div>
+<p class="text-xs font-bold text-primary uppercase">Localisation</p>
+<p class="text-sm text-slate-600 mt-1">Secteur 22, Arrondissement 5</p>
+<a class="text-xs font-bold text-primary underline mt-2 block" href="#">Voir sur la carte</a>
+</div>
+</div>
+</div>
+<div class="space-y-8">
+<div>
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em] mb-4">Données Administratives</p>
+<div class="grid grid-cols-2 gap-6">
+<div class="flex flex-col">
+<span class="text-xs text-slate-500 font-medium">Numéro IFU</span>
+<span class="text-primary font-semibold">00045612X</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs text-slate-500 font-medium">Capital Social</span>
+<span class="text-primary font-semibold">50.000.000 FCFA</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs text-slate-500 font-medium">RCCM</span>
+<span class="text-primary font-semibold">BF OUA 2018 B 442</span>
+</div>
+<div class="flex flex-col">
+<span class="text-xs text-slate-500 font-medium">Date de Création</span>
+<span class="text-primary font-semibold">12 Mars 2018</span>
+</div>
+</div>
+</div>
+<div class="border-t border-slate-100 pt-8">
+<p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em] mb-4">Gérant / Signataire</p>
+<div class="flex items-center gap-4">
+<img alt="Profile" class="h-12 w-12 rounded-full object-cover grayscale brightness-110" data-alt="portrait of a professional West African businessman in a sharp navy suit looking confident in a corporate setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbupZ5jSH-dwHzOlXM2kTF7w1P7FU1Y5ocoGGh8eOblwpeA5ZPpZIcXTShyGbLg_usEcLHX6H3E9FJCjx1U3D4kBIVVFcHJGOrbgLboGQY7vy66HjTXbiKQTniH5bxoMjie78l_Q2ZYZMos19jKzZ8fNiu5b2ACx7wFBalpFhi6LkRXQ4eikziUBucelFgx2Pxuc5T6wkKkcCq96V_bIMv6gfgicAe6gmZYADql2YZ6ls9TXRrbc_DD3STSWYHmmHmVtBVYfqCSww"/>
+<div>
+<p class="text-sm font-bold text-primary">M. Ibrahim TRAORE</p>
+<p class="text-xs text-slate-500">Directeur Général</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Hidden Tables for context (Usually switched via state) -->
+<div class="mt-16 space-y-8">
+<div class="flex items-center justify-between">
+<h3 class="text-lg font-bold text-primary">Offres &amp; Candidatures Récentes</h3>
+<button class="text-xs font-bold text-primary uppercase tracking-widest">Tout voir</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-separate border-spacing-0">
+<thead>
+<tr class="bg-surface-container-low text-slate-500 text-[10px] font-bold uppercase tracking-widest">
+<th class="px-6 py-4 rounded-tl-lg">N° Marché</th>
+<th class="px-6 py-4">Titre du Lot</th>
+<th class="px-6 py-4">Date Soumission</th>
+<th class="px-6 py-4">Montant Proposé</th>
+<th class="px-6 py-4 rounded-tr-lg">Statut</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<tr class="group hover:bg-slate-50/50 transition-colors">
+<td class="px-6 py-4 text-xs font-bold text-primary">DAO-2023-015</td>
+<td class="px-6 py-4 text-xs font-medium">Infrastructures Réseau 2iE Kamboinsé</td>
+<td class="px-6 py-4 text-xs text-slate-500">14/11/2023</td>
+<td class="px-6 py-4 text-xs font-bold">124.000.000 FCFA</td>
+<td class="px-6 py-4">
+<span class="bg-green-100 text-[#1E7A4E] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter">Adjugé</span>
+</td>
+</tr>
+<tr class="group hover:bg-slate-50/50 transition-colors">
+<td class="px-6 py-4 text-xs font-bold text-primary">DAO-2024-002</td>
+<td class="px-6 py-4 text-xs font-medium">Fourniture de Serveurs Haute Performance</td>
+<td class="px-6 py-4 text-xs text-slate-500">02/01/2024</td>
+<td class="px-6 py-4 text-xs font-bold">85.500.000 FCFA</td>
+<td class="px-6 py-4">
+<span class="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter">En analyse</span>
+</td>
+</tr>
+<tr class="group hover:bg-slate-50/50 transition-colors">
+<td class="px-6 py-4 text-xs font-bold text-primary">DAO-2023-088</td>
+<td class="px-6 py-4 text-xs font-medium">Maintenance Parc Informatique (Lot 2)</td>
+<td class="px-6 py-4 text-xs text-slate-500">12/10/2023</td>
+<td class="px-6 py-4 text-xs font-bold">12.200.000 FCFA</td>
+<td class="px-6 py-4">
+<span class="bg-red-100 text-[#C0392B] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter">Rejeté</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Documents Legaux Section -->
+<div class="mt-16">
+<h3 class="text-lg font-bold text-primary mb-8">Dossier Administratif</h3>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+<div class="p-4 rounded-lg bg-white border border-slate-100 shadow-sm flex items-center justify-between hover:border-primary/20 transition-all cursor-pointer">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-slate-400" data-icon="description">description</span>
+<div>
+<p class="text-xs font-bold text-primary">RCCM Certification</p>
+<p class="text-[10px] text-slate-500 uppercase tracking-tighter">Expire le: 12/03/2025</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-green-500 text-lg" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="p-4 rounded-lg bg-white border border-slate-100 shadow-sm flex items-center justify-between hover:border-primary/20 transition-all cursor-pointer">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-slate-400" data-icon="assignment_turned_in">assignment_turned_in</span>
+<div>
+<p class="text-xs font-bold text-primary">Quitus Fiscal 2024</p>
+<p class="text-[10px] text-slate-500 uppercase tracking-tighter">Valide</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-green-500 text-lg" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="p-4 rounded-lg bg-red-50/30 border border-red-100 shadow-sm flex items-center justify-between hover:border-red-200 transition-all cursor-pointer">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-red-400" data-icon="warning">warning</span>
+<div>
+<p class="text-xs font-bold text-red-900">Attestation CNSS</p>
+<p class="text-[10px] text-red-500 uppercase tracking-tighter">Expiré (30/05/2024)</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-red-500 text-lg" data-icon="error" data-weight="fill" style="font-variation-settings: 'FILL' 1;">error</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Contextual FAB (Suppressed on Detail Screen per policy, but adding minimal floating action if required for 'New Offer' context) -->
+<!-- Suppression according to rules: "You MUST suppress the FAB on Settings, Profile, Details..." -->
+</body></html>
