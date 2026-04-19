@@ -14,6 +14,7 @@ export class DetailsMarchesComponent {
   activeTab = 'Informations générales';
   showAddLot = false;
   showConsultationDrawer = false;
+  showSoumissionDrawer = false;
 
   setActiveTab(tab: string) {
     this.activeTab = tab;
@@ -25,5 +26,9 @@ export class DetailsMarchesComponent {
 
   toggleConsultationDrawer() {
     this.showConsultationDrawer = !this.showConsultationDrawer;
+  }
+
+  toggleSoumissionDrawer() {
+    this.showSoumissionDrawer = !this.showSoumissionDrawer;
   }
 }

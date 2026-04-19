@@ -355,6 +355,91 @@
             </div>
           </div>
         </ng-container>
+        <ng-container *ngIf="activeTab === 'Soumissions'">
+          <div class="bg-surface-container-low rounded-[24px] p-6 md:p-8 flex flex-col gap-6 relative">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-6">
+              <div>
+                <h2 class="text-xl font-bold text-[#1a2e44] font-headline">Soumissions</h2>
+                <p class="text-sm text-on-surface-variant mt-1">Enregistrez et suivez les offres déposées pour ce marché.</p>
+              </div>
+              <button type="button" (click)="toggleSoumissionDrawer()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-[10px] bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white font-medium shadow-sm hover:shadow-[0_6px_16px_rgba(118,211,200,0.3)] transition-all">
+                <span class="material-symbols-outlined text-[18px]">add</span>
+                Nouvelle Soumission
+              </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="bg-surface-container-lowest rounded-[16px] p-5 shadow-[0_2px_12px_rgba(26,46,68,0.04)]">
+                <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-3">Total soumissions</p>
+                <p class="text-3xl font-bold text-[#1a2e44]">18</p>
+              </div>
+              <div class="bg-surface-container-lowest rounded-[16px] p-5 shadow-[0_2px_12px_rgba(26,46,68,0.04)]">
+                <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-3">Montant moyen</p>
+                <p class="text-3xl font-bold text-[#1a2e44]">32M FCFA</p>
+              </div>
+              <div class="bg-surface-container-lowest rounded-[16px] p-5 shadow-[0_2px_12px_rgba(26,46,68,0.04)]">
+                <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-3">Soumission la plus récente</p>
+                <p class="text-base font-semibold text-[#1a2e44]">Lot 2 - Bureau Plus</p>
+                <p class="text-sm text-on-surface-variant mt-1">18 Oct 2023</p>
+              </div>
+            </div>
+            <div class="bg-surface-container-lowest rounded-[16px] overflow-hidden shadow-[0_4px_20px_rgba(26,46,68,0.03)] border border-white/50">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-surface-container/50 border-b border-surface-container-high text-xs uppercase tracking-wider font-headline font-semibold text-on-surface-variant">
+                    <th class="px-6 py-4">N° Soumission</th>
+                    <th class="px-6 py-4">Lot</th>
+                    <th class="px-6 py-4">Fournisseur</th>
+                    <th class="px-6 py-4 text-right">Montant</th>
+                    <th class="px-6 py-4 text-center">Délai</th>
+                    <th class="px-6 py-4 text-center">Exemp.</th>
+                    <th class="px-6 py-4 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="text-sm divide-y divide-surface-container-high/50">
+                  <tr class="hover:bg-surface-bright transition-colors group">
+                    <td class="px-6 py-4 font-mono text-xs text-secondary-fixed-variant">SM-2023-015</td>
+                    <td class="px-6 py-4 font-medium text-[#1a2e44]">Lot 1</td>
+                    <td class="px-6 py-4">Tech Solutions S.A.</td>
+                    <td class="px-6 py-4 text-right font-headline font-semibold text-[#1a2e44]">33 500 000</td>
+                    <td class="px-6 py-4 text-center">45</td>
+                    <td class="px-6 py-4 text-center text-on-surface-variant">3</td>
+                    <td class="px-6 py-4 text-right">
+                      <button type="button" (click)="toggleSoumissionDrawer()" class="text-slate-400 hover:text-[#76d3c8] transition-colors p-1 opacity-0 group-hover:opacity-100">
+                        <span class="material-symbols-outlined text-[20px]">visibility</span>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-surface-bright transition-colors group">
+                    <td class="px-6 py-4 font-mono text-xs text-secondary-fixed-variant">SM-2023-016</td>
+                    <td class="px-6 py-4 font-medium text-[#1a2e44]">Lot 2</td>
+                    <td class="px-6 py-4">Bureau Plus</td>
+                    <td class="px-6 py-4 text-right font-headline font-semibold text-[#1a2e44]">12 250 000</td>
+                    <td class="px-6 py-4 text-center">30</td>
+                    <td class="px-6 py-4 text-center text-on-surface-variant">2</td>
+                    <td class="px-6 py-4 text-right">
+                      <button type="button" (click)="toggleSoumissionDrawer()" class="text-slate-400 hover:text-[#76d3c8] transition-colors p-1 opacity-0 group-hover:opacity-100">
+                        <span class="material-symbols-outlined text-[20px]">visibility</span>
+                      </button>
+                    </td>
+                  </tr>
+                  <tr class="hover:bg-surface-bright transition-colors group">
+                    <td class="px-6 py-4 font-mono text-xs text-secondary-fixed-variant">SM-2023-017</td>
+                    <td class="px-6 py-4 font-medium text-[#1a2e44]">Lot 3</td>
+                    <td class="px-6 py-4">Papeterie Centrale</td>
+                    <td class="px-6 py-4 text-right font-headline font-semibold text-[#1a2e44]">5 500 000</td>
+                    <td class="px-6 py-4 text-center">15</td>
+                    <td class="px-6 py-4 text-center text-on-surface-variant">4</td>
+                    <td class="px-6 py-4 text-right">
+                      <button type="button" (click)="toggleSoumissionDrawer()" class="text-slate-400 hover:text-[#76d3c8] transition-colors p-1 opacity-0 group-hover:opacity-100">
+                        <span class="material-symbols-outlined text-[20px]">visibility</span>
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </ng-container>
         </div>
       </div>
     </main>
@@ -448,6 +533,104 @@
           <footer class="pt-6 flex items-center justify-end gap-4 mt-auto">
             <button type="button" class="px-5 py-2.5 text-sm font-medium text-on-secondary-container bg-transparent hover:bg-surface-container-high rounded-[10px] transition-colors" (click)="toggleConsultationDrawer()">Annuler</button>
             <button type="button" class="px-5 py-2.5 text-sm font-medium text-white bg-[#039CD3] hover:bg-[#0284b6] rounded-[10px] transition-all" (click)="toggleConsultationDrawer()">Enregistrer la Consultation</button>
+          </footer>
+        </aside>
+      </div>
+      <div *ngIf="showSoumissionDrawer" class="fixed inset-0 z-50 flex justify-end">
+        <div class="absolute inset-0 bg-surface/40 backdrop-blur-sm" (click)="toggleSoumissionDrawer()"></div>
+        <aside class="relative right-0 top-0 h-full w-full max-w-[500px] bg-white shadow-[-20px_0_40px_rgba(26,46,68,0.15)] flex flex-col p-8 gap-8 overflow-y-auto">
+          <header class="flex justify-between items-start mb-8">
+            <div>
+              <h2 class="text-[22px] font-headline font-bold text-on-surface tracking-tight">Enregistrer une Soumission</h2>
+              <p class="text-sm text-on-surface-variant mt-1">Ajouter une offre déposée pour le marché MAR-2023-001</p>
+            </div>
+            <button type="button" aria-label="Fermer" class="text-outline hover:text-on-surface transition-colors p-1" (click)="toggleSoumissionDrawer()">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </header>
+          <div class="flex-1 overflow-y-auto">
+            <div class="bg-[#f0fdfb] rounded-[10px] p-4 mb-6">
+              <span class="material-symbols-outlined text-primary-container">info</span>
+              <p class="text-sm text-primary-container leading-relaxed mt-2">
+                Cette soumission sera associée au lot sélectionné et enregistrée dans le flux de marché.
+              </p>
+            </div>
+            <form class="space-y-6">
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-on-surface" for="submissionId">ID Soumission</label>
+                <div class="relative">
+                  <input id="submissionId" type="text" value="SM-2023-018" readonly class="w-full bg-surface-container-highest border border-transparent rounded-[10px] text-sm text-on-surface-variant px-4 py-3 focus:ring-0 cursor-not-allowed" />
+                </div>
+              </div>
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-on-surface" for="lotSelect">Lot Concerné</label>
+                <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow">
+                  <select id="lotSelect" class="w-full bg-surface-container-highest border-none text-sm text-on-surface px-4 py-3 appearance-none focus:bg-surface-container-lowest focus:ring-0">
+                    <option disabled selected value="">Sélectionner un lot</option>
+                    <option value="lot1">Lot 1 : Gros Œuvre</option>
+                    <option value="lot2">Lot 2 : Plomberie</option>
+                    <option value="lot3">Lot 3 : Électricité</option>
+                  </select>
+                  <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+                </div>
+              </div>
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-on-surface" for="supplierSearch">Fournisseur</label>
+                <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow flex items-center bg-surface-container-highest focus-within:bg-surface-container-lowest">
+                  <span class="material-symbols-outlined pl-4 text-on-surface-variant">search</span>
+                  <input id="supplierSearch" class="w-full bg-transparent border-none text-sm text-on-surface px-3 py-3 focus:ring-0" placeholder="Rechercher un fournisseur..." type="text" />
+                  <span class="material-symbols-outlined pr-4 text-on-surface-variant cursor-pointer">close</span>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="flex flex-col gap-1.5">
+                  <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Date de Dépôt</label>
+                  <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow flex items-center bg-surface-container-highest focus-within:bg-surface-container-lowest">
+                    <input class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0" type="date" />
+                  </div>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                  <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Heure</label>
+                  <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow flex items-center bg-surface-container-highest focus-within:bg-surface-container-lowest">
+                    <input class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0" type="time" />
+                  </div>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="flex flex-col gap-1.5">
+                  <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Montant Prév. (FCFA)</label>
+                  <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow flex items-center bg-surface-container-highest focus-within:bg-surface-container-lowest">
+                    <input class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0" placeholder="Ex: 15000000" type="number" />
+                  </div>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                  <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Délai (Jours)</label>
+                  <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow flex items-center bg-surface-container-highest focus-within:bg-surface-container-lowest">
+                    <input class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0" placeholder="Ex: 90" type="number" />
+                  </div>
+                </div>
+              </div>
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-on-surface" for="copies">Nombre d'Exemplaires</label>
+                <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow flex items-center bg-surface-container-highest focus-within:bg-surface-container-lowest">
+                  <input id="copies" class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0" min="1" type="number" value="3" />
+                </div>
+              </div>
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-on-surface" for="observation">Observation</label>
+                <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow flex items-center bg-surface-container-highest focus-within:bg-surface-container-lowest">
+                  <textarea id="observation" class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0 resize-none" placeholder="Notes éventuelles..." rows="3"></textarea>
+                </div>
+              </div>
+            </form>
+          </div>
+          <footer class="pt-6 flex items-center justify-end gap-4 mt-auto">
+            <button type="button" class="w-full bg-transparent hover:bg-surface-container-high text-on-secondary-container font-body font-semibold text-sm py-3 px-6 rounded-[10px] transition-all duration-200" (click)="toggleSoumissionDrawer()">
+              Annuler
+            </button>
+            <button type="button" class="w-full bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white font-body font-semibold text-sm py-3 px-6 rounded-[10px] shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-200" (click)="toggleSoumissionDrawer()">
+              Enregistrer la Soumission
+            </button>
           </footer>
         </aside>
       </div>
