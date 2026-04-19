@@ -21,15 +21,95 @@
           Modifier le statut
         </button>
       </div>
-      <div class="flex flex-col sm:flex-row justify-between items-start gap-6 mb-8 border-b border-outline-variant/15 pb-2 overflow-x-auto no-scrollbar">
-        <button class="text-primary-fixed-dim font-medium text-sm pb-2 border-b-2 border-primary-fixed-dim whitespace-nowrap">Informations générales</button>
-        <button class="text-on-surface-variant hover:text-on-surface font-medium text-sm pb-2 whitespace-nowrap transition-colors">Lots</button>
-        <button class="text-on-surface-variant hover:text-on-surface font-medium text-sm pb-2 whitespace-nowrap transition-colors">Consultation</button>
-        <button class="text-on-surface-variant hover:text-on-surface font-medium text-sm pb-2 whitespace-nowrap transition-colors">Soumissions</button>
-        <button class="text-on-surface-variant hover:text-on-surface font-medium text-sm pb-2 whitespace-nowrap transition-colors">Analyse (SCT)</button>
-        <button class="text-on-surface-variant hover:text-on-surface font-medium text-sm pb-2 whitespace-nowrap transition-colors">Documents</button>
-        <button class="text-on-surface-variant hover:text-on-surface font-medium text-sm pb-2 whitespace-nowrap transition-colors">Attribution</button>
-        <button class="text-on-surface-variant hover:text-on-surface font-medium text-sm pb-2 whitespace-nowrap transition-colors">Avenants</button>
+      <div class="flex flex-wrap gap-2 mb-8 border-b border-outline-variant/15 pb-2 overflow-x-auto no-scrollbar">
+        <button
+          type="button"
+          (click)="setActiveTab('Informations générales')"
+          [ngClass]="{
+            'bg-[#039CD3] text-white border-transparent': activeTab === 'Informations générales',
+            'bg-white text-on-surface-variant border-surface-container-lowest hover:text-on-surface': activeTab !== 'Informations générales'
+          }"
+          class="font-medium text-sm rounded-full px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
+        >
+          Informations générales
+        </button>
+        <button
+          type="button"
+          (click)="setActiveTab('Lots')"
+          [ngClass]="{
+            'bg-[#039CD3] text-white border-transparent': activeTab === 'Lots',
+            'bg-white text-on-surface-variant border-surface-container-lowest hover:text-on-surface': activeTab !== 'Lots'
+          }"
+          class="font-medium text-sm rounded-full px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
+        >
+          Lots
+        </button>
+        <button
+          type="button"
+          (click)="setActiveTab('Consultation')"
+          [ngClass]="{
+            'bg-[#039CD3] text-white border-transparent': activeTab === 'Consultation',
+            'bg-white text-on-surface-variant border-surface-container-lowest hover:text-on-surface': activeTab !== 'Consultation'
+          }"
+          class="font-medium text-sm rounded-full px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
+        >
+          Consultation
+        </button>
+        <button
+          type="button"
+          (click)="setActiveTab('Soumissions')"
+          [ngClass]="{
+            'bg-[#039CD3] text-white border-transparent': activeTab === 'Soumissions',
+            'bg-white text-on-surface-variant border-surface-container-lowest hover:text-on-surface': activeTab !== 'Soumissions'
+          }"
+          class="font-medium text-sm rounded-full px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
+        >
+          Soumissions
+        </button>
+        <button
+          type="button"
+          (click)="setActiveTab('Analyse (SCT)')"
+          [ngClass]="{
+            'bg-[#039CD3] text-white border-transparent': activeTab === 'Analyse (SCT)',
+            'bg-white text-on-surface-variant border-surface-container-lowest hover:text-on-surface': activeTab !== 'Analyse (SCT)'
+          }"
+          class="font-medium text-sm rounded-full px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
+        >
+          Analyse (SCT)
+        </button>
+        <button
+          type="button"
+          (click)="setActiveTab('Documents')"
+          [ngClass]="{
+            'bg-[#039CD3] text-white border-transparent': activeTab === 'Documents',
+            'bg-white text-on-surface-variant border-surface-container-lowest hover:text-on-surface': activeTab !== 'Documents'
+          }"
+          class="font-medium text-sm rounded-full px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
+        >
+          Documents
+        </button>
+        <button
+          type="button"
+          (click)="setActiveTab('Attribution')"
+          [ngClass]="{
+            'bg-[#039CD3] text-white border-transparent': activeTab === 'Attribution',
+            'bg-white text-on-surface-variant border-surface-container-lowest hover:text-on-surface': activeTab !== 'Attribution'
+          }"
+          class="font-medium text-sm rounded-full px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
+        >
+          Attribution
+        </button>
+        <button
+          type="button"
+          (click)="setActiveTab('Avenants')"
+          [ngClass]="{
+            'bg-[#039CD3] text-white border-transparent': activeTab === 'Avenants',
+            'bg-white text-on-surface-variant border-surface-container-lowest hover:text-on-surface': activeTab !== 'Avenants'
+          }"
+          class="font-medium text-sm rounded-full px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
+        >
+          Avenants
+        </button>
       </div>
       <div class="bg-surface-container-low rounded-xl p-1">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-1">
@@ -60,7 +140,7 @@
               </div>
               <div class="col-span-2 pt-4 mt-2 border-t border-outline-variant/15">
                 <p class="text-xs text-on-surface-variant mb-3 font-medium uppercase tracking-wider">Acteurs clés</p>
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-2 gap-4 mb-4">
                   <div class="bg-surface p-3 rounded-[10px]">
                     <p class="text-[11px] text-on-surface-variant mb-1">Service Demandeur</p>
                     <p class="text-sm font-medium text-secondary">Département Informatique (DIT)</p>
@@ -71,6 +151,18 @@
                       <div class="w-6 h-6 rounded-full bg-tertiary-container text-white flex items-center justify-center text-xs font-bold">AK</div>
                       <p class="text-sm font-medium text-secondary">Amadou Koné</p>
                     </div>
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="bg-surface p-4 rounded-[14px] shadow-[0_2px_12px_rgba(26,46,68,0.04)]">
+                    <p class="text-xs text-on-surface-variant mb-2 uppercase tracking-wider font-medium">Nombre de lots</p>
+                    <p class="text-3xl font-bold text-secondary">4</p>
+                    <p class="text-sm text-on-surface-variant mt-1">Lots enregistrés pour ce marché</p>
+                  </div>
+                  <div class="bg-surface p-4 rounded-[14px] shadow-[0_2px_12px_rgba(26,46,68,0.04)]">
+                    <p class="text-xs text-on-surface-variant mb-2 uppercase tracking-wider font-medium">Soumissions effectuées</p>
+                    <p class="text-3xl font-bold text-secondary">18</p>
+                    <p class="text-sm text-on-surface-variant mt-1">Soumissions reçues pour ce marché</p>
                   </div>
                 </div>
               </div>
