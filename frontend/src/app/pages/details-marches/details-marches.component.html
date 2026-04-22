@@ -440,6 +440,77 @@
             </div>
           </div>
         </ng-container>
+        <ng-container *ngIf="activeTab === 'Analyse (SCT)'">
+          <div class="bg-surface-container-low rounded-[24px] p-6 md:p-8 flex flex-col gap-6 relative">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-6">
+              <div>
+                <h2 class="text-xl font-bold text-[#1a2e44] font-headline">Analyse (SCT)</h2>
+                <p class="text-sm text-on-surface-variant mt-1">Synthèse des évaluations techniques et financières des offres reçues pour ce marché.</p>
+              </div>
+              <button type="button" (click)="toggleAnalyseDrawer()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-[10px] bg-[#E42819] text-white font-medium shadow-sm hover:bg-[#c81913] transition-all">
+                <span class="material-symbols-outlined text-[18px]">analytics</span>
+                Enregistrer l'Analyse SCT
+              </button>
+            </div>
+            <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+              <div class="xl:col-span-8 space-y-6">
+                <div class="bg-surface-container-lowest rounded-[24px] p-8 shadow-[0_4px_20px_rgba(26,46,68,0.04)] relative overflow-hidden">
+                  <div class="absolute top-0 right-0 w-64 h-64 bg-[#76d3c8]/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                  <div class="relative z-10 flex flex-col gap-6">
+                    <div class="flex items-center gap-3">
+                      <span class="bg-[#1a2e44] text-white px-3 py-1 rounded-md font-headline font-bold text-sm tracking-widest">Lot 1</span>
+                      <span class="text-sm text-on-surface-variant">Rapport d'analyse SCT</span>
+                    </div>
+                    <div>
+                      <h3 class="font-headline text-2xl font-extrabold text-[#1a2e44]">Gros Œuvre & Structure</h3>
+                      <p class="text-sm text-on-surface-variant mt-2">Analyse technique et financière des offres pour le premier lot.</p>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
+                        <div class="bg-surface p-4 rounded-[16px]">
+                          <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-2">Attributaire prévisionnel</p>
+                          <p class="text-sm font-semibold text-[#1a2e44]">SOGEA SATOM</p>
+                        </div>
+                        <div class="bg-surface p-4 rounded-[16px]">
+                          <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-2">Réception SCT</p>
+                          <p class="text-sm font-semibold text-[#1a2e44]">12 Nov 2023</p>
+                        </div>
+                        <div class="bg-surface p-4 rounded-[16px]">
+                          <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-2">Présentation CA</p>
+                          <p class="text-sm font-semibold text-[#1a2e44]">20 Nov 2023</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="xl:col-span-4 space-y-6">
+                <div class="bg-surface-container-lowest rounded-[24px] p-6 border border-outline-variant/10">
+                  <div class="flex justify-between items-center mb-4">
+                    <h4 class="font-headline font-bold text-[#1a2e44]">Documents joints</h4>
+                    <button class="text-xs font-bold text-[#76d3c8] hover:underline">Ajouter</button>
+                  </div>
+                  <ul class="space-y-3">
+                    <li class="flex items-center gap-3 p-3 hover:bg-surface-container-low rounded-lg transition-colors cursor-pointer group">
+                      <span class="material-symbols-outlined text-error">picture_as_pdf</span>
+                      <div class="flex-1">
+                        <p class="text-sm font-semibold text-on-surface group-hover:text-[#1a2e44]">Rapport_SCT_Lot1.pdf</p>
+                        <p class="text-xs text-on-surface-variant">2.4 MB • 12 Nov</p>
+                      </div>
+                    </li>
+                    <li class="flex items-center gap-3 p-3 hover:bg-surface-container-low rounded-lg transition-colors cursor-pointer group">
+                      <span class="material-symbols-outlined text-tertiary-container">description</span>
+                      <div class="flex-1">
+                        <p class="text-sm font-semibold text-on-surface group-hover:text-[#1a2e44]">Grille_Evaluation.xlsx</p>
+                        <p class="text-xs text-on-surface-variant">845 KB • 10 Nov</p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
         </div>
       </div>
     </main>
@@ -533,6 +604,99 @@
           <footer class="pt-6 flex items-center justify-end gap-4 mt-auto">
             <button type="button" class="px-5 py-2.5 text-sm font-medium text-on-secondary-container bg-transparent hover:bg-surface-container-high rounded-[10px] transition-colors" (click)="toggleConsultationDrawer()">Annuler</button>
             <button type="button" class="px-5 py-2.5 text-sm font-medium text-white bg-[#039CD3] hover:bg-[#0284b6] rounded-[10px] transition-all" (click)="toggleConsultationDrawer()">Enregistrer la Consultation</button>
+          </footer>
+        </aside>
+      </div>
+      <div *ngIf="showAnalyseDrawer" class="fixed inset-0 z-50 flex justify-end">
+        <div class="absolute inset-0 bg-surface/40 backdrop-blur-sm" (click)="toggleAnalyseDrawer()"></div>
+        <aside class="relative right-0 top-0 h-full w-full max-w-[500px] bg-white shadow-[-20px_0_40px_rgba(26,46,68,0.15)] flex flex-col p-8 gap-8 overflow-y-auto">
+          <header class="flex justify-between items-start mb-8">
+            <div>
+              <h2 class="text-[22px] font-headline font-bold text-on-surface tracking-tight">Enregistrer l'Analyse SCT</h2>
+              <p class="text-sm text-on-surface-variant mt-1">Évaluation des offres — Lot 1</p>
+            </div>
+            <button type="button" aria-label="Fermer" class="text-outline hover:text-on-surface transition-colors p-1" (click)="toggleAnalyseDrawer()">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </header>
+          <div class="flex-1 overflow-y-auto">
+            <div class="bg-[#f0fdfb] rounded-[10px] p-4 mb-6">
+              <span class="material-symbols-outlined text-[#43a399]">info</span>
+              <p class="text-sm text-[#43a399] leading-relaxed mt-2">
+                Enregistrez les conclusions de la sous-commission technique pour le lot sélectionné.
+              </p>
+            </div>
+            <form class="space-y-6">
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-on-surface" for="lotAnalyse">Lot concerné</label>
+                <div class="relative">
+                  <select id="lotAnalyse" class="w-full appearance-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
+                    <option disabled selected value="">Sélectionner un lot...</option>
+                    <option value="lot1">Lot 1 - Matériel Informatique</option>
+                    <option value="lot2">Lot 2 - Mobilier de Bureau</option>
+                    <option value="lot3">Lot 3 - Fournitures</option>
+                  </select>
+                  <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant">expand_more</span>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-on-surface" for="receptionSCT">Réception</label>
+                  <input id="receptionSCT" type="date" class="w-full bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors" />
+                </div>
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-on-surface" for="presentationCA">Présentation</label>
+                  <input id="presentationCA" type="date" class="w-full bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors" />
+                </div>
+              </div>
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-on-surface" for="attributaireSCT">Attributaire prévisionnel</label>
+                <div class="relative">
+                  <select id="attributaireSCT" class="w-full appearance-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
+                    <option disabled selected value="">Sélectionner un fournisseur...</option>
+                    <option value="f1">TechCorp SA</option>
+                    <option value="f2">Bureau Equipement Plus</option>
+                    <option value="f3">Global Motors</option>
+                  </select>
+                  <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant">expand_more</span>
+                </div>
+              </div>
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-on-surface" for="observationsSCT">Observations de la SCT</label>
+                <textarea id="observationsSCT" rows="5" class="w-full bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors resize-none" placeholder="Saisir les remarques, réserves ou justifications..."></textarea>
+              </div>
+              <div class="bg-surface-container-lowest p-5 rounded-[16px] space-y-4 border border-outline-variant/10">
+                <h3 class="text-sm font-bold text-[#1a2e44]">Classement des offres</h3>
+                <div class="space-y-3">
+                  <div class="bg-white rounded-[10px] p-3 flex items-center justify-between shadow-[0_4px_12px_rgba(26,46,68,0.05)]">
+                    <div>
+                      <p class="text-sm font-semibold text-on-surface">Bureau Equipement Plus</p>
+                      <p class="text-xs text-on-surface-variant">12 450 000 FCFA • 30 jours</p>
+                    </div>
+                    <div class="w-20">
+                      <input type="number" value="1" min="1" max="10" class="w-full bg-surface-container-highest border-0 rounded-[10px] text-center text-sm text-on-surface px-3 py-2 focus:ring-0" />
+                    </div>
+                  </div>
+                  <div class="bg-white rounded-[10px] p-3 flex items-center justify-between shadow-[0_4px_12px_rgba(26,46,68,0.05)]">
+                    <div>
+                      <p class="text-sm font-semibold text-on-surface">Global Office Solutions</p>
+                      <p class="text-xs text-on-surface-variant">13 100 000 FCFA • 45 jours</p>
+                    </div>
+                    <div class="w-20">
+                      <input type="number" value="2" min="1" max="10" class="w-full bg-surface-container-highest border-0 rounded-[10px] text-center text-sm text-on-surface px-3 py-2 focus:ring-0" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <footer class="pt-6 flex items-center justify-end gap-4 mt-auto">
+            <button type="button" class="w-full bg-transparent hover:bg-surface-container-high text-on-secondary-container font-body font-semibold text-sm py-3 px-6 rounded-[10px] transition-all duration-200" (click)="toggleAnalyseDrawer()">
+              Annuler
+            </button>
+            <button type="button" class="w-full bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white font-body font-semibold text-sm py-3 px-6 rounded-[10px] shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-200" (click)="toggleAnalyseDrawer()">
+              Valider le Rapport d'Analyse
+            </button>
           </footer>
         </aside>
       </div>
