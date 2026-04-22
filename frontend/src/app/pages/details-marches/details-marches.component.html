@@ -511,6 +511,103 @@
             </div>
           </div>
         </ng-container>
+        <ng-container *ngIf="activeTab === 'Documents'">
+          <div class="bg-surface-container-low rounded-[24px] p-6 md:p-8 flex flex-col gap-6 relative">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-6">
+              <div>
+                <h2 class="text-xl font-bold text-[#1a2e44] font-headline">Documents du marché</h2>
+                <p class="text-sm text-on-surface-variant mt-1">Chaque lot peut contenir plusieurs documents liés au marché.</p>
+              </div>
+              <button type="button" (click)="toggleDocumentDrawer()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-[10px] bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white font-medium shadow-sm hover:shadow-[0_6px_16px_rgba(118,211,200,0.3)] transition-all">
+                <span class="material-symbols-outlined text-[18px]">upload_file</span>
+                Ajouter un document
+              </button>
+            </div>
+            <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+              <div class="xl:col-span-8 space-y-6">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div class="bg-white rounded-[20px] p-5 shadow-[0_4px_16px_rgba(26,46,68,0.06)] border border-surface-container-highest">
+                    <p class="text-xs text-on-surface-variant uppercase tracking-wider font-semibold mb-2">Total documents</p>
+                    <p class="text-3xl font-bold text-[#1a2e44]">6</p>
+                  </div>
+                  <div class="bg-white rounded-[20px] p-5 shadow-[0_4px_16px_rgba(26,46,68,0.06)] border border-surface-container-highest">
+                    <p class="text-xs text-on-surface-variant uppercase tracking-wider font-semibold mb-2">Lots avec documents</p>
+                    <p class="text-3xl font-bold text-[#1a2e44]">3</p>
+                  </div>
+                  <div class="bg-white rounded-[20px] p-5 shadow-[0_4px_16px_rgba(26,46,68,0.06)] border border-surface-container-highest">
+                    <p class="text-xs text-on-surface-variant uppercase tracking-wider font-semibold mb-2">Dernier ajouté</p>
+                    <p class="text-lg font-semibold text-[#1a2e44]">Plan_Aménagement.pdf</p>
+                    <p class="text-xs text-on-surface-variant mt-1">15 Nov 2023</p>
+                  </div>
+                </div>
+                <div class="bg-surface-container-lowest rounded-[24px] p-6 shadow-[0_4px_20px_rgba(26,46,68,0.04)]">
+                  <div class="flex flex-wrap gap-3 mb-6">
+                    <button class="px-4 py-2 rounded-full bg-[#76d3c8] text-[#1a2e44] text-sm font-medium">Tous les lots</button>
+                    <button class="px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface text-sm font-medium hover:bg-surface-container-high transition-colors">Lot 1</button>
+                    <button class="px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface text-sm font-medium hover:bg-surface-container-high transition-colors">Lot 2</button>
+                    <button class="px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface text-sm font-medium hover:bg-surface-container-high transition-colors">Lot 3</button>
+                  </div>
+                  <div class="overflow-x-auto">
+                    <table class="w-full min-w-[760px] text-left border-collapse">
+                      <thead>
+                        <tr class="bg-surface-container/50 border-b border-surface-container-high text-xs uppercase tracking-wider font-semibold text-on-surface-variant">
+                          <th class="px-6 py-4">Lot</th>
+                          <th class="px-6 py-4">Document</th>
+                          <th class="px-6 py-4">Type</th>
+                          <th class="px-6 py-4">Taille</th>
+                          <th class="px-6 py-4">Date</th>
+                          <th class="px-6 py-4 text-right">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody class="text-sm divide-y divide-surface-container-high/50">
+                        <tr class="hover:bg-surface-bright transition-colors">
+                          <td class="px-6 py-4">Lot 1</td>
+                          <td class="px-6 py-4 font-medium text-[#1a2e44]">Rapport_SCT_Lot1.pdf</td>
+                          <td class="px-6 py-4">PDF</td>
+                          <td class="px-6 py-4">2.4 MB</td>
+                          <td class="px-6 py-4">12 Nov 2023</td>
+                          <td class="px-6 py-4 text-right">
+                            <button class="px-3 py-2 rounded-[10px] bg-surface-container-lowest text-on-surface-variant text-xs font-semibold hover:bg-surface-container-high transition-colors">Voir</button>
+                          </td>
+                        </tr>
+                        <tr class="hover:bg-surface-bright transition-colors">
+                          <td class="px-6 py-4">Lot 1</td>
+                          <td class="px-6 py-4 font-medium text-[#1a2e44]">CCTP_Lot1.docx</td>
+                          <td class="px-6 py-4">DOCX</td>
+                          <td class="px-6 py-4">1.2 MB</td>
+                          <td class="px-6 py-4">10 Nov 2023</td>
+                          <td class="px-6 py-4 text-right">
+                            <button class="px-3 py-2 rounded-[10px] bg-surface-container-lowest text-on-surface-variant text-xs font-semibold hover:bg-surface-container-high transition-colors">Voir</button>
+                          </td>
+                        </tr>
+                        <tr class="hover:bg-surface-bright transition-colors">
+                          <td class="px-6 py-4">Lot 2</td>
+                          <td class="px-6 py-4 font-medium text-[#1a2e44]">Plan_Aménagement.pdf</td>
+                          <td class="px-6 py-4">PDF</td>
+                          <td class="px-6 py-4">3.1 MB</td>
+                          <td class="px-6 py-4">15 Nov 2023</td>
+                          <td class="px-6 py-4 text-right">
+                            <button class="px-3 py-2 rounded-[10px] bg-surface-container-lowest text-on-surface-variant text-xs font-semibold hover:bg-surface-container-high transition-colors">Voir</button>
+                          </td>
+                        </tr>
+                        <tr class="hover:bg-surface-bright transition-colors">
+                          <td class="px-6 py-4">Lot 3</td>
+                          <td class="px-6 py-4 font-medium text-[#1a2e44]">Devis_Mobilier.xlsx</td>
+                          <td class="px-6 py-4">XLSX</td>
+                          <td class="px-6 py-4">850 KB</td>
+                          <td class="px-6 py-4">18 Nov 2023</td>
+                          <td class="px-6 py-4 text-right">
+                            <button class="px-3 py-2 rounded-[10px] bg-surface-container-lowest text-on-surface-variant text-xs font-semibold hover:bg-surface-container-high transition-colors">Voir</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
         </div>
       </div>
     </main>
@@ -697,6 +794,60 @@
             <button type="button" class="w-full bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white font-body font-semibold text-sm py-3 px-6 rounded-[10px] shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-200" (click)="toggleAnalyseDrawer()">
               Valider le Rapport d'Analyse
             </button>
+          </footer>
+        </aside>
+      </div>
+      <div *ngIf="showDocumentDrawer" class="fixed inset-0 z-50 flex justify-end">
+        <div class="absolute inset-0 bg-surface/40 backdrop-blur-sm" (click)="toggleDocumentDrawer()"></div>
+        <aside class="relative right-0 top-0 h-full w-full max-w-[500px] bg-white shadow-[-20px_0_40px_rgba(26,46,68,0.15)] flex flex-col p-8 gap-8 overflow-y-auto">
+          <header class="flex justify-between items-start mb-8">
+            <div>
+              <h2 class="text-[22px] font-headline font-bold text-on-surface tracking-tight">Ajouter un document</h2>
+              <p class="text-sm text-on-surface-variant mt-1">Associez un document à un lot du marché.</p>
+            </div>
+            <button type="button" aria-label="Fermer" class="text-outline hover:text-on-surface transition-colors p-1" (click)="toggleDocumentDrawer()">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </header>
+          <div class="flex-1 overflow-y-auto">
+            <form class="space-y-6">
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-on-surface" for="docLot">Lot concerné</label>
+                <div class="relative">
+                  <select id="docLot" class="w-full appearance-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
+                    <option disabled selected value="">Sélectionner un lot...</option>
+                    <option value="lot1">Lot 1 - Matériel Informatique</option>
+                    <option value="lot2">Lot 2 - Mobilier de Bureau</option>
+                    <option value="lot3">Lot 3 - Fournitures</option>
+                  </select>
+                  <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant">expand_more</span>
+                </div>
+              </div>
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-on-surface" for="docType">Type de document</label>
+                <input id="docType" type="text" placeholder="Ex: PDF, DOCX, XLSX" class="w-full bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors" />
+              </div>
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-on-surface" for="docName">Nom du document</label>
+                <input id="docName" type="text" placeholder="Ex: Cahier_Charges.pdf" class="w-full bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors" />
+              </div>
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-on-surface" for="docFile">Fichier</label>
+                <input id="docFile" type="file" class="w-full text-sm text-on-surface" />
+              </div>
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-on-surface" for="docDate">Date d'ajout</label>
+                <input id="docDate" type="date" class="w-full bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors" />
+              </div>
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-on-surface" for="docNotes">Notes</label>
+                <textarea id="docNotes" rows="4" class="w-full bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors resize-none" placeholder="Ajouter un commentaire sur le document..."></textarea>
+              </div>
+            </form>
+          </div>
+          <footer class="pt-6 flex items-center justify-end gap-4 mt-auto">
+            <button type="button" class="w-full bg-transparent hover:bg-surface-container-high text-on-secondary-container font-body font-semibold text-sm py-3 px-6 rounded-[10px] transition-all duration-200" (click)="toggleDocumentDrawer()">Annuler</button>
+            <button type="button" class="w-full bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white font-body font-semibold text-sm py-3 px-6 rounded-[10px] shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-200" (click)="toggleDocumentDrawer()">Ajouter le document</button>
           </footer>
         </aside>
       </div>
