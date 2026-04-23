@@ -707,44 +707,14 @@
                         </tr>
                       </thead>
                       <tbody class="text-sm divide-y divide-surface-container-high/50">
-                        <tr class="hover:bg-surface-bright transition-colors">
-                          <td class="px-6 py-4">Lot 1</td>
-                          <td class="px-6 py-4 font-medium text-[#1a2e44]">Rapport_SCT_Lot1.pdf</td>
-                          <td class="px-6 py-4">PDF</td>
-                          <td class="px-6 py-4">2.4 MB</td>
-                          <td class="px-6 py-4">12 Nov 2023</td>
+                        <tr *ngFor="let doc of marketDocuments" class="hover:bg-surface-bright transition-colors">
+                          <td class="px-6 py-4">{{ doc.lot }}</td>
+                          <td class="px-6 py-4 font-medium text-[#1a2e44]">{{ doc.nom }}</td>
+                          <td class="px-6 py-4">{{ doc.type }}</td>
+                          <td class="px-6 py-4">{{ doc.taille }}</td>
+                          <td class="px-6 py-4">{{ doc.date }}</td>
                           <td class="px-6 py-4 text-right">
-                            <button class="px-3 py-2 rounded-[10px] bg-surface-container-lowest text-on-surface-variant text-xs font-semibold hover:bg-surface-container-high transition-colors">Voir</button>
-                          </td>
-                        </tr>
-                        <tr class="hover:bg-surface-bright transition-colors">
-                          <td class="px-6 py-4">Lot 1</td>
-                          <td class="px-6 py-4 font-medium text-[#1a2e44]">CCTP_Lot1.docx</td>
-                          <td class="px-6 py-4">DOCX</td>
-                          <td class="px-6 py-4">1.2 MB</td>
-                          <td class="px-6 py-4">10 Nov 2023</td>
-                          <td class="px-6 py-4 text-right">
-                            <button class="px-3 py-2 rounded-[10px] bg-surface-container-lowest text-on-surface-variant text-xs font-semibold hover:bg-surface-container-high transition-colors">Voir</button>
-                          </td>
-                        </tr>
-                        <tr class="hover:bg-surface-bright transition-colors">
-                          <td class="px-6 py-4">Lot 2</td>
-                          <td class="px-6 py-4 font-medium text-[#1a2e44]">Plan_Aménagement.pdf</td>
-                          <td class="px-6 py-4">PDF</td>
-                          <td class="px-6 py-4">3.1 MB</td>
-                          <td class="px-6 py-4">15 Nov 2023</td>
-                          <td class="px-6 py-4 text-right">
-                            <button class="px-3 py-2 rounded-[10px] bg-surface-container-lowest text-on-surface-variant text-xs font-semibold hover:bg-surface-container-high transition-colors">Voir</button>
-                          </td>
-                        </tr>
-                        <tr class="hover:bg-surface-bright transition-colors">
-                          <td class="px-6 py-4">Lot 3</td>
-                          <td class="px-6 py-4 font-medium text-[#1a2e44]">Devis_Mobilier.xlsx</td>
-                          <td class="px-6 py-4">XLSX</td>
-                          <td class="px-6 py-4">850 KB</td>
-                          <td class="px-6 py-4">18 Nov 2023</td>
-                          <td class="px-6 py-4 text-right">
-                            <button class="px-3 py-2 rounded-[10px] bg-surface-container-lowest text-on-surface-variant text-xs font-semibold hover:bg-surface-container-high transition-colors">Voir</button>
+                            <button type="button" (click)="openDocument(doc.url)" class="px-3 py-2 rounded-[10px] bg-surface-container-lowest text-on-surface-variant text-xs font-semibold hover:bg-surface-container-high transition-colors" [disabled]="!doc.url">Voir</button>
                           </td>
                         </tr>
                       </tbody>

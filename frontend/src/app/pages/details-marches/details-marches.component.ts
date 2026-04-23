@@ -10,6 +10,9 @@ interface LotDocument {
   type: string;
   date: string;
   statut: string;
+  taille?: string;
+  url?: string;
+  lot?: string;
 }
 
 interface Lot {
@@ -186,6 +189,45 @@ export class DetailsMarchesComponent {
     },
   ];
 
+  marketDocuments: LotDocument[] = [
+    {
+      id: 'market-doc-1',
+      nom: 'Rapport_SCT_Lot1.pdf',
+      type: 'PDF',
+      date: '12 Nov 2023',
+      taille: '2.4 MB',
+      statut: 'À jour',
+      url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+    },
+    {
+      id: 'market-doc-2',
+      nom: 'CCTP_Lot1.docx',
+      type: 'DOCX',
+      date: '10 Nov 2023',
+      taille: '1.2 MB',
+      statut: 'Validé',
+      url: 'https://file-examples.com/wp-content/uploads/2017/02/file-sample_100kB.doc',
+    },
+    {
+      id: 'market-doc-3',
+      nom: 'Plan_Aménagement.pdf',
+      type: 'PDF',
+      date: '15 Nov 2023',
+      taille: '3.1 MB',
+      statut: 'À jour',
+      url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+    },
+    {
+      id: 'market-doc-4',
+      nom: 'Devis_Mobilier.xlsx',
+      type: 'XLSX',
+      date: '18 Nov 2023',
+      taille: '850 KB',
+      statut: 'En attente',
+      url: 'https://file-examples.com/wp-content/uploads/2017/02/file_example_XLS_10.xls',
+    },
+  ];
+
   submissions: Submission[] = [
     {
       id: 'SM-2023-015',
@@ -348,5 +390,12 @@ export class DetailsMarchesComponent {
 
   consultDocument(document: LotDocument) {
     this.selectedDocument = document;
+  }
+
+  openDocument(url?: string) {
+    if (!url) {
+      return;
+    }
+    window.open(url, '_blank', 'noopener,noreferrer');
   }
 }
