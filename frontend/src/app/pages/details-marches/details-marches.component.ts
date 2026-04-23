@@ -68,6 +68,13 @@ interface Consultation {
   date: string;
 }
 
+interface SctMember {
+  id: string;
+  nom: string;
+  role: string;
+  email?: string;
+}
+
 @Component({
   standalone: true,
   selector: 'app-details-marches',
@@ -94,6 +101,25 @@ export class DetailsMarchesComponent {
   selectedSubmission: Submission | null = null;
   currentStatus = 'Réception';
   statusOptions = ['Réception', 'Ouvert', 'Consultation', 'Soumissions', 'Analyse SCT', 'Attribution', 'Clôturé'];
+  showAddSctMember = false;
+  newSctMemberName = '';
+  newSctMemberRole = '';
+  newSctMemberEmail = '';
+
+  sctMembers: SctMember[] = [
+    {
+      id: 'sct-1',
+      nom: 'Sarah Ouédraogo',
+      role: 'Présidente',
+      email: 's.ouedraogo@2ie.bf',
+    },
+    {
+      id: 'sct-2',
+      nom: 'Jean Diarra',
+      role: 'Membre Technique',
+      email: 'j.diarra@2ie.bf',
+    },
+  ];
 
   lots: Lot[] = [
     {
@@ -386,6 +412,34 @@ export class DetailsMarchesComponent {
   closeSubmissionPopup() {
     this.showSubmissionModal = false;
     this.selectedSubmission = null;
+  }
+
+  toggleAddSctMember() {
+    this.showAddSctMember = !this.showAddSctMember;
+  }
+
+  addSctMember() {
+    const name = this.newSctMemberName.trim();
+    const role = this.newSctMemberRole.trim();
+    if (!name || !role) {
+      return;
+    }
+
+    this.sctMembers.push({
+      id: `sct-${Date.now()}`,
+      nom: name,
+      role,
+      email: this.newSctMemberEmail.trim() || undefined,
+    });
+
+    this.newSctMemberName = '';
+    this.newSctMemberRole = '';
+    this.newSctMemberEmail = '';
+    this.showAddSctMember = false;
+  }
+
+  removeSctMember(member: SctMember) {
+    this.sctMembers = this.sctMembers.filter((item) => item.id !== member.id);
   }
 
   consultDocument(document: LotDocument) {
