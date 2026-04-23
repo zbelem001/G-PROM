@@ -10,7 +10,6 @@
           <span class="text-red-500">P</span>
           <span class="text-yellow-500">R</span>
           <span class="text-green-500">O</span>
-          <span class="text-blue-500">M</span>
         </h1>
         <p class="text-xs text-slate-400">Institut 2iE</p>
       </div>
@@ -42,9 +41,15 @@
       <span class="text-sm">Paramètres</span>
     </a>
   </nav>
-  <div class="px-6 mt-auto pt-6">
-    <div class="flex items-center justify-center">
-      <img src="/2ielogo.png" alt="2iE logo" class="h-32 w-auto object-contain" />
+  <div class="px-6 mt-auto pt-3">
+    <div class="flex items-center justify-center -mt-2">
+      <img src="/2ielogo.png" alt="2iE logo" class="h-24 w-auto object-contain logo-jump" />
+    </div>
+    <div class="mt-4">
+      <a routerLink="/connexion" class="block w-full text-center py-3 rounded-[14px] bg-[#f8f9fb] text-slate-700 font-bold border border-slate-200 hover:bg-[#e9eff7] transition-colors duration-200">
+        <span class="material-symbols-outlined align-middle mr-2">logout</span>
+        Déconnexion
+      </a>
     </div>
   </div>
 </aside>

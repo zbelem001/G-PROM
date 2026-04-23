@@ -1,0 +1,16 @@
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+
+body, :host {
+  font-family: 'Inter', sans-serif;
+}
+
+h1, h2, label, button {
+  font-family: 'Manrope', sans-serif;
+}
+
+.liquid-gradient {
+  background: linear-gradient(135deg, #76d3c8 0%, #43a399 100%);
+}

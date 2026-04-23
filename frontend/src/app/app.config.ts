@@ -8,9 +8,12 @@ import { SuivieMarchesComponent } from './pages/suivie-marches/suivie-marches.co
 import { FournisseursComponent } from './pages/fournisseurs/fournisseurs.component';
 import { DetailsFournisseursComponent } from './pages/details-fournisseurs/details-fournisseurs.component';
 import { RapportsComponent } from './pages/rapports/rapports.component';
+import { ConnexionComponent } from './pages/connexion/connexion.component';
 
 const routes: Route[] = [
-  { path: '', component: DashboardComponent },
+  { path: '', component: ConnexionComponent, pathMatch: 'full' },
+  { path: 'connexion', component: ConnexionComponent },
+  { path: 'dashboard', component: DashboardComponent },
   { path: 'marches', component: MarketsComponent },
   { path: 'marches/details', component: DetailsMarchesComponent },
   { path: 'suivie-marches', component: SuivieMarchesComponent },

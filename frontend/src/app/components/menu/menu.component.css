@@ -8,3 +8,22 @@
 .no-hover:hover .material-symbols-outlined {
   color: #ffffff !important;
 }
+
+.logo-jump {
+  animation: logo-jump 1.5s ease-in-out infinite;
+}
+
+@keyframes logo-jump {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-6px);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  70% {
+    transform: translateY(-3px);
+  }
+}
