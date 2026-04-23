@@ -16,6 +16,8 @@ export class DetailsMarchesComponent {
   showConsultationDrawer = false;
   showSoumissionDrawer = false;
   showAnalyseDrawer = false;
+  showDocumentDrawer = false;
+  showAttributionDrawer = false;
 
   setActiveTab(tab: string) {
     this.activeTab = tab;
@@ -35,5 +37,13 @@ export class DetailsMarchesComponent {
 
   toggleAnalyseDrawer() {
     this.showAnalyseDrawer = !this.showAnalyseDrawer;
+  }
+
+  toggleDocumentDrawer() {
+    this.showDocumentDrawer = !this.showDocumentDrawer;
+  }
+
+  toggleAttributionDrawer() {
+    this.showAttributionDrawer = !this.showAttributionDrawer;
   }
 }

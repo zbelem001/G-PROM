@@ -608,6 +608,70 @@
             </div>
           </div>
         </ng-container>
+        <ng-container *ngIf="activeTab === 'Attribution'">
+          <div class="bg-surface-container-low rounded-[24px] p-6 md:p-8 flex flex-col gap-6 relative">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-6">
+              <div>
+                <h2 class="text-xl font-bold text-[#1a2e44] font-headline">Attributions du marché</h2>
+                <p class="text-sm text-on-surface-variant mt-1">Suivez la contractualisation des lots et enregistrez les attributions finales.</p>
+              </div>
+              <button type="button" (click)="toggleAttributionDrawer()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-[10px] bg-[#E42819] text-white font-medium shadow-sm hover:bg-[#c81913] transition-all">
+                <span class="material-symbols-outlined text-[18px]">assignment_turned_in</span>
+                Nouvelle attribution
+              </button>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              <div class="lg:col-span-12 bg-surface-container-lowest rounded-[24px] p-8 shadow-[0_4px_20px_rgba(26,46,68,0.04)] relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-on-primary-container to-surface-container-lowest opacity-80"></div>
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+                  <div class="flex items-center gap-5">
+                    <h2 class="text-3xl font-headline font-extrabold text-[#1a2e44]">LOT 1</h2>
+                    <span class="px-3 py-1 text-xs font-semibold rounded-[6px] bg-[#76d3c8]/15 text-[#43a399] flex items-center gap-1.5">
+                      <span class="w-1.5 h-1.5 rounded-full bg-on-primary-container"></span>
+                      En cours
+                    </span>
+                  </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div class="grid grid-cols-1 gap-4">
+                    <div class="bg-white rounded-[20px] p-5 border border-surface-container-highest shadow-[0_4px_16px_rgba(26,46,68,0.06)]">
+                      <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-2">Montant contractuel</p>
+                      <p class="text-3xl font-bold text-[#1a2e44]">145 000 000 FCFA</p>
+                    </div>
+                    <div class="bg-white rounded-[20px] p-5 border border-surface-container-highest shadow-[0_4px_16px_rgba(26,46,68,0.06)]">
+                      <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-2">Fournisseur</p>
+                      <p class="text-sm font-semibold text-[#1a2e44]">Entreprise Générale de Bâtiment (EGB)</p>
+                    </div>
+                    <div class="bg-white rounded-[20px] p-5 border border-surface-container-highest shadow-[0_4px_16px_rgba(26,46,68,0.06)]">
+                      <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-2">Réf. soumission</p>
+                      <p class="text-sm font-semibold text-[#1a2e44]">SUB-2023-089A</p>
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-1 gap-4">
+                    <div class="bg-white rounded-[20px] p-5 border border-surface-container-highest shadow-[0_4px_16px_rgba(26,46,68,0.06)]">
+                      <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-2">Délai d'exécution</p>
+                      <p class="text-sm font-semibold text-[#1a2e44]">6 Mois</p>
+                    </div>
+                    <div class="bg-white rounded-[20px] p-5 border border-surface-container-highest shadow-[0_4px_16px_rgba(26,46,68,0.06)]">
+                      <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-2">Date de démarrage</p>
+                      <p class="text-sm font-semibold text-[#1a2e44]">15 Octobre 2023</p>
+                    </div>
+                    <div class="bg-white rounded-[20px] p-5 border border-surface-container-highest shadow-[0_4px_16px_rgba(26,46,68,0.06)]">
+                      <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-2">Date fin prévue</p>
+                      <p class="text-sm font-semibold text-[#1a2e44]">15 Avril 2024</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="mt-6 flex items-center justify-center py-8">
+              <button class="text-[#1a2e44] hover:text-[#076d87] font-medium text-sm flex items-center gap-2 transition-colors">
+                <span class="material-symbols-outlined">add</span>
+                Voir les autres lots (2)
+              </button>
+            </div>
+          </div>
+        </ng-container>
         </div>
       </div>
     </main>
@@ -793,6 +857,85 @@
             </button>
             <button type="button" class="w-full bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white font-body font-semibold text-sm py-3 px-6 rounded-[10px] shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-200" (click)="toggleAnalyseDrawer()">
               Valider le Rapport d'Analyse
+            </button>
+          </footer>
+        </aside>
+      </div>
+      <div *ngIf="showAttributionDrawer" class="fixed inset-0 z-50 flex justify-end">
+        <div class="absolute inset-0 bg-surface/40 backdrop-blur-sm" (click)="toggleAttributionDrawer()"></div>
+        <aside class="relative right-0 top-0 h-full w-full max-w-[500px] bg-white shadow-[-20px_0_40px_rgba(26,46,68,0.15)] flex flex-col p-8 gap-8 overflow-y-auto">
+          <header class="flex justify-between items-start mb-8">
+            <div>
+              <h2 class="text-[22px] font-headline font-bold text-on-surface tracking-tight">Enregistrer l'Attribution</h2>
+              <p class="text-sm text-on-surface-variant mt-1">Contractualisation — Lot sélectionné</p>
+            </div>
+            <button type="button" aria-label="Fermer" class="text-outline hover:text-on-surface transition-colors p-1" (click)="toggleAttributionDrawer()">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </header>
+          <div class="flex-1 overflow-y-auto">
+            <div class="bg-surface-container-low rounded-[10px] p-4 mb-6">
+              <span class="material-symbols-outlined text-primary-container">info</span>
+              <p class="text-sm text-primary-container leading-relaxed mt-2">
+                L'attribution sera initialisée avec le statut <span class="font-semibold text-on-surface">"En cours"</span>. Veuillez remplir les détails ci-dessous.
+              </p>
+            </div>
+            <form class="space-y-6">
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-on-surface" for="idSoumissionAttribuee">Soumission Attribuée</label>
+                <div class="relative">
+                  <select id="idSoumissionAttribuee" class="w-full appearance-none bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 focus:border-[#76d3c8]/40 transition-all shadow-sm">
+                    <option disabled selected value="">Sélectionner une soumission...</option>
+                    <option value="1">Soumission A - Entreprise X</option>
+                    <option value="2">Soumission B - Entreprise Y</option>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-on-surface-variant">
+                    <span class="material-symbols-outlined text-lg">expand_more</span>
+                  </div>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="flex flex-col gap-1.5">
+                  <label class="text-xs font-semibold text-on-surface-variant ml-1" for="MontantEffec">Montant Effectif (FCFA)</label>
+                  <input id="MontantEffec" placeholder="Ex: 15000000" type="number" class="w-full bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 focus:border-[#76d3c8]/40 transition-all shadow-sm placeholder:text-outline-variant" />
+                </div>
+                <div class="flex flex-col gap-1.5">
+                  <label class="text-xs font-semibold text-on-surface-variant ml-1" for="DelaiExecutionEffec">Délai Exé. (Jours)</label>
+                  <input id="DelaiExecutionEffec" placeholder="Ex: 90" type="number" class="w-full bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 focus:border-[#76d3c8]/40 transition-all shadow-sm placeholder:text-outline-variant" />
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="flex flex-col gap-1.5">
+                  <label class="text-xs font-semibold text-on-surface-variant ml-1" for="DateDemarage">Date de Démarrage</label>
+                  <div class="relative">
+                    <input id="DateDemarage" type="date" class="w-full bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 focus:border-[#76d3c8]/40 transition-all shadow-sm" />
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-on-surface-variant">
+                      <span class="material-symbols-outlined text-lg">calendar_month</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex flex-col gap-1.5">
+                  <label class="text-xs font-semibold text-on-surface-variant ml-1" for="DatePrevFin">Date Prévue Fin</label>
+                  <div class="relative">
+                    <input id="DatePrevFin" type="date" class="w-full bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 focus:border-[#76d3c8]/40 transition-all shadow-sm" />
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-on-surface-variant">
+                      <span class="material-symbols-outlined text-lg">event</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <label class="text-xs font-semibold text-on-surface-variant ml-1" for="Observation">Observation</label>
+                <textarea id="Observation" rows="4" placeholder="Ajouter des notes ou observations..." class="w-full bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 resize-none focus:bg-surface-container-lowest focus:ring-0 focus:border-[#76d3c8]/40 transition-all shadow-sm placeholder:text-outline-variant"></textarea>
+              </div>
+            </form>
+          </div>
+          <footer class="pt-6 flex items-center justify-end gap-4 mt-auto">
+            <button type="button" class="w-full bg-transparent hover:bg-surface-container-high text-on-secondary-container font-body font-semibold text-sm py-3 px-6 rounded-[10px] transition-all duration-200" (click)="toggleAttributionDrawer()">
+              Annuler
+            </button>
+            <button type="button" class="w-full bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white font-body font-semibold text-sm py-3 px-6 rounded-[10px] shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-200" (click)="toggleAttributionDrawer()">
+              Enregistrer l'Attribution
             </button>
           </footer>
         </aside>
