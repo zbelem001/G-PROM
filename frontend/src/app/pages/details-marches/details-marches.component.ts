@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../../components/header/header.component';
 import { MenuComponent } from '../../components/menu/menu.component';
 
 @Component({
   standalone: true,
   selector: 'app-details-marches',
-  imports: [CommonModule, HeaderComponent, MenuComponent],
+  imports: [CommonModule, FormsModule, HeaderComponent, MenuComponent],
   templateUrl: './details-marches.component.html',
   styleUrls: ['./details-marches.component.css'],
 })
@@ -19,6 +20,9 @@ export class DetailsMarchesComponent {
   showDocumentDrawer = false;
   showAttributionDrawer = false;
   showAvenantDrawer = false;
+  showStatusDrawer = false;
+  currentStatus = 'Réception';
+  statusOptions = ['Réception', 'Ouvert', 'Consultation', 'Soumissions', 'Analyse SCT', 'Attribution', 'Clôturé'];
 
   setActiveTab(tab: string) {
     this.activeTab = tab;
@@ -50,5 +54,9 @@ export class DetailsMarchesComponent {
 
   toggleAvenantDrawer() {
     this.showAvenantDrawer = !this.showAvenantDrawer;
+  }
+
+  toggleStatusDrawer() {
+    this.showStatusDrawer = !this.showStatusDrawer;
   }
 }
