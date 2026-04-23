@@ -122,6 +122,6 @@ export class SuivieMarchesComponent {
 
   goToDetails() {
     this.closeMarketModal();
-    this.router.navigate(['/marches/details']);
+    this.router.navigate(['/marches/details'], { queryParams: { tab: 'Informations générales' } });
   }
 }
