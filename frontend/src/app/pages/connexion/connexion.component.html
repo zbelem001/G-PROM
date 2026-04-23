@@ -1,18 +1,8 @@
-<main class="flex-grow flex items-center justify-center w-full px-6 py-12 bg-surface-container-low min-h-screen">
-  <div class="max-w-md w-full space-y-8">
-    <div class="text-center mb-10">
-      <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-surface-container-lowest shadow-[0_6px_24px_rgba(26,46,68,0.08)] mb-6 overflow-hidden">
-        <img
-          alt="G-PROM Logo"
-          class="w-12 h-12 object-contain"
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqkCrdm7RrwkoizlhmLTyipZ3IxkoDLaMRnaH8pPui7f_lwIvSVO2W_h6dL7nM-8tifcN-ouuPfvA0UUPedULjlOt6EgdhtlHLAaJS5qvgFh8Y4Jqx-usTbGqK17glry4UblUPXi9L6P6zk29Phi3VcFoEf47y4_AP2RwiEdlCu69dRgRxdGKTD5DVWIPRAYVTrgvsiVWk4N4_Tu56nd3lQRswJX5UAhI1PsJVuvyy0zibTydEj_8fbEl0GRb1fXZhzsQ_I0dN7ND5"
-        />
-      </div>
-      <h1 class="text-[28px] font-extrabold text-[#1a2e44] tracking-tight">G-PROM</h1>
-      <p class="text-secondary font-medium text-sm tracking-wide opacity-80 uppercase">Institut 2iE</p>
-    </div>
+<main class="flex-grow flex items-center justify-center w-full px-6 py-12 bg-surface-container-low min-h-screen login-background">
+  <div class="max-w-xl w-full space-y-8">
+    <div class="text-center mb-10"></div>
 
-    <div class="bg-surface-container-lowest rounded-[16px] shadow-[0_6px_24px_rgba(26,46,68,0.08)] p-10">
+    <div class="bg-surface-container-lowest rounded-none shadow-[0_6px_24px_rgba(26,46,68,0.08)] p-10 border-4 border-transparent color-frame">
       <form class="space-y-6" method="POST" (submit)="onSubmit($event)">
         <div>
           <label class="block text-sm font-bold text-[#1a2e44] mb-2 tracking-tight" for="username">Identifiant</label>
@@ -74,24 +64,9 @@
       </form>
 
       <div class="mt-8 pt-8 border-t border-surface-container-high/50 text-center">
-        <p class="text-sm text-secondary">Accès réservé au personnel autorisé</p>
+        <p class="text-sm text-white bg-red-500 inline-block px-3 py-2 rounded-md">Accès réservé au personnel autorisé</p>
       </div>
     </div>
 
-    <div class="text-center mt-6">
-      <div class="flex items-center justify-center space-x-1">
-        <span class="material-symbols-outlined text-on-primary-container/60 text-[18px]">shield</span>
-        <span class="text-xs font-medium text-secondary/70">Système d'archivage sécurisé</span>
-      </div>
-    </div>
   </div>
 </main>
-
-<footer class="bg-[#f3f3f5] dark:bg-slate-950 flex flex-col md:flex-row justify-between items-center px-12 py-6 w-full font-['Inter'] text-[14px] leading-relaxed">
-  <div class="text-[#1a2e44] dark:text-slate-300 mb-4 md:mb-0">© 2024 Institut 2iE - G-PROM Architectural Ledger</div>
-  <div class="flex gap-8">
-    <a class="text-slate-500 hover:text-[#1a2e44] hover:underline transition-all opacity-80 hover:opacity-100" href="#">Mentions Légales</a>
-    <a class="text-slate-500 hover:text-[#1a2e44] hover:underline transition-all opacity-80 hover:opacity-100" href="#">Assistance</a>
-    <a class="text-slate-500 hover:text-[#1a2e44] hover:underline transition-all opacity-80 hover:opacity-100" href="#">Confidentialité</a>
-  </div>
-</footer>

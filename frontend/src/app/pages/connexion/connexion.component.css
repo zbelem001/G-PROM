@@ -14,3 +14,28 @@ h1, h2, label, button {
 .liquid-gradient {
   background: linear-gradient(135deg, #76d3c8 0%, #43a399 100%);
 }
+
+.color-frame {
+  border-image: conic-gradient(from 90deg, #ef4444 0 25%, #facc15 25% 50%, #22c55e 50% 75%, #3b82f6 75% 100%) 1;
+}
+
+.login-background {
+  position: relative;
+  overflow: hidden;
+}
+
+.login-background::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url('/2ielogo.png');
+  background-repeat: repeat;
+  background-size: 80px;
+  opacity: 0.10;
+  pointer-events: none;
+}
+
+.login-background > .max-w-md {
+  position: relative;
+  z-index: 1;
+}
