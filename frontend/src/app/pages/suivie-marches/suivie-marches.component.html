@@ -1,0 +1,101 @@
+<div class="bg-surface font-body text-on-surface min-h-screen flex overflow-hidden">
+  <app-menu></app-menu>
+  <main class="flex-1 ml-[240px] flex flex-col h-screen overflow-y-auto bg-surface relative">
+    <app-header></app-header>
+    <main class="flex-1 pt-28 p-8 bg-surface">
+      <div class="mx-auto w-full max-w-[1600px]">
+        <div class="mb-8 flex flex-col lg:flex-row lg:justify-between lg:items-end gap-6">
+          <div>
+            <h1 class="font-headline text-[32px] font-extrabold text-[#1a2e44]">Suivi des Marchés</h1>
+            <p class="text-sm text-on-surface-variant mt-2 max-w-2xl">Vue globale du workflow des marchés publics et du suivi des dossiers en cours.</p>
+          </div>
+          <div class="flex gap-3 flex-wrap">
+            <button class="h-10 px-4 rounded-xl font-headline text-sm font-semibold text-on-surface-variant bg-surface-container-high hover:bg-surface-dim transition-colors flex items-center gap-2">
+              <span class="material-symbols-outlined text-[18px]">filter_list</span>
+              Filtrer
+            </button>
+            <button class="h-10 px-5 rounded-[10px] font-headline text-sm font-bold text-white bg-gradient-to-br from-[#76d3c8] to-[#43a399] shadow-sm hover:shadow-[0_6px_16px_rgba(118,211,200,0.3)] transition-all flex items-center gap-2">
+              <span class="material-symbols-outlined text-[18px]">add</span>
+              Nouveau Dossier
+            </button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto pb-8 flex gap-6 snap-x kanban-scrollbar">
+          <div class="w-[340px] shrink-0 flex flex-col snap-start bg-[#effaf7] rounded-[24px] p-4">
+            <div class="flex items-center justify-between mb-4 px-2">
+              <h3 class="font-headline font-bold text-on-surface text-[15px] tracking-wide flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#76d3c8]/40"></span>
+                À lancer
+              </h3>
+              <span class="bg-[#d1f3ea] text-[#1a6e5f] font-label text-xs font-semibold px-2.5 py-1 rounded-full">3</span>
+            </div>
+            <div class="flex-1 bg-surface-container-low rounded-[20px] p-3 flex flex-col gap-3 min-h-[200px]">
+              <div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm hover:shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-300 cursor-grab group relative z-10 border border-transparent hover:border-outline-variant/15">
+                <div class="flex justify-between items-start mb-2">
+                  <span class="font-label text-[11px] font-bold text-on-surface-variant tracking-wider uppercase bg-surface-container px-2 py-1 rounded-md">M-2024-089</span>
+                  <button class="text-outline hover:text-on-surface transition-colors opacity-0 group-hover:opacity-100"><span class="material-symbols-outlined text-[18px]">more_horiz</span></button>
+                </div>
+                <h4 class="font-headline font-semibold text-on-surface text-sm leading-snug mb-4 line-clamp-2">Acquisition de serveurs haute performance pour le laboratoire de calcul.</h4>
+                <div class="flex items-center justify-between pt-3 border-t border-surface-container/50">
+                  <div class="flex items-center gap-2">
+                    <img alt="Responsable" class="w-6 h-6 rounded-full object-cover" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=80&q=80" />
+                    <span class="font-body text-xs text-on-surface-variant font-medium">S. Traoré</span>
+                  </div>
+                  <span class="font-label text-xs text-outline flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                    12 Oct
+                  </span>
+                </div>
+              </div>
+              <div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm hover:shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-300 cursor-grab group border border-transparent hover:border-outline-variant/15">
+                <div class="flex justify-between items-start mb-2">
+                  <span class="font-label text-[11px] font-bold text-on-surface-variant tracking-wider uppercase bg-surface-container px-2 py-1 rounded-md">M-2024-092</span>
+                  <span class="bg-[#ffdad6] text-[#93000a] text-[10px] font-bold px-2 py-0.5 rounded-lg flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">bolt</span>Urgent</span>
+                </div>
+                <h4 class="font-headline font-semibold text-on-surface text-sm leading-snug mb-4 line-clamp-2">Renouvellement des licences logicielles d'ingénierie (AutoCAD, MATLAB).</h4>
+                <div class="flex items-center justify-between pt-3 border-t border-surface-container/50">
+                  <div class="flex items-center gap-2">
+                    <div class="w-6 h-6 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold text-[10px]">IB</div>
+                    <span class="font-body text-xs text-on-surface-variant font-medium">I. Barry</span>
+                  </div>
+                  <span class="font-label text-xs text-outline flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">calendar_today</span>
+                    15 Oct
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="w-[340px] shrink-0 flex flex-col snap-start bg-[#eff2ff] rounded-[24px] p-4">
+            <div class="flex items-center justify-between mb-4 px-2">
+              <h3 class="font-headline font-bold text-on-surface text-[15px] tracking-wide flex items-center gap-2">
+                <span class="w-2.5 h-2.5 rounded-full bg-[#43a399]/20"></span>
+                Réception
+              </h3>
+              <span class="bg-[#dbe5ff] text-[#1f4db3] font-label text-xs font-semibold px-2.5 py-1 rounded-full">1</span>
+            </div>
+            <div class="flex-1 bg-surface-container-low rounded-[20px] p-3 flex flex-col gap-3 min-h-[200px]">
+              <div class="bg-surface-container-lowest rounded-xl p-4 shadow-sm hover:shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-300 cursor-grab group border border-transparent hover:border-outline-variant/15">
+                <div class="flex justify-between items-start mb-2">
+                  <span class="font-label text-[11px] font-bold text-on-surface-variant tracking-wider uppercase bg-surface-container px-2 py-1 rounded-md">M-2024-081</span>
+                </div>
+                <h4 class="font-headline font-semibold text-on-surface text-sm leading-snug mb-4 line-clamp-2">Fourniture de mobilier de bureau pour le nouveau pavillon administratif.</h4>
+                <div class="mb-3">
+                  <div class="flex justify-between text-[10px] font-label text-outline mb-1">
+                    <span>Ouverture des plis</span>
+                    <span>2/3 Reçus</span>
+                  </div>
+                  <div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+                    <div class="bg-tertiary-fixed-dim h-full w-[66%]"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </main>
+</div>
