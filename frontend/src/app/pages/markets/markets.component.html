@@ -55,95 +55,32 @@
               </tr>
             </thead>
             <tbody class="text-sm font-medium text-on-surface divide-y divide-surface-container-low/50">
-              <tr [routerLink]="['/marches/details']" [queryParams]="{ tab: 'Informations générales' }" class="hover:bg-[#f0fdfb] transition-colors group cursor-pointer">
-                <td class="px-6 py-4 whitespace-nowrap font-headline font-bold text-secondary">MAR-2023-045</td>
-                <td class="px-6 py-4 text-on-surface-variant leading-relaxed">Fourniture de matériel informatique pour les laboratoires de recherche...</td>
-                <td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">Fournitures<br/><span class="text-xs text-outline font-normal">Appel d'Offres Ouvert</span></td>
-                <td class="px-6 py-4 whitespace-nowrap">Banque Mondiale</td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="flex items-center gap-2">
-                    <div class="w-6 h-6 rounded-full bg-tertiary-fixed text-tertiary-container flex items-center justify-center text-[10px] font-bold">DT</div>
-                    <span>D. Traoré</span>
-                  </div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="inline-flex items-center px-2.5 py-1 rounded-[6px] text-xs font-bold bg-[#76d3c8]/15 text-[#006a62]">En Cours</span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">12 Oct 2023</td>
-                <td class="px-6 py-4 whitespace-nowrap text-right">
-                  <button [routerLink]="['/marches/details']" [queryParams]="{ tab: 'Informations générales' }" class="p-1.5 text-outline hover:text-primary hover:bg-primary-fixed/20 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 mr-1">
-                    <span class="material-symbols-outlined text-[20px]">visibility</span>
-                  </button>
-                  <button class="p-1.5 text-outline hover:text-secondary hover:bg-secondary-fixed/50 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
-                    <span class="material-symbols-outlined text-[20px]">edit</span>
-                  </button>
-                </td>
+              <tr *ngIf="loading">
+                <td colspan="8" class="px-6 py-8 text-center text-on-surface-variant">Chargement des marchés...</td>
               </tr>
-              <tr [routerLink]="['/marches/details']" [queryParams]="{ tab: 'Informations générales' }" class="hover:bg-[#f0fdfb] transition-colors group cursor-pointer">
-                <td class="px-6 py-4 whitespace-nowrap font-headline font-bold text-secondary">MAR-2023-042</td>
-                <td class="px-6 py-4 text-on-surface-variant leading-relaxed">Réhabilitation des bâtiments administratifs du campus principal</td>
-                <td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">Travaux<br/><span class="text-xs text-outline font-normal">Gré à Gré</span></td>
-                <td class="px-6 py-4 whitespace-nowrap">Fonds Propres</td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="flex items-center gap-2">
-                    <div class="w-6 h-6 rounded-full bg-secondary-container text-secondary flex items-center justify-center text-[10px] font-bold">AK</div>
-                    <span>A. Koné</span>
-                  </div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="inline-flex items-center px-2.5 py-1 rounded-[6px] text-xs font-bold bg-[#76d3c8]/15 text-[#006a62]">En Cours</span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">28 Sep 2023</td>
-                <td class="px-6 py-4 whitespace-nowrap text-right">
-                  <button [routerLink]="['/marches/details']" [queryParams]="{ tab: 'Informations générales' }" class="p-1.5 text-outline hover:text-primary hover:bg-primary-fixed/20 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 mr-1">
-                    <span class="material-symbols-outlined text-[20px]">visibility</span>
-                  </button>
-                  <button class="p-1.5 text-outline hover:text-secondary hover:bg-secondary-fixed/50 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
-                    <span class="material-symbols-outlined text-[20px]">edit</span>
-                  </button>
-                </td>
+              <tr *ngIf="!loading && marches.length === 0">
+                <td colspan="8" class="px-6 py-8 text-center text-on-surface-variant">Aucun marché trouvé. Créez un nouveau marché pour commencer.</td>
               </tr>
-              <tr [routerLink]="['/marches/details']" [queryParams]="{ tab: 'Informations générales' }" class="hover:bg-[#f0fdfb] transition-colors group cursor-pointer">
-                <td class="px-6 py-4 whitespace-nowrap font-headline font-bold text-secondary">MAR-2023-038</td>
-                <td class="px-6 py-4 text-on-surface-variant leading-relaxed">Acquisition de licences logicielles d'ingénierie (AutoCAD, etc.)</td>
-                <td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">Services<br/><span class="text-xs text-outline font-normal">Consultation Restreinte</span></td>
-                <td class="px-6 py-4 whitespace-nowrap">Partenariat AFD</td>
+              <tr *ngFor="let marche of marches" [routerLink]="['/marches/details']" [queryParams]="{ tab: 'Informations générales', id: marche.numbMarche }" class="hover:bg-[#f0fdfb] transition-colors group cursor-pointer">
+                <td class="px-6 py-4 whitespace-nowrap font-headline font-bold text-secondary">{{ marche.numbMarche }}</td>
+                <td class="px-6 py-4 text-on-surface-variant leading-relaxed">{{ marche.Description }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">
+                  {{ marche.NatureOuverture || '—' }}<br />
+                  <span class="text-xs text-outline font-normal">{{ marche.ModePassation || '—' }}</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ marche.Financement || '—' }}</td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="flex items-center gap-2">
-                    <div class="w-6 h-6 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center text-[10px] font-bold">SO</div>
-                    <span>S. Ouédraogo</span>
+                    <div class="w-6 h-6 rounded-full bg-tertiary-fixed text-tertiary-container flex items-center justify-center text-[10px] font-bold">{{ marche.ResponsableSuivi ? marche.ResponsableSuivi.charAt(0) : '–' }}</div>
+                    <span>{{ marche.ResponsableSuivi || '—' }}</span>
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="inline-flex items-center px-2.5 py-1 rounded-[6px] text-xs font-bold bg-secondary/10 text-secondary">Clôturé</span>
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-[6px] text-xs font-bold bg-[#76d3c8]/15 text-[#006a62]">{{ marche.Statut || 'En cours' }}</span>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">05 Sep 2023</td>
+                <td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">{{ marche.DateEnregistrement || '—' }}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-right">
-                  <button [routerLink]="['/marches/details']" [queryParams]="{ tab: 'Informations générales' }" class="p-1.5 text-outline hover:text-primary hover:bg-primary-fixed/20 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 mr-1">
-                    <span class="material-symbols-outlined text-[20px]">visibility</span>
-                  </button>
-                  <button class="p-1.5 text-outline hover:text-secondary hover:bg-secondary-fixed/50 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
-                    <span class="material-symbols-outlined text-[20px]">edit</span>
-                  </button>
-                </td>
-              </tr>
-              <tr [routerLink]="['/marches/details']" [queryParams]="{ tab: 'Informations générales' }" class="hover:bg-[#f0fdfb] transition-colors group cursor-pointer">
-                <td class="px-6 py-4 whitespace-nowrap font-headline font-bold text-secondary">MAR-2023-050</td>
-                <td class="px-6 py-4 text-on-surface-variant leading-relaxed">Étude d'impact environnemental pour le nouveau pôle technologique</td>
-                <td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">Prestations Intellectuelles<br/><span class="text-xs text-outline font-normal">Appel à Manifestation</span></td>
-                <td class="px-6 py-4 whitespace-nowrap">BAD</td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="flex items-center gap-2">
-                    <div class="w-6 h-6 rounded-full bg-tertiary-fixed text-tertiary-container flex items-center justify-center text-[10px] font-bold">DT</div>
-                    <span>D. Traoré</span>
-                  </div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="inline-flex items-center px-2.5 py-1 rounded-[6px] text-xs font-bold bg-[#e8a317]/15 text-[#b0780a]">En Préparation</span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">22 Oct 2023</td>
-                <td class="px-6 py-4 whitespace-nowrap text-right">
-                  <button [routerLink]="['/marches/details']" [queryParams]="{ tab: 'Informations générales' }" class="p-1.5 text-outline hover:text-primary hover:bg-primary-fixed/20 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 mr-1">
+                  <button [routerLink]="['/marches/details']" [queryParams]="{ tab: 'Informations générales', id: marche.numbMarche }" class="p-1.5 text-outline hover:text-primary hover:bg-primary-fixed/20 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 mr-1">
                     <span class="material-symbols-outlined text-[20px]">visibility</span>
                   </button>
                   <button class="p-1.5 text-outline hover:text-secondary hover:bg-secondary-fixed/50 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
@@ -183,8 +120,9 @@
         </div>
         <h2 class="text-3xl font-black text-primary leading-tight">Ajouter un marché</h2>
         <p class="text-secondary font-medium mt-2">Renseignez les informations du marché pour ouvrir un nouveau dossier.</p>
+        <p *ngIf="errorMessage" class="mt-4 text-sm text-error">{{ errorMessage }}</p>
       </div>
-      <form class="flex-1 overflow-y-auto px-8 pb-32 space-y-8">
+      <form (submit)="submitAddMarket($event)" class="flex-1 overflow-y-auto px-8 pb-32 space-y-8">
         <div class="space-y-5">
           <div class="flex items-center gap-2 text-primary/60 border-b border-outline-variant/15 pb-2">
             <span class="material-symbols-outlined text-sm">fingerprint</span>
@@ -192,28 +130,28 @@
           </div>
           <div class="space-y-2">
             <label class="text-sm font-semibold text-secondary ml-1">Numéro de Marché <span class="text-error">*</span></label>
-            <input class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="Ex: MAR-2024-001" required type="text" />
+            <input [(ngModel)]="newMarche.numbMarche" name="numbMarche" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="Ex: MAR-2024-001" required type="text" />
           </div>
           <div class="space-y-2">
             <label class="text-sm font-semibold text-secondary ml-1">Description de l'objet <span class="text-error">*</span></label>
-            <textarea class="w-full p-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none resize-none" placeholder="Détails du marché..." required rows="3"></textarea>
+            <textarea [(ngModel)]="newMarche.Description" name="description" class="w-full p-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none resize-none" placeholder="Détails du marché..." required rows="3"></textarea>
           </div>
           <div class="space-y-2">
             <label class="text-sm font-semibold text-secondary ml-1">Observation</label>
-            <textarea class="w-full p-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none resize-none" placeholder="Saisir des observations générales..." rows="3"></textarea>
+            <textarea [(ngModel)]="newMarche.Observation" name="observation" class="w-full p-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none resize-none" placeholder="Saisir des observations générales..." rows="3"></textarea>
           </div>
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div class="space-y-2">
             <label class="text-sm font-semibold text-secondary ml-1">Nombre de Lots <span class="text-error">*</span></label>
-            <input class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" min="1" required type="number" value="1" />
+            <input [(ngModel)]="newMarche.NombreLot" name="nombreLot" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" min="1" required type="number" />
           </div>
           <div class="space-y-2">
             <label class="text-sm font-semibold text-secondary ml-1">Mode de passation</label>
-            <select class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none appearance-none">
-              <option>Appel d'Offres Ouvert</option>
-              <option>Appel d'Offres Restreint</option>
-              <option>Gré à Gré</option>
+            <select [(ngModel)]="newMarche.ModePassation" name="modePassation" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none appearance-none">
+              <option value="Appel d'Offres Ouvert">Appel d'Offres Ouvert</option>
+              <option value="Appel d'Offres Restreint">Appel d'Offres Restreint</option>
+              <option value="Gré à Gré">Gré à Gré</option>
             </select>
           </div>
         </div>
@@ -278,7 +216,7 @@
         <button type="button" (click)="toggleAddMarket()" class="flex-1 h-14 rounded-[10px] border-2 border-[#1a2e44] text-[#1a2e44] font-bold hover:bg-surface-container-low transition-all">
           Annuler
         </button>
-        <button type="button" class="flex-[2] h-14 rounded-[10px] bg-gradient-to-br from-[#039CD3] to-[#0278a8] text-white font-bold shadow-[0_4px_14px_rgba(3,156,211,0.3)] hover:opacity-95 active:scale-[0.98] transition-all">
+        <button type="submit" class="flex-[2] h-14 rounded-[10px] bg-gradient-to-br from-[#039CD3] to-[#0278a8] text-white font-bold shadow-[0_4px_14px_rgba(3,156,211,0.3)] hover:opacity-95 active:scale-[0.98] transition-all">
           Enregistrer le Marché
         </button>
       </div>

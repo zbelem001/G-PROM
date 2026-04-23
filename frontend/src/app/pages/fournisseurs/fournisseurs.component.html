@@ -36,59 +36,21 @@
             <div class="col-span-2">Statut</div>
             <div class="col-span-1 text-right">Actions</div>
           </div>
-          <div routerLink="/fournisseurs/details" class="grid grid-cols-12 gap-4 px-6 py-4 items-center bg-surface-container-lowest rounded-[16px] shadow-[0_2px_8px_rgba(26,46,68,0.02)] hover:shadow-[0_6px_24px_rgba(26,46,68,0.06)] transition-all cursor-pointer group">
-            <div class="col-span-1 text-sm font-medium text-outline">F-1042</div>
+          <div *ngIf="loading" class="px-6 py-8 text-center text-on-surface-variant">Chargement des fournisseurs...</div>
+          <div *ngIf="!loading && fournisseurs.length === 0" class="px-6 py-8 text-center text-on-surface-variant">Aucun fournisseur trouvé. Ajoutez-en un pour commencer.</div>
+          <div *ngFor="let fournisseur of fournisseurs" [routerLink]="['/fournisseurs/details']" class="grid grid-cols-12 gap-4 px-6 py-4 items-center bg-surface-container-lowest rounded-[16px] shadow-[0_2px_8px_rgba(26,46,68,0.02)] hover:shadow-[0_6px_24px_rgba(26,46,68,0.06)] transition-all cursor-pointer group">
+            <div class="col-span-1 text-sm font-medium text-outline">{{ fournisseur.idFournisseur }}</div>
             <div class="col-span-3">
-              <p class="text-sm font-bold text-[#1a2e44] font-headline">TechSolutions Afrique</p>
+              <p class="text-sm font-bold text-[#1a2e44] font-headline">{{ fournisseur.RaisonSocial }}</p>
             </div>
-            <div class="col-span-2 text-sm text-on-surface-variant">Informatique &amp; IT</div>
-            <div class="col-span-1 text-sm text-on-surface-variant">Ouagadougou</div>
+            <div class="col-span-2 text-sm text-on-surface-variant">{{ fournisseur.DomaineActivite }}</div>
+            <div class="col-span-1 text-sm text-on-surface-variant">{{ fournisseur.Ville }}</div>
             <div class="col-span-2">
-              <p class="text-sm text-on-surface-variant">70 12 34 56</p>
-              <p class="text-xs text-outline truncate">contact@techafrique.bf</p>
-            </div>
-            <div class="col-span-2">
-              <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-[#76d3c8]/15 text-[#43a399]">Classique</span>
-            </div>
-            <div class="col-span-1 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button routerLink="/fournisseurs/details" class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">visibility</span></button>
-              <button class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
-              <button class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">more_vert</span></button>
-            </div>
-          </div>
-          <div routerLink="/fournisseurs/details" class="grid grid-cols-12 gap-4 px-6 py-4 items-center bg-surface-container-lowest rounded-[16px] shadow-[0_2px_8px_rgba(26,46,68,0.02)] hover:shadow-[0_6px_24px_rgba(26,46,68,0.06)] transition-all cursor-pointer group">
-            <div class="col-span-1 text-sm font-medium text-outline">F-1043</div>
-            <div class="col-span-3">
-              <p class="text-sm font-bold text-[#1a2e44] font-headline">BTP Construction Elite</p>
-            </div>
-            <div class="col-span-2 text-sm text-on-surface-variant">Génie Civil &amp; BTP</div>
-            <div class="col-span-1 text-sm text-on-surface-variant">Bobo-Dioulasso</div>
-            <div class="col-span-2">
-              <p class="text-sm text-on-surface-variant">78 90 12 34</p>
-              <p class="text-xs text-outline truncate">info@btpelite.com</p>
+              <p class="text-sm text-on-surface-variant">{{ fournisseur.Telephone1 }}</p>
+              <p class="text-xs text-outline truncate">{{ fournisseur.Email }}</p>
             </div>
             <div class="col-span-2">
-              <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-[#4c6078]/15 text-[#4c6078]">Externe</span>
-            </div>
-            <div class="col-span-1 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button routerLink="/fournisseurs/details" class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">visibility</span></button>
-              <button class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
-              <button class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">more_vert</span></button>
-            </div>
-          </div>
-          <div routerLink="/fournisseurs/details" class="grid grid-cols-12 gap-4 px-6 py-4 items-center bg-surface-container-lowest rounded-[16px] shadow-[0_2px_8px_rgba(26,46,68,0.02)] hover:shadow-[0_6px_24px_rgba(26,46,68,0.06)] transition-all cursor-pointer group">
-            <div class="col-span-1 text-sm font-medium text-outline">F-1044</div>
-            <div class="col-span-3">
-              <p class="text-sm font-bold text-[#1a2e44] font-headline">Global Fournitures SARL</p>
-            </div>
-            <div class="col-span-2 text-sm text-on-surface-variant">Fournitures de bureau</div>
-            <div class="col-span-1 text-sm text-on-surface-variant">Koudougou</div>
-            <div class="col-span-2">
-              <p class="text-sm text-on-surface-variant">60 55 44 33</p>
-              <p class="text-xs text-outline truncate">ventes@globalfournitures.bf</p>
-            </div>
-            <div class="col-span-2">
-              <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-[#76d3c8]/15 text-[#43a399]">Classique</span>
+              <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-[#76d3c8]/15 text-[#43a399]">{{ fournisseur.Statut || 'Externe' }}</span>
             </div>
             <div class="col-span-1 flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
               <button routerLink="/fournisseurs/details" class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">visibility</span></button>
@@ -119,8 +81,9 @@
         </div>
         <h2 class="text-3xl font-black text-primary leading-tight">Ajouter un fournisseur</h2>
         <p class="text-secondary font-medium mt-2">Renseignez les informations du prestataire.</p>
+        <p *ngIf="errorMessage" class="mt-4 text-sm text-error">{{ errorMessage }}</p>
       </div>
-      <form class="flex-1 overflow-y-auto px-8 pb-32 space-y-8">
+      <form (submit)="submitFournisseur($event)" class="flex-1 overflow-y-auto px-8 pb-32 space-y-8">
         <section class="space-y-5 bg-surface-container-low p-6 rounded-[16px]">
           <h3 class="text-xs font-headline font-bold text-on-secondary-container uppercase tracking-wider mb-4 flex items-center gap-2">
             <span class="material-symbols-outlined text-sm">business</span>
@@ -128,25 +91,25 @@
           </h3>
           <div class="space-y-1">
             <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Raison Sociale <span class="text-error">*</span></label>
-            <input class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="Nom de l'entreprise" type="text" />
+            <input [(ngModel)]="newFournisseur.RaisonSocial" name="raisonSocial" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="Nom de l'entreprise" type="text" />
           </div>
           <div class="space-y-1">
             <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Forme Juridique</label>
             <div class="relative">
-              <select class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 pr-10 text-sm text-on-surface appearance-none focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost custom-select transition-colors">
+              <select [(ngModel)]="newFournisseur.FormeJuridique" name="formeJuridique" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 pr-10 text-sm text-on-surface appearance-none focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost custom-select transition-colors">
                 <option disabled selected value="">Sélectionner...</option>
-                <option value="sarl">SARL</option>
-                <option value="sa">SA</option>
-                <option value="sas">SAS</option>
-                <option value="ei">Entreprise Individuelle</option>
-                <option value="autre">Autre</option>
+                <option value="SARL">SARL</option>
+                <option value="SA">SA</option>
+                <option value="SAS">SAS</option>
+                <option value="EI">Entreprise Individuelle</option>
+                <option value="Autre">Autre</option>
               </select>
               <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
             </div>
           </div>
           <div class="space-y-1">
             <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Domaine d'Activité</label>
-            <input class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="Ex: Fourniture de matériel" type="text" />
+            <input [(ngModel)]="newFournisseur.DomaineActivite" name="domaineActivite" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="Ex: Fourniture de matériel" type="text" />
           </div>
         </section>
         <section class="space-y-5">
@@ -156,21 +119,21 @@
           </h3>
           <div class="space-y-1">
             <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Adresse Géo</label>
-            <input class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="Rue, Quartier..." type="text" />
+            <input [(ngModel)]="newFournisseur.AdresseGeo" name="adresseGeo" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="Rue, Quartier..." type="text" />
           </div>
           <div class="space-y-1">
             <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Adresse Postale</label>
-            <input class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="01 BP 0000..." type="text" />
+            <input [(ngModel)]="newFournisseur.AdressePost" name="adressePost" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="01 BP 0000..." type="text" />
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-1 max-w-[320px]">
               <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Ville</label>
-              <input class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="Ville" type="text" />
+              <input [(ngModel)]="newFournisseur.Ville" name="ville" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="Ville" type="text" />
             </div>
             <div class="space-y-1 max-w-[320px]">
               <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Pays</label>
               <div class="relative">
-                <select class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 pr-10 text-sm text-on-surface appearance-none focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost custom-select transition-colors">
+                <select [(ngModel)]="newFournisseur.Pays" name="pays" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 pr-10 text-sm text-on-surface appearance-none focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost custom-select transition-colors">
                   <option selected value="bf">Burkina Faso</option>
                   <option value="bj">Bénin</option>
                   <option value="cv">Cabo Verde</option>
@@ -201,26 +164,26 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-1">
               <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Téléphone 1 <span class="text-error">*</span></label>
-              <input class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="+226..." type="tel" />
+              <input [(ngModel)]="newFournisseur.Telephone1" name="telephone1" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="+226..." type="tel" />
             </div>
             <div class="space-y-1">
               <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Téléphone 2</label>
-              <input class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="Optionnel" type="tel" />
+              <input [(ngModel)]="newFournisseur.Telephone2" name="telephone2" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="Optionnel" type="tel" />
             </div>
           </div>
           <div class="space-y-1">
             <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Email <span class="text-error">*</span></label>
-            <input class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="contact@entreprise.com" type="email" />
+            <input [(ngModel)]="newFournisseur.Email" name="email" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="contact@entreprise.com" type="email" />
           </div>
           <div class="space-y-1">
             <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Site Web</label>
-            <input class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="www.entreprise.com" type="url" />
+            <input [(ngModel)]="newFournisseur.SiteWeb" name="siteWeb" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="www.entreprise.com" type="url" />
           </div>
         </section>
       </form>
       <footer class="p-6 bg-surface-container-lowest border-t border-outline-variant/10 shrink-0 flex justify-end gap-4 shadow-[0_-4px_20px_rgba(26,46,68,0.05)]">
         <button type="button" (click)="toggleAddFournisseur()" class="px-6 py-3 rounded-[10px] text-on-secondary-container font-semibold hover:bg-surface-container-high transition-colors text-sm">Annuler</button>
-        <button type="submit" class="bg-[#039CD3] text-white px-8 py-3 rounded-[10px] font-headline font-bold shadow-[0_4px_14px_rgba(3,156,211,0.25)] hover:bg-[#0278a8] transition-all text-sm flex items-center gap-2">
+        <button type="button" (click)="submitFournisseur($event)" class="bg-[#039CD3] text-white px-8 py-3 rounded-[10px] font-headline font-bold shadow-[0_4px_14px_rgba(3,156,211,0.25)] hover:bg-[#0278a8] transition-all text-sm flex items-center gap-2">
           Enregistrer
           <span class="material-symbols-outlined text-sm">check</span>
         </button>

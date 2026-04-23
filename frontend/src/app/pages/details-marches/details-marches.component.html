@@ -1301,6 +1301,51 @@
                 <label class="block text-sm font-medium text-on-surface" for="docNotes">Notes</label>
                 <textarea id="docNotes" rows="4" class="w-full bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors resize-none" placeholder="Ajouter un commentaire sur le document..."></textarea>
               </div>
+              <div class="space-y-4 pt-4 border-t border-outline-variant/15">
+                <p class="text-sm font-semibold text-on-surface mb-2">Validation de disponibilité des documents</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <label class="flex items-center gap-2 text-sm text-on-surface">
+                    <input type="checkbox" [(ngModel)]="documentFlags.PV_ouverture" name="PV_ouverture" class="h-4 w-4 rounded border-slate-300 text-[#039CD3]" />
+                    PV ouverture
+                  </label>
+                  <label class="flex items-center gap-2 text-sm text-on-surface">
+                    <input type="checkbox" [(ngModel)]="documentFlags.RapportAnalyse" name="RapportAnalyse" class="h-4 w-4 rounded border-slate-300 text-[#039CD3]" />
+                    Rapport d'analyse
+                  </label>
+                  <label class="flex items-center gap-2 text-sm text-on-surface">
+                    <input type="checkbox" [(ngModel)]="documentFlags.PV_attribution" name="PV_attribution" class="h-4 w-4 rounded border-slate-300 text-[#039CD3]" />
+                    PV attribution
+                  </label>
+                  <label class="flex items-center gap-2 text-sm text-on-surface">
+                    <input type="checkbox" [(ngModel)]="documentFlags.Notification" name="Notification" class="h-4 w-4 rounded border-slate-300 text-[#039CD3]" />
+                    Notification
+                  </label>
+                  <label class="flex items-center gap-2 text-sm text-on-surface">
+                    <input type="checkbox" [(ngModel)]="documentFlags.Contrat" name="Contrat" class="h-4 w-4 rounded border-slate-300 text-[#039CD3]" />
+                    Contrat
+                  </label>
+                  <label class="flex items-center gap-2 text-sm text-on-surface">
+                    <input type="checkbox" [(ngModel)]="documentFlags.FED" name="FED" class="h-4 w-4 rounded border-slate-300 text-[#039CD3]" />
+                    FED
+                  </label>
+                  <label class="flex items-center gap-2 text-sm text-on-surface">
+                    <input type="checkbox" [(ngModel)]="documentFlags.BonCommande" name="BonCommande" class="h-4 w-4 rounded border-slate-300 text-[#039CD3]" />
+                    Bon de commande
+                  </label>
+                  <label class="flex items-center gap-2 text-sm text-on-surface">
+                    <input type="checkbox" [(ngModel)]="documentFlags.Avenant" name="Avenant" class="h-4 w-4 rounded border-slate-300 text-[#039CD3]" />
+                    Avenant
+                  </label>
+                  <label class="flex items-center gap-2 text-sm text-on-surface">
+                    <input type="checkbox" [(ngModel)]="documentFlags.OrdreService" name="OrdreService" class="h-4 w-4 rounded border-slate-300 text-[#039CD3]" />
+                    Ordre de service
+                  </label>
+                  <label class="flex items-center gap-2 text-sm text-on-surface">
+                    <input type="checkbox" [(ngModel)]="documentFlags.PV_reception_tech" name="PV_reception_tech" class="h-4 w-4 rounded border-slate-300 text-[#039CD3]" />
+                    PV réception technique
+                  </label>
+                </div>
+              </div>
             </form>
           </div>
           <footer class="pt-6 flex items-center justify-end gap-4 mt-auto">

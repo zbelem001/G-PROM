@@ -106,6 +106,19 @@ export class DetailsMarchesComponent {
   newSctMemberRole = '';
   newSctMemberEmail = '';
 
+  documentFlags = {
+    PV_ouverture: false,
+    RapportAnalyse: false,
+    PV_attribution: false,
+    Notification: false,
+    Contrat: false,
+    FED: false,
+    BonCommande: false,
+    Avenant: false,
+    OrdreService: false,
+    PV_reception_tech: false,
+  };
+
   sctMembers: SctMember[] = [
     {
       id: 'sct-1',
