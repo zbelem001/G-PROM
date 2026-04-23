@@ -341,6 +341,75 @@
         </ng-container>
 
         <ng-container *ngIf="activeTab === 'Consultation'">
+          <div *ngIf="showProviderModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
+            <div class="w-full max-w-3xl rounded-[28px] bg-surface p-6 shadow-2xl border border-surface-container-high overflow-hidden">
+              <div class="flex items-start justify-between gap-4 mb-6">
+                <div>
+                  <p class="text-xs uppercase tracking-[0.2em] text-on-surface-variant">Fournisseur</p>
+                  <h2 class="font-headline text-[24px] font-bold text-on-surface mt-2">{{ selectedProvider?.nom }}</h2>
+                  <p class="mt-3 text-sm leading-6 text-on-surface-variant">Domaine : {{ selectedProvider?.domaine }}</p>
+                </div>
+                <button (click)="closeProviderPopup()" class="rounded-full p-2 bg-surface-container shadow-sm hover:bg-surface-container-hover transition-colors">
+                  <span class="material-symbols-outlined text-[22px]">close</span>
+                </button>
+              </div>
+
+              <div class="grid gap-4 sm:grid-cols-2 mb-6">
+                <div class="rounded-3xl bg-surface-container-low p-4">
+                  <p class="font-label text-[11px] uppercase text-on-surface-variant mb-2">Adresse</p>
+                  <p class="font-semibold text-on-surface">{{ selectedProvider?.adresse }}</p>
+                </div>
+                <div class="rounded-3xl bg-surface-container-low p-4">
+                  <p class="font-label text-[11px] uppercase text-on-surface-variant mb-2">Localisation</p>
+                  <p class="font-semibold text-on-surface">{{ selectedProvider?.ville }}, {{ selectedProvider?.pays }}</p>
+                </div>
+                <div class="rounded-3xl bg-surface-container-low p-4">
+                  <p class="font-label text-[11px] uppercase text-on-surface-variant mb-2">Contact</p>
+                  <p class="font-semibold text-on-surface">{{ selectedProvider?.contact }}</p>
+                  <p class="text-sm text-on-surface-variant">{{ selectedProvider?.fonction }}</p>
+                </div>
+                <div class="rounded-3xl bg-surface-container-low p-4">
+                  <p class="font-label text-[11px] uppercase text-on-surface-variant mb-2">Coordonnées</p>
+                  <p class="font-semibold text-on-surface">{{ selectedProvider?.telephone1 }}</p>
+                  <p class="text-sm text-on-surface-variant">{{ selectedProvider?.telephone2 }}</p>
+                  <p class="text-sm text-on-surface-variant">{{ selectedProvider?.email }}</p>
+                </div>
+              </div>
+
+              <div class="grid gap-4 sm:grid-cols-3 mb-6">
+                <div class="rounded-3xl bg-surface-container-low p-4">
+                  <p class="font-label text-[11px] uppercase text-on-surface-variant mb-2">IFU</p>
+                  <p class="font-semibold text-on-surface">{{ selectedProvider?.ifu }}</p>
+                </div>
+                <div class="rounded-3xl bg-surface-container-low p-4">
+                  <p class="font-label text-[11px] uppercase text-on-surface-variant mb-2">RCCM</p>
+                  <p class="font-semibold text-on-surface">{{ selectedProvider?.rccm }}</p>
+                </div>
+                <div class="rounded-3xl bg-surface-container-low p-4">
+                  <p class="font-label text-[11px] uppercase text-on-surface-variant mb-2">Statut</p>
+                  <p class="font-semibold text-on-surface">{{ selectedProvider?.statut }}</p>
+                </div>
+              </div>
+
+              <div *ngIf="selectedProvider?.documents?.length" class="mb-6">
+                <h3 class="text-lg font-semibold text-on-surface mb-4">Documents fournisseur</h3>
+                <div class="space-y-3">
+                  <div *ngFor="let doc of selectedProvider?.documents" class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-[18px] bg-surface-container-low p-4">
+                    <div>
+                      <p class="font-semibold text-on-surface">{{ doc.nom }}</p>
+                      <p class="text-sm text-on-surface-variant">{{ doc.type }} • {{ doc.date }}</p>
+                    </div>
+                    <span class="text-[11px] px-3 py-1 rounded-full bg-surface-container text-on-surface-variant">{{ doc.statut }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex justify-end gap-3">
+                <button (click)="closeProviderPopup()" class="h-11 px-5 rounded-[12px] bg-surface-container text-on-surface font-semibold">Fermer</button>
+              </div>
+            </div>
+          </div>
+
           <div class="bg-surface-container-low rounded-[24px] p-6 md:p-8 flex flex-col gap-6 relative">
             <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-6">
               <div>
@@ -374,35 +443,13 @@
                   </tr>
                 </thead>
                 <tbody class="text-sm divide-y divide-surface-container-high/50">
-                  <tr class="hover:bg-surface-bright transition-colors group">
-                    <td class="px-6 py-4"><span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-[#76d3c8]/15 text-[#43a399]">Lot 1</span></td>
-                    <td class="px-6 py-4 font-medium text-[#1a2e44]">Tech Solutions S.A.</td>
-                    <td class="px-6 py-4 text-on-surface-variant">Équipement Informatique</td>
-                    <td class="px-6 py-4 text-on-surface-variant">12 Oct 2023</td>
+                  <tr *ngFor="let consultation of consultations" class="hover:bg-surface-bright transition-colors group">
+                    <td class="px-6 py-4"><span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-[#76d3c8]/15 text-[#43a399]">{{ consultation.lot }}</span></td>
+                    <td class="px-6 py-4 font-medium text-[#1a2e44]">{{ consultation.fournisseur.nom }}</td>
+                    <td class="px-6 py-4 text-on-surface-variant">{{ consultation.fournisseur.domaine }}</td>
+                    <td class="px-6 py-4 text-on-surface-variant">{{ consultation.date }}</td>
                     <td class="px-6 py-4 text-right">
-                      <button type="button" (click)="toggleConsultationDrawer()" class="text-slate-400 hover:text-[#E42819] transition-colors p-1 opacity-0 group-hover:opacity-100">
-                        <span class="material-symbols-outlined text-[20px]">visibility</span>
-                      </button>
-                    </td>
-                  </tr>
-                  <tr class="hover:bg-surface-bright transition-colors group">
-                    <td class="px-6 py-4"><span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-[#76d3c8]/15 text-[#43a399]">Lot 1</span></td>
-                    <td class="px-6 py-4 font-medium text-[#1a2e44]">Innova Systems</td>
-                    <td class="px-6 py-4 text-on-surface-variant">Équipement Informatique</td>
-                    <td class="px-6 py-4 text-on-surface-variant">12 Oct 2023</td>
-                    <td class="px-6 py-4 text-right">
-                      <button type="button" (click)="toggleConsultationDrawer()" class="text-slate-400 hover:text-[#E42819] transition-colors p-1 opacity-0 group-hover:opacity-100">
-                        <span class="material-symbols-outlined text-[20px]">visibility</span>
-                      </button>
-                    </td>
-                  </tr>
-                  <tr class="hover:bg-surface-bright transition-colors group">
-                    <td class="px-6 py-4"><span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-[#76d3c8]/15 text-[#43a399]">Lot 2</span></td>
-                    <td class="px-6 py-4 font-medium text-[#1a2e44]">Bureau Plus</td>
-                    <td class="px-6 py-4 text-on-surface-variant">Aménagement Espace</td>
-                    <td class="px-6 py-4 text-on-surface-variant">14 Oct 2023</td>
-                    <td class="px-6 py-4 text-right">
-                      <button type="button" (click)="toggleConsultationDrawer()" class="text-slate-400 hover:text-[#E42819] transition-colors p-1 opacity-0 group-hover:opacity-100">
+                      <button type="button" (click)="openProviderPopup(consultation)" class="text-slate-400 hover:text-[#E42819] transition-colors p-1 opacity-0 group-hover:opacity-100">
                         <span class="material-symbols-outlined text-[20px]">visibility</span>
                       </button>
                     </td>
@@ -453,41 +500,15 @@
                   </tr>
                 </thead>
                 <tbody class="text-sm divide-y divide-surface-container-high/50">
-                  <tr class="hover:bg-surface-bright transition-colors group">
-                    <td class="px-6 py-4 font-mono text-xs text-secondary-fixed-variant">SM-2023-015</td>
-                    <td class="px-6 py-4 font-medium text-[#1a2e44]">Lot 1</td>
-                    <td class="px-6 py-4">Tech Solutions S.A.</td>
-                    <td class="px-6 py-4 text-right font-headline font-semibold text-[#1a2e44]">33 500 000</td>
-                    <td class="px-6 py-4 text-center">45</td>
-                    <td class="px-6 py-4 text-center text-on-surface-variant">3</td>
+                  <tr *ngFor="let submission of submissions" class="hover:bg-surface-bright transition-colors group">
+                    <td class="px-6 py-4 font-mono text-xs text-secondary-fixed-variant">{{ submission.id }}</td>
+                    <td class="px-6 py-4 font-medium text-[#1a2e44]">{{ submission.lot }}</td>
+                    <td class="px-6 py-4">{{ submission.fournisseur.nom }}</td>
+                    <td class="px-6 py-4 text-right font-headline font-semibold text-[#1a2e44]">{{ submission.montant }}</td>
+                    <td class="px-6 py-4 text-center">{{ submission.delai }}</td>
+                    <td class="px-6 py-4 text-center text-on-surface-variant">{{ submission.exemplaires }}</td>
                     <td class="px-6 py-4 text-right">
-                      <button type="button" (click)="toggleSoumissionDrawer()" class="text-slate-400 hover:text-[#76d3c8] transition-colors p-1 opacity-0 group-hover:opacity-100">
-                        <span class="material-symbols-outlined text-[20px]">visibility</span>
-                      </button>
-                    </td>
-                  </tr>
-                  <tr class="hover:bg-surface-bright transition-colors group">
-                    <td class="px-6 py-4 font-mono text-xs text-secondary-fixed-variant">SM-2023-016</td>
-                    <td class="px-6 py-4 font-medium text-[#1a2e44]">Lot 2</td>
-                    <td class="px-6 py-4">Bureau Plus</td>
-                    <td class="px-6 py-4 text-right font-headline font-semibold text-[#1a2e44]">12 250 000</td>
-                    <td class="px-6 py-4 text-center">30</td>
-                    <td class="px-6 py-4 text-center text-on-surface-variant">2</td>
-                    <td class="px-6 py-4 text-right">
-                      <button type="button" (click)="toggleSoumissionDrawer()" class="text-slate-400 hover:text-[#76d3c8] transition-colors p-1 opacity-0 group-hover:opacity-100">
-                        <span class="material-symbols-outlined text-[20px]">visibility</span>
-                      </button>
-                    </td>
-                  </tr>
-                  <tr class="hover:bg-surface-bright transition-colors group">
-                    <td class="px-6 py-4 font-mono text-xs text-secondary-fixed-variant">SM-2023-017</td>
-                    <td class="px-6 py-4 font-medium text-[#1a2e44]">Lot 3</td>
-                    <td class="px-6 py-4">Papeterie Centrale</td>
-                    <td class="px-6 py-4 text-right font-headline font-semibold text-[#1a2e44]">5 500 000</td>
-                    <td class="px-6 py-4 text-center">15</td>
-                    <td class="px-6 py-4 text-center text-on-surface-variant">4</td>
-                    <td class="px-6 py-4 text-right">
-                      <button type="button" (click)="toggleSoumissionDrawer()" class="text-slate-400 hover:text-[#76d3c8] transition-colors p-1 opacity-0 group-hover:opacity-100">
+                      <button type="button" (click)="openSubmissionPopup(submission)" class="text-slate-400 hover:text-[#76d3c8] transition-colors p-1 opacity-0 group-hover:opacity-100">
                         <span class="material-symbols-outlined text-[20px]">visibility</span>
                       </button>
                     </td>
@@ -497,6 +518,75 @@
             </div>
           </div>
         </ng-container>
+
+        <div *ngIf="showSubmissionModal && selectedSubmission as submission" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
+          <div class="w-full max-w-3xl rounded-[28px] bg-surface p-6 shadow-2xl border border-surface-container-high overflow-hidden">
+            <div class="flex items-start justify-between gap-4 mb-6">
+              <div>
+                <p class="text-xs uppercase tracking-[0.2em] text-on-surface-variant">Détail de la soumission</p>
+                <h2 class="font-headline text-[24px] font-bold text-on-surface mt-2">{{ submission.id }}</h2>
+                <p class="mt-3 text-sm leading-6 text-on-surface-variant">{{ submission.fournisseur.nom }} • {{ submission.lot }}</p>
+              </div>
+              <button (click)="closeSubmissionPopup()" class="rounded-full p-2 bg-surface-container shadow-sm hover:bg-surface-container-hover transition-colors">
+                <span class="material-symbols-outlined text-[22px]">close</span>
+              </button>
+            </div>
+
+            <div class="grid gap-4 sm:grid-cols-2 mb-6">
+              <div class="rounded-3xl bg-surface-container-low p-4">
+                <p class="font-label text-[11px] uppercase text-on-surface-variant mb-2">Lot concerné</p>
+                <p class="font-semibold text-on-surface">{{ submission.lot }}</p>
+              </div>
+              <div class="rounded-3xl bg-surface-container-low p-4">
+                <p class="font-label text-[11px] uppercase text-on-surface-variant mb-2">Montant</p>
+                <p class="font-semibold text-on-surface">{{ submission.montant }}</p>
+              </div>
+              <div class="rounded-3xl bg-surface-container-low p-4">
+                <p class="font-label text-[11px] uppercase text-on-surface-variant mb-2">Délai</p>
+                <p class="font-semibold text-on-surface">{{ submission.delai }} jours</p>
+              </div>
+              <div class="rounded-3xl bg-surface-container-low p-4">
+                <p class="font-label text-[11px] uppercase text-on-surface-variant mb-2">Exemplaires</p>
+                <p class="font-semibold text-on-surface">{{ submission.exemplaires }}</p>
+              </div>
+            </div>
+
+            <div class="grid gap-4 sm:grid-cols-2 mb-6">
+              <div class="rounded-3xl bg-surface-container-low p-4">
+                <p class="font-label text-[11px] uppercase text-on-surface-variant mb-2">Fournisseur</p>
+                <p class="font-semibold text-on-surface">{{ submission.fournisseur.nom }}</p>
+                <p class="text-sm text-on-surface-variant">{{ submission.fournisseur.domaine }}</p>
+              </div>
+              <div class="rounded-3xl bg-surface-container-low p-4">
+                <p class="font-label text-[11px] uppercase text-on-surface-variant mb-2">Contact</p>
+                <p class="font-semibold text-on-surface">{{ submission.fournisseur.contact }}</p>
+                <p class="text-sm text-on-surface-variant">{{ submission.fournisseur.fonction }}</p>
+              </div>
+            </div>
+
+            <div class="rounded-[24px] bg-[#f6fffb] border border-[#76d3c8]/30 p-5 mb-6">
+              <p class="text-sm text-on-surface-variant mb-2">Observation</p>
+              <p class="text-sm text-on-surface">{{ submission.observation }}</p>
+            </div>
+            <div class="mb-6" *ngIf="submission.fournisseur.documents.length">
+              <h3 class="text-lg font-semibold text-on-surface mb-4">Documents fournisseur</h3>
+              <div class="space-y-3">
+                <div *ngFor="let doc of submission.fournisseur.documents" class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-[18px] bg-surface-container-low p-4">
+                  <div>
+                    <p class="font-semibold text-on-surface">{{ doc.nom }}</p>
+                    <p class="text-sm text-on-surface-variant">{{ doc.type }} • {{ doc.date }}</p>
+                  </div>
+                  <span class="text-[11px] px-3 py-1 rounded-full bg-surface-container text-on-surface-variant">{{ doc.statut }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-end gap-3">
+              <button (click)="closeSubmissionPopup()" class="h-11 px-5 rounded-[12px] bg-surface-container text-on-surface font-semibold">Fermer</button>
+            </div>
+          </div>
+        </div>
+
         <ng-container *ngIf="activeTab === 'Analyse (SCT)'">
           <div class="bg-surface-container-low rounded-[24px] p-6 md:p-8 flex flex-col gap-6 relative">
             <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-6">
