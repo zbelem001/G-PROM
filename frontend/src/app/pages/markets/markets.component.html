@@ -198,6 +198,10 @@
             <label class="text-sm font-semibold text-secondary ml-1">Description de l'objet <span class="text-error">*</span></label>
             <textarea class="w-full p-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none resize-none" placeholder="Détails du marché..." required rows="3"></textarea>
           </div>
+          <div class="space-y-2">
+            <label class="text-sm font-semibold text-secondary ml-1">Observation</label>
+            <textarea class="w-full p-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none resize-none" placeholder="Saisir des observations générales..." rows="3"></textarea>
+          </div>
         </div>
         <div class="grid grid-cols-2 gap-4">
           <div class="space-y-2">
@@ -226,6 +230,30 @@
             <div class="space-y-2">
               <label class="text-sm font-semibold text-secondary ml-1">Budget estimatif</label>
               <input class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="45 000 000 XOF" type="text" />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-secondary ml-1">Nature d'ouverture</label>
+              <input class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="Ex: Ouverture publique" type="text" />
+            </div>
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-secondary ml-1">Date d'enregistrement</label>
+              <input class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" type="date" />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-secondary ml-1">Date prévisionnelle réception</label>
+              <input class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" type="date" />
+            </div>
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-secondary ml-1">Statut</label>
+              <select class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none appearance-none">
+                <option>À lancer</option>
+                <option>En cours</option>
+                <option>Clôturé</option>
+              </select>
             </div>
           </div>
         </div>
