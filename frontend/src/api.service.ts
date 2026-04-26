@@ -2,8 +2,11 @@ const API_BASE_URL = 'http://localhost:3000';
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
+    cache: 'no-store',
     headers: {
       'Content-Type': 'application/json',
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache',
       ...(init.headers || {}),
     },
     ...init,
@@ -65,6 +68,7 @@ export interface Fournisseur {
   Telephone1Repr: string;
   EmailRepr: string;
   Statut?: string;
+  dateAjout?: string;
 }
 
 export interface Utilisateur {

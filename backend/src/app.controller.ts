@@ -84,22 +84,22 @@ export class AppController {
 
   // Fournisseurs
   @Get('fournisseurs')
-  getFournisseurs(): Fournisseur[] {
+  async getFournisseurs(): Promise<Fournisseur[]> {
     return this.appService.getFournisseurs();
   }
 
   @Get('fournisseurs/:idFournisseur')
-  getFournisseur(@Param('idFournisseur') idFournisseur: string): Fournisseur {
+  async getFournisseur(@Param('idFournisseur') idFournisseur: string): Promise<Fournisseur> {
     return this.appService.getFournisseur(Number(idFournisseur));
   }
 
   @Post('fournisseurs')
-  createFournisseur(@Body() fournisseur: Partial<Fournisseur>): Fournisseur {
+  async createFournisseur(@Body() fournisseur: Partial<Fournisseur>): Promise<Fournisseur> {
     return this.appService.createFournisseur(fournisseur);
   }
 
   @Put('fournisseurs/:idFournisseur')
-  updateFournisseur(@Param('idFournisseur') idFournisseur: string, @Body() changes: Partial<Fournisseur>): Fournisseur {
+  async updateFournisseur(@Param('idFournisseur') idFournisseur: string, @Body() changes: Partial<Fournisseur>): Promise<Fournisseur> {
     return this.appService.updateFournisseur(Number(idFournisseur), changes);
   }
 

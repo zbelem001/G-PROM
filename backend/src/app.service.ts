@@ -50,6 +50,7 @@ export interface Fournisseur {
   Telephone1Repr: string;
   EmailRepr: string;
   Statut?: string;
+  dateAjout?: string;
 }
 
 export interface Utilisateur {
@@ -141,8 +142,11 @@ export class AppService {
   private nextUtilisateurId = 1;
   private nextAvenantId = 1;
   private readonly dataFilePath = join(process.cwd(), 'data.json');
+  private supabaseUrl: string | null = null;
+  private supabaseKey: string | null = null;
 
   constructor() {
+    this.loadSupabaseConfig();
     this.loadData();
   }
 
@@ -183,6 +187,163 @@ export class AppService {
       documents: this.documents,
     };
     writeFileSync(this.dataFilePath, JSON.stringify(data, null, 2), 'utf8');
+  }
+
+  private loadSupabaseConfig(): void {
+    const env = this.readEnvFile();
+    this.supabaseUrl = process.env.SUPABASE_URL || env.SUPABASE_URL || null;
+    this.supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY || env.SUPABASE_SERVICE_ROLE_KEY || env.SUPABASE_KEY || null;
+  }
+
+  private readEnvFile(): Record<string, string> {
+    const envPath = join(process.cwd(), '.env');
+    if (!existsSync(envPath)) {
+      return {};
+    }
+
+    const content = readFileSync(envPath, 'utf8');
+    return content
+      .split(/\r?\n/)
+      .filter((line) => line.trim() && !line.trim().startsWith('#'))
+      .reduce((acc, line) => {
+        const [key, ...valueParts] = line.split('=');
+        acc[key.trim()] = valueParts.join('=').trim();
+        return acc;
+      }, {} as Record<string, string>);
+  }
+
+  private async fetchSupabaseFournisseurs(): Promise<Fournisseur[]> {
+    if (!this.supabaseUrl || !this.supabaseKey) {
+      return [];
+    }
+
+    try {
+      const response = await fetch(`${this.supabaseUrl}/rest/v1/Fournisseur?select=*&order=dateajout.desc`, {
+        headers: {
+          apikey: this.supabaseKey,
+          Authorization: `Bearer ${this.supabaseKey}`,
+          Accept: 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        return [];
+      }
+
+      const rows = (await response.json()) as Array<Record<string, unknown>>;
+      return rows.map((row) => this.mapSupabaseRowToFournisseur(row));
+    } catch {
+      return [];
+    }
+  }
+
+  private async insertSupabaseFournisseur(fournisseur: Fournisseur): Promise<void> {
+    if (!this.supabaseUrl || !this.supabaseKey) {
+      return;
+    }
+
+    const payload = [{
+      idfournisseur: fournisseur.idFournisseur,
+      raisonsocial: fournisseur.RaisonSocial,
+      formejuridique: fournisseur.FormeJuridique,
+      adressegeo: fournisseur.AdresseGeo,
+      adressepost: fournisseur.AdressePost,
+      ville: fournisseur.Ville,
+      pays: fournisseur.Pays,
+      telephone1: fournisseur.Telephone1,
+      telephone2: fournisseur.Telephone2 ?? null,
+      email: fournisseur.Email,
+      siteweb: fournisseur.SiteWeb ?? null,
+      domaineactivite: fournisseur.DomaineActivite,
+      disposeifu: fournisseur.DisposeIFU,
+      numifu: fournisseur.numIFU ?? null,
+      disposerccm: fournisseur.DisposeRCCM,
+      numrccm: fournisseur.numRCCM ?? null,
+      nomprenomrepr: fournisseur.NomPrenomRepr,
+      fonctionrepr: fournisseur.FonctionRepr ?? null,
+      telephone1repr: fournisseur.Telephone1Repr,
+      emailrepr: fournisseur.EmailRepr,
+      statut: fournisseur.Statut ?? 'Externe',
+      dateajout: new Date().toISOString(),
+    }];
+
+    const response = await fetch(`${this.supabaseUrl}/rest/v1/Fournisseur`, {
+      method: 'POST',
+      headers: {
+        apikey: this.supabaseKey,
+        Authorization: `Bearer ${this.supabaseKey}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const body = await response.text();
+      throw new BadRequestException(`Supabase insert failed: ${response.status} ${body}`);
+    }
+  }
+
+  private async fetchSupabaseFournisseur(idFournisseur: number): Promise<Fournisseur | null> {
+    if (!this.supabaseUrl || !this.supabaseKey) {
+      return null;
+    }
+
+    try {
+      const response = await fetch(`${this.supabaseUrl}/rest/v1/Fournisseur?select=*&idfournisseur=eq.${idFournisseur}`, {
+        headers: {
+          apikey: this.supabaseKey,
+          Authorization: `Bearer ${this.supabaseKey}`,
+          Accept: 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        return null;
+      }
+
+      const rows = (await response.json()) as Array<Record<string, unknown>>;
+      if (rows.length === 0) {
+        return null;
+      }
+
+      return this.mapSupabaseRowToFournisseur(rows[0]);
+    } catch {
+      return null;
+    }
+  }
+
+  private mapSupabaseRowToFournisseur(row: Record<string, unknown>): Fournisseur {
+    const normalized: Record<string, unknown> = {};
+    Object.entries(row).forEach(([key, value]) => {
+      normalized[key.toLowerCase()] = value;
+    });
+
+    return {
+      idFournisseur: Number(normalized['idfournisseur'] ?? normalized['idFournisseur'] ?? 0),
+      RaisonSocial: String(normalized['raisonsocial'] ?? normalized['raisonsocial'] ?? ''),
+      FormeJuridique: String(normalized['formejuridique'] ?? normalized['formejuridique'] ?? ''),
+      AdresseGeo: String(normalized['adressegeo'] ?? normalized['adressegeo'] ?? ''),
+      AdressePost: String(normalized['adressepost'] ?? normalized['adressepost'] ?? ''),
+      Ville: String(normalized['ville'] ?? normalized['ville'] ?? ''),
+      Pays: String(normalized['pays'] ?? normalized['pays'] ?? ''),
+      Telephone1: String(normalized['telephone1'] ?? normalized['telephone1'] ?? ''),
+      Telephone2: normalized['telephone2'] ? String(normalized['telephone2']) : undefined,
+      Email: String(normalized['email'] ?? normalized['email'] ?? ''),
+      SiteWeb: normalized['siteweb'] ? String(normalized['siteweb']) : undefined,
+      DomaineActivite: String(normalized['domaineactivite'] ?? normalized['domaineactivite'] ?? ''),
+      DisposeIFU: Boolean(normalized['disposeifu'] ?? normalized['disposeifu'] ?? false),
+      numIFU: normalized['numifu'] ? String(normalized['numifu']) : undefined,
+      DisposeRCCM: Boolean(normalized['disposerccm'] ?? normalized['disposerccm'] ?? false),
+      numRCCM: normalized['numrccm'] ? String(normalized['numrccm']) : undefined,
+      NomPrenomRepr: String(normalized['nomprenomrepr'] ?? normalized['nomprenomrepr'] ?? ''),
+      FonctionRepr: normalized['fonctionrepr'] ? String(normalized['fonctionrepr']) : undefined,
+      Telephone1Repr: String(normalized['telephone1repr'] ?? normalized['telephone1repr'] ?? ''),
+      EmailRepr: String(normalized['emailrepr'] ?? normalized['emailrepr'] ?? ''),
+      Statut: normalized['statut'] ? String(normalized['statut']) : undefined,
+      dateAjout: normalized['dateajout'] ? String(normalized['dateajout']) : undefined,
+    };
   }
 
   getHello(): string {
@@ -279,19 +440,38 @@ export class AppService {
   }
 
   // Fournisseur
-  getFournisseurs(): Fournisseur[] {
-    return this.fournisseurs;
+  async getFournisseurs(): Promise<Fournisseur[]> {
+    const remoteFournisseurs = await this.fetchSupabaseFournisseurs();
+    const remoteIds = new Set(remoteFournisseurs.map((f) => f.idFournisseur));
+    const rows = [
+      ...remoteFournisseurs,
+      ...this.fournisseurs.filter((item) => !remoteIds.has(item.idFournisseur)),
+    ];
+    return rows.sort((a, b) => {
+      const aDate = a.dateAjout ? Date.parse(a.dateAjout) : 0;
+      const bDate = b.dateAjout ? Date.parse(b.dateAjout) : 0;
+      if (aDate !== bDate) return bDate - aDate;
+      return b.idFournisseur - a.idFournisseur;
+    });
   }
 
-  getFournisseur(idFournisseur: number): Fournisseur {
-    const fournisseur = this.fournisseurs.find((item) => item.idFournisseur === idFournisseur);
-    if (!fournisseur) {
-      throw new NotFoundException(`Fournisseur ${idFournisseur} not found`);
+  async getFournisseur(idFournisseur: number): Promise<Fournisseur> {
+    const local = this.fournisseurs.find((item) => item.idFournisseur === idFournisseur);
+    if (local) {
+      return local;
     }
-    return fournisseur;
+
+    if (this.supabaseUrl && this.supabaseKey) {
+      const remote = await this.fetchSupabaseFournisseur(idFournisseur);
+      if (remote) {
+        return remote;
+      }
+    }
+
+    throw new NotFoundException(`Fournisseur ${idFournisseur} not found`);
   }
 
-  createFournisseur(fournisseur: Partial<Fournisseur>): Fournisseur {
+  async createFournisseur(fournisseur: Partial<Fournisseur>): Promise<Fournisseur> {
     if (!fournisseur.RaisonSocial || !fournisseur.FormeJuridique || !fournisseur.AdresseGeo || !fournisseur.AdressePost || !fournisseur.Ville || !fournisseur.Pays || !fournisseur.Telephone1 || !fournisseur.Email || !fournisseur.DomaineActivite || fournisseur.DisposeIFU === undefined || fournisseur.DisposeRCCM === undefined || !fournisseur.NomPrenomRepr || !fournisseur.Telephone1Repr || !fournisseur.EmailRepr) {
       throw new BadRequestException('Missing required Fournisseur fields');
     }
@@ -317,14 +497,18 @@ export class AppService {
       Telephone1Repr: fournisseur.Telephone1Repr,
       EmailRepr: fournisseur.EmailRepr,
       Statut: fournisseur.Statut ?? 'Externe',
+      dateAjout: new Date().toISOString(),
     };
+
+    await this.insertSupabaseFournisseur(newFournisseur);
+
     this.fournisseurs.push(newFournisseur);
     this.saveData();
     return newFournisseur;
   }
 
-  updateFournisseur(idFournisseur: number, changes: Partial<Fournisseur>): Fournisseur {
-    const fournisseur = this.getFournisseur(idFournisseur);
+  async updateFournisseur(idFournisseur: number, changes: Partial<Fournisseur>): Promise<Fournisseur> {
+    const fournisseur = await this.getFournisseur(idFournisseur);
     Object.assign(fournisseur, changes);
     this.saveData();
     return fournisseur;
