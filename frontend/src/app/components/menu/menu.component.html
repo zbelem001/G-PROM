@@ -16,23 +16,23 @@
     </div>
   </div>
   <nav class="flex-1 flex flex-col gap-2">
-    <a routerLink="/dashboard" routerLinkActive="text-white bg-[#039CD3] no-hover" [routerLinkActiveOptions]="{ exact: true }" class="relative flex items-center gap-3 px-6 py-3 text-slate-700 font-bold hover:text-slate-900 hover:bg-slate-100 rounded-[12px] transition-all duration-200 scale-95 active:scale-100 transition-transform">
+    <a href="/dashboard" (click)="navigate('/dashboard',$event)" routerLink="/dashboard" routerLinkActive="text-white bg-[#039CD3] no-hover" [routerLinkActiveOptions]="{ exact: true }" class="relative flex items-center gap-3 px-6 py-3 text-slate-700 font-bold hover:text-slate-900 hover:bg-slate-100 rounded-[12px] transition-all duration-200 scale-95 active:scale-100 transition-transform">
       <span class="material-symbols-outlined">dashboard</span>
       <span class="text-sm">Dashboard</span>
     </a>
-    <a routerLink="/marches" routerLinkActive="text-white bg-[#039CD3] no-hover" class="flex items-center gap-3 px-6 py-3 text-slate-700 font-bold hover:text-slate-900 hover:bg-slate-100 rounded-[12px] transition-all duration-200 scale-95 active:scale-100 transition-transform">
+    <a href="/marches" (click)="navigate('/marches',$event)" routerLink="/marches" routerLinkActive="text-white bg-[#039CD3] no-hover" [routerLinkActiveOptions]="{ exact: true }" class="flex items-center gap-3 px-6 py-3 text-slate-700 font-bold hover:text-slate-900 hover:bg-slate-100 rounded-[12px] transition-all duration-200 scale-95 active:scale-100 transition-transform">
       <span class="material-symbols-outlined">inventory_2</span>
       <span class="text-sm">Marchés</span>
     </a>
-    <a routerLink="/fournisseurs" routerLinkActive="text-white bg-[#039CD3] no-hover" class="flex items-center gap-3 px-6 py-3 text-slate-700 font-bold hover:text-slate-900 hover:bg-slate-100 rounded-[12px] transition-all duration-200 scale-95 active:scale-100 transition-transform">
+    <a href="/fournisseurs" (click)="navigate('/fournisseurs',$event)" routerLink="/fournisseurs" routerLinkActive="text-white bg-[#039CD3] no-hover" [routerLinkActiveOptions]="{ exact: true }" class="flex items-center gap-3 px-6 py-3 text-slate-700 font-bold hover:text-slate-900 hover:bg-slate-100 rounded-[12px] transition-all duration-200 scale-95 active:scale-100 transition-transform">
       <span class="material-symbols-outlined">groups</span>
       <span class="text-sm">Fournisseurs</span>
     </a>
-    <a routerLink="/rapports" routerLinkActive="text-white bg-[#039CD3] no-hover" class="flex items-center gap-3 px-6 py-3 text-slate-700 font-bold hover:text-slate-900 hover:bg-slate-100 rounded-[12px] transition-all duration-200 scale-95 active:scale-100 transition-transform">
+    <a href="/rapports" (click)="navigate('/rapports',$event)" routerLink="/rapports" routerLinkActive="text-white bg-[#039CD3] no-hover" [routerLinkActiveOptions]="{ exact: true }" class="flex items-center gap-3 px-6 py-3 text-slate-700 font-bold hover:text-slate-900 hover:bg-slate-100 rounded-[12px] transition-all duration-200 scale-95 active:scale-100 transition-transform">
       <span class="material-symbols-outlined">assessment</span>
       <span class="text-sm">Rapports</span>
     </a>
-    <a routerLink="/suivie-marches" routerLinkActive="text-white bg-[#039CD3] no-hover" class="flex items-center gap-3 px-6 py-3 text-slate-700 font-bold hover:text-slate-900 hover:bg-slate-100 rounded-[12px] transition-all duration-200 scale-95 active:scale-100 transition-transform">
+    <a href="/suivie-marches" (click)="navigate('/suivie-marches',$event)" routerLink="/suivie-marches" routerLinkActive="text-white bg-[#039CD3] no-hover" [routerLinkActiveOptions]="{ exact: true }" class="flex items-center gap-3 px-6 py-3 text-slate-700 font-bold hover:text-slate-900 hover:bg-slate-100 rounded-[12px] transition-all duration-200 scale-95 active:scale-100 transition-transform">
       <span class="material-symbols-outlined">insights</span>
       <span class="text-sm">Suivi marchés</span>
     </a>

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   standalone: true,
@@ -8,4 +8,12 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   templateUrl: './menu.component.html',
   styleUrls: ['./menu.component.css'],
 })
-export class MenuComponent {}
+export class MenuComponent {
+  constructor(private router: Router) {}
+
+  navigate(path: string, event: Event) {
+    console.debug('[Menu] click', path, event.type);
+    event.preventDefault();
+    this.router.navigateByUrl(path);
+  }
+}

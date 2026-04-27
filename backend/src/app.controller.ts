@@ -31,30 +31,7 @@ export class AppController {
   }
 
   // Marches
-  @Get('marches')
-  getMarches(): Marche[] {
-    return this.appService.getMarches();
-  }
-
-  @Get('marches/:numbMarche')
-  getMarche(@Param('numbMarche') numbMarche: string): Marche {
-    return this.appService.getMarche(numbMarche);
-  }
-
-  @Post('marches')
-  createMarche(@Body() marche: Partial<Marche>): Marche {
-    return this.appService.createMarche(marche);
-  }
-
-  @Put('marches/:numbMarche')
-  updateMarche(@Param('numbMarche') numbMarche: string, @Body() changes: Partial<Marche>): Marche {
-    return this.appService.updateMarche(numbMarche, changes);
-  }
-
-  @Delete('marches/:numbMarche')
-  deleteMarche(@Param('numbMarche') numbMarche: string): void {
-    return this.appService.deleteMarche(numbMarche);
-  }
+  // Les routes des marchés sont gérées par MarcheController pour utiliser Supabase.
 
   // Lots
   @Get('lots')

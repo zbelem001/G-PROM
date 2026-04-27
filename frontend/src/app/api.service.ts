@@ -1,20 +1,39 @@
 const API_BASE_URL = 'http://localhost:3000';
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...(init.headers || {}),
-    },
-    ...init,
-  });
+  const url = `${API_BASE_URL}${path}`;
+  console.debug('[API] request start', url, init);
 
-  if (!response.ok) {
-    const message = await response.text();
-    throw new Error(`API ${response.status}: ${message || response.statusText}`);
+  try {
+    const response = await fetch(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...(init.headers || {}),
+      },
+      ...init,
+    });
+
+    console.debug('[API] response status', response.status, url);
+
+    if (!response.ok) {
+      const message = await response.text();
+      console.error('[API] response error', response.status, message || response.statusText, url);
+      throw new Error(`API ${response.status}: ${message || response.statusText}`);
+    }
+
+    const text = await response.text();
+    if (!text) {
+      console.debug('[API] response empty', url);
+      return {} as T;
+    }
+
+    const result = JSON.parse(text) as T;
+    console.debug('[API] response data', url, result);
+    return result;
+  } catch (error) {
+    console.error('[API] request failed', url, error);
+    throw error;
   }
-
-  return response.json() as Promise<T>;
 }
 
 export interface Marche {
@@ -60,15 +79,52 @@ export interface Fournisseur {
   Statut?: string;
 }
 
+function normalizeMarchePayload(marche: Partial<Marche>): Record<string, unknown> {
+  const payload: Record<string, unknown> = {};
+  Object.entries(marche).forEach(([key, value]) => {
+    const lowerKey = key.replace(/([A-Z])/g, (match) => match.toLowerCase());
+    payload[lowerKey] = value;
+  });
+  return payload;
+}
+
+function normalizeMarcheResponse(raw: any): Marche {
+  return {
+    numbMarche: raw.numbMarche ?? raw.numbmarche ?? raw.numb_marche ?? '',
+    Description: raw.Description ?? raw.description ?? raw.description ?? '',
+    NombreLot: raw.NombreLot ?? raw.nombrelot ?? raw.nombre_lot ?? 0,
+    NatureOuverture: raw.NatureOuverture ?? raw.natureouverture ?? raw.nature_ouverture,
+    DateEnregistrement: raw.DateEnregistrement ?? raw.dateenregistrement ?? raw.date_enregistrement,
+    Financement: raw.Financement ?? raw.financement,
+    ModePassation: raw.ModePassation ?? raw.modepassation ?? raw.mode_passation,
+    Demandeur: raw.Demandeur ?? raw.demandeur,
+    Observation: raw.Observation ?? raw.observation,
+    ResponsableSuivi: raw.ResponsableSuivi ?? raw.responsablesuivi ?? raw.responsable_suivi,
+    SCT_person1: raw.SCT_person1 ?? raw.sct_person1,
+    SCT_person2: raw.SCT_person2 ?? raw.sct_person2,
+    SCT_person3: raw.SCT_person3 ?? raw.sct_person3,
+    SCT_person4: raw.SCT_person4 ?? raw.sct_person4,
+    DatePrevReception: raw.DatePrevReception ?? raw.dateprevreception ?? raw.date_prev_reception,
+    Statut: raw.Statut ?? raw.statut,
+  } as Marche;
+}
+
 export async function getMarches(): Promise<Marche[]> {
-  return request<Marche[]>('/marches');
+  const data = await request<any[]>('/marches');
+  return data.map(normalizeMarcheResponse);
 }
 
 export async function createMarche(marche: Partial<Marche>): Promise<Marche[]> {
-  return request<Marche[]>('/marches', {
+  const payload = normalizeMarchePayload(marche);
+  const response = await request<any>('/marches', {
     method: 'POST',
-    body: JSON.stringify(marche),
+    body: JSON.stringify(payload),
   });
+  if (!response || (Array.isArray(response) && response.length === 0)) {
+    return [];
+  }
+  const rows = Array.isArray(response) ? response : [response];
+  return rows.map(normalizeMarcheResponse);
 }
 
 export async function getFournisseurs(): Promise<Fournisseur[]> {

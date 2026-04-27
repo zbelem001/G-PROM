@@ -22,8 +22,7 @@ export class MarketsComponent implements OnInit {
     NombreLot: 1,
     Statut: 'À lancer',
     NatureOuverture: 'Fournitures',
-    ModePassation: 'Appel d\'Offres Ouvert',
-  };
+    ModePassation: 'Appel d\'Offres Ouvert',    SCT_person1: 'N/A',  };
 
   ngOnInit() {
     this.loadMarches();
@@ -36,10 +35,14 @@ export class MarketsComponent implements OnInit {
   async loadMarches() {
     this.loading = true;
     this.errorMessage = '';
+    this.marches = [];
+    console.debug('[Markets] loadMarches start');
     try {
       this.marches = await getMarches();
+      console.debug('[Markets] loadMarches success', this.marches.length, 'marchés');
     } catch (error: any) {
-      this.errorMessage = error.message || 'Impossible de charger les marchés.';
+      console.error('[Markets] loadMarches error', error);
+      this.errorMessage = error?.message || 'Impossible de charger les marchés.';
     } finally {
       this.loading = false;
     }

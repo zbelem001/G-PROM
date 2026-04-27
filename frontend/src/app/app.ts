@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router, RouterOutlet, NavigationEnd } from '@angular/router';
 
 @Component({
   standalone: true,
@@ -8,4 +8,14 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './app.html',
   styleUrls: ['./app.css'],
 })
-export class App {}
+export class App implements OnInit {
+  constructor(private router: Router) {}
+
+  ngOnInit() {
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        console.debug('[App] navigation end', event.urlAfterRedirects);
+      }
+    });
+  }
+}

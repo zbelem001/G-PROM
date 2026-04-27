@@ -58,7 +58,10 @@
               <tr *ngIf="loading">
                 <td colspan="8" class="px-6 py-8 text-center text-on-surface-variant">Chargement des marchés...</td>
               </tr>
-              <tr *ngIf="!loading && marches.length === 0">
+              <tr *ngIf="!loading && errorMessage">
+                <td colspan="8" class="px-6 py-8 text-center text-error">{{ errorMessage }}</td>
+              </tr>
+              <tr *ngIf="!loading && !errorMessage && marches.length === 0">
                 <td colspan="8" class="px-6 py-8 text-center text-on-surface-variant">Aucun marché trouvé. Créez un nouveau marché pour commencer.</td>
               </tr>
               <tr *ngFor="let marche of marches" [routerLink]="['/marches/details']" [queryParams]="{ tab: 'Informations générales', id: marche.numbMarche }" class="hover:bg-[#f0fdfb] transition-colors group cursor-pointer">
@@ -122,7 +125,7 @@
         <p class="text-secondary font-medium mt-2">Renseignez les informations du marché pour ouvrir un nouveau dossier.</p>
         <p *ngIf="errorMessage" class="mt-4 text-sm text-error">{{ errorMessage }}</p>
       </div>
-      <form (submit)="submitAddMarket($event)" class="flex-1 overflow-y-auto px-8 pb-32 space-y-8">
+      <form id="addMarketForm" (submit)="submitAddMarket($event)" class="flex-1 overflow-y-auto px-8 pb-32 space-y-8">
         <div class="space-y-5">
           <div class="flex items-center gap-2 text-primary/60 border-b border-outline-variant/15 pb-2">
             <span class="material-symbols-outlined text-sm">fingerprint</span>
@@ -163,7 +166,7 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="text-sm font-semibold text-secondary ml-1">Source de financement</label>
-              <input class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="Ex: Fonds Propres" type="text" />
+              <input [(ngModel)]="newMarche.Financement" name="financement" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="Ex: Fonds Propres" type="text" />
             </div>
             <div class="space-y-2">
               <label class="text-sm font-semibold text-secondary ml-1">Budget estimatif</label>
@@ -173,21 +176,21 @@
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="text-sm font-semibold text-secondary ml-1">Nature d'ouverture</label>
-              <input class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="Ex: Ouverture publique" type="text" />
+              <input [(ngModel)]="newMarche.NatureOuverture" name="natureOuverture" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="Ex: Ouverture publique" type="text" />
             </div>
             <div class="space-y-2">
               <label class="text-sm font-semibold text-secondary ml-1">Date d'enregistrement</label>
-              <input class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" type="date" />
+              <input [(ngModel)]="newMarche.DateEnregistrement" name="dateEnregistrement" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" type="date" />
             </div>
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="text-sm font-semibold text-secondary ml-1">Date prévisionnelle réception</label>
-              <input class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" type="date" />
+              <input [(ngModel)]="newMarche.DatePrevReception" name="datePrevReception" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" type="date" />
             </div>
             <div class="space-y-2">
               <label class="text-sm font-semibold text-secondary ml-1">Statut</label>
-              <select class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none appearance-none">
+              <select [(ngModel)]="newMarche.Statut" name="statut" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none appearance-none">
                 <option>À lancer</option>
                 <option>En cours</option>
                 <option>Clôturé</option>
@@ -203,11 +206,15 @@
           <div class="space-y-4">
             <div class="space-y-2">
               <label class="text-sm font-semibold text-secondary ml-1">Demandeur du Marché</label>
-              <input class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="Département" type="text" />
+              <input [(ngModel)]="newMarche.Demandeur" name="demandeur" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="Département" type="text" />
             </div>
             <div class="space-y-2">
               <label class="text-sm font-semibold text-secondary ml-1">Responsable Suivi</label>
-              <input class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="Nom complet" type="text" />
+              <input [(ngModel)]="newMarche.ResponsableSuivi" name="responsableSuivi" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="Nom complet" type="text" />
+            </div>
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-secondary ml-1">Membre SCT 1</label>
+              <input [(ngModel)]="newMarche.SCT_person1" name="sctPerson1" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="Nom du membre SCT" type="text" />
             </div>
           </div>
         </div>
@@ -216,7 +223,7 @@
         <button type="button" (click)="toggleAddMarket()" class="flex-1 h-14 rounded-[10px] border-2 border-[#1a2e44] text-[#1a2e44] font-bold hover:bg-surface-container-low transition-all">
           Annuler
         </button>
-        <button type="submit" class="flex-[2] h-14 rounded-[10px] bg-gradient-to-br from-[#039CD3] to-[#0278a8] text-white font-bold shadow-[0_4px_14px_rgba(3,156,211,0.3)] hover:opacity-95 active:scale-[0.98] transition-all">
+        <button type="submit" form="addMarketForm" class="flex-[2] h-14 rounded-[10px] bg-gradient-to-br from-[#039CD3] to-[#0278a8] text-white font-bold shadow-[0_4px_14px_rgba(3,156,211,0.3)] hover:opacity-95 active:scale-[0.98] transition-all">
           Enregistrer le Marché
         </button>
       </div>

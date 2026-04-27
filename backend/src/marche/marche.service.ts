@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
 import { CreateMarcheDto } from './dto/create-marche.dto';
 
@@ -7,15 +7,28 @@ export class MarcheService {
   constructor(private readonly supabaseService: SupabaseService) {}
 
   async create(createMarcheDto: CreateMarcheDto) {
-    const { data, error } = await this.supabaseService.client
-      .from('Marche')
-      .insert([createMarcheDto]);
+    const payload = Object.entries(createMarcheDto).reduce((normalized, [key, value]) => {
+      const lowerKey = key.replace(/([A-Z])/g, (match) => match.toLowerCase());
+      normalized[lowerKey] = value;
+      return normalized;
+    }, {} as Record<string, unknown>);
 
-    if (error) {
-      throw new Error(error.message);
+    try {
+      const { data, error } = await this.supabaseService.client
+        .from('Marche')
+        .insert([payload])
+        .select();
+
+      if (error) {
+        console.error('Supabase insert error:', error);
+        throw new InternalServerErrorException(error.message);
+      }
+
+      return data;
+    } catch (error: any) {
+      console.error('MarcheService.create error:', error?.message ?? error);
+      throw new InternalServerErrorException(error?.message ?? 'Unknown error creating marche');
     }
-
-    return data;
   }
 
   async findAll() {

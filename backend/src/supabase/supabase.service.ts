@@ -7,9 +7,9 @@ export class SupabaseService {
 
   constructor() {
     const url = process.env.SUPABASE_URL;
-    const key = process.env.SUPABASE_KEY;
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_KEY;
     if (!url || !key) {
-      throw new Error('SUPABASE_URL and SUPABASE_KEY must be defined in env');
+      throw new Error('SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY or SUPABASE_KEY must be defined in env');
     }
     this.supabase = createClient(url, key);
   }
