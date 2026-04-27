@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -18,6 +18,7 @@ export class MarketsComponent implements OnInit {
   loading = false;
   errorMessage = '';
   marches: Marche[] = [];
+  constructor(private cd: ChangeDetectorRef) {}
   newMarche: Partial<Marche> = {
     NombreLot: 1,
     Statut: 'À lancer',
@@ -45,6 +46,7 @@ export class MarketsComponent implements OnInit {
       this.errorMessage = error?.message || 'Impossible de charger les marchés.';
     } finally {
       this.loading = false;
+      this.cd.detectChanges();
     }
   }
 
