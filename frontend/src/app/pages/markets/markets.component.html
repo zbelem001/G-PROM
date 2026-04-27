@@ -212,21 +212,18 @@
               <label class="text-sm font-semibold text-secondary ml-1">Responsable Suivi</label>
               <input [(ngModel)]="newMarche.ResponsableSuivi" name="responsableSuivi" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="Nom complet" type="text" />
             </div>
-            <div class="space-y-2">
-              <label class="text-sm font-semibold text-secondary ml-1">Membre SCT 1</label>
-              <input [(ngModel)]="newMarche.SCT_person1" name="sctPerson1" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="Nom du membre SCT" type="text" />
-            </div>
           </div>
         </div>
+        <div class="absolute bottom-0 left-0 w-full p-8 bg-white/95 backdrop-blur-md border-t border-outline-variant/15 flex items-center gap-4">
+          <button type="button" (click)="toggleAddMarket()" class="flex-1 h-14 rounded-[10px] border-2 border-[#1a2e44] text-[#1a2e44] font-bold hover:bg-surface-container-low transition-all" [disabled]="submitting">
+            Annuler
+          </button>
+          <button type="submit" [disabled]="submitting" class="flex-[2] h-14 rounded-[10px] bg-gradient-to-br from-[#039CD3] to-[#0278a8] text-white font-bold shadow-[0_4px_14px_rgba(3,156,211,0.3)] hover:opacity-95 active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-3">
+            <span *ngIf="submitting" class="h-5 w-5 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
+            <span>{{ submitting ? 'Enregistrement...' : 'Enregistrer le Marché' }}</span>
+          </button>
+        </div>
       </form>
-      <div class="absolute bottom-0 left-0 w-full p-8 bg-white/95 backdrop-blur-md border-t border-outline-variant/15 flex items-center gap-4">
-        <button type="button" (click)="toggleAddMarket()" class="flex-1 h-14 rounded-[10px] border-2 border-[#1a2e44] text-[#1a2e44] font-bold hover:bg-surface-container-low transition-all">
-          Annuler
-        </button>
-        <button type="submit" form="addMarketForm" class="flex-[2] h-14 rounded-[10px] bg-gradient-to-br from-[#039CD3] to-[#0278a8] text-white font-bold shadow-[0_4px_14px_rgba(3,156,211,0.3)] hover:opacity-95 active:scale-[0.98] transition-all">
-          Enregistrer le Marché
-        </button>
-      </div>
     </aside>
   </main>
 </div>

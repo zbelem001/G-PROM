@@ -16,14 +16,23 @@ import { createMarche, getMarches, Marche } from '../../api.service';
 export class MarketsComponent implements OnInit {
   showAddMarket = false;
   loading = false;
+  submitting = false;
   errorMessage = '';
   marches: Marche[] = [];
   constructor(private cd: ChangeDetectorRef) {}
+
+  private getTodayDate(): string {
+    return new Date().toISOString().slice(0, 10);
+  }
+
   newMarche: Partial<Marche> = {
     NombreLot: 1,
     Statut: 'À lancer',
     NatureOuverture: 'Fournitures',
-    ModePassation: 'Appel d\'Offres Ouvert',    SCT_person1: 'N/A',  };
+    ModePassation: 'Appel d\'Offres Ouvert',
+    SCT_person1: 'N/A',
+    DateEnregistrement: this.getTodayDate(),
+  };
 
   ngOnInit() {
     this.loadMarches();
@@ -53,8 +62,11 @@ export class MarketsComponent implements OnInit {
   async submitAddMarket(event: Event) {
     event.preventDefault();
     this.errorMessage = '';
+    this.submitting = true;
+    console.debug('[Markets] submitAddMarket start');
     try {
       const added = await createMarche(this.newMarche);
+      console.debug('[Markets] submitAddMarket returned', added);
       if (Array.isArray(added) && added.length > 0) {
         this.marches.unshift(added[0]);
       }
@@ -64,9 +76,14 @@ export class MarketsComponent implements OnInit {
         Statut: 'À lancer',
         NatureOuverture: 'Fournitures',
         ModePassation: 'Appel d\'Offres Ouvert',
+        DateEnregistrement: this.getTodayDate(),
       };
     } catch (error: any) {
+      console.error('[Markets] submitAddMarket error', error);
       this.errorMessage = error.message || 'Impossible de créer le marché.';
+    } finally {
+      this.submitting = false;
+      this.cd.detectChanges();
     }
   }
 }
