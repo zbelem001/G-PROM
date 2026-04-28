@@ -1,7 +1,8 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs';
 import { HeaderComponent } from '../../components/header/header.component';
 import { MenuComponent } from '../../components/menu/menu.component';
 import { createMarche, getMarches, Marche } from '../../api.service';
@@ -19,7 +20,16 @@ export class MarketsComponent implements OnInit {
   submitting = false;
   errorMessage = '';
   marches: Marche[] = [];
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor(private cd: ChangeDetectorRef, private router: Router) {
+    this.router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd)
+    ).subscribe((event) => {
+      if (event.urlAfterRedirects.startsWith('/marches')) {
+        console.debug('[Markets] navigation to /marches detected');
+        this.loadMarches();
+      }
+    });
+  }
 
   private getTodayDate(): string {
     return new Date().toISOString().slice(0, 10);
@@ -31,6 +41,7 @@ export class MarketsComponent implements OnInit {
     NatureOuverture: 'Fournitures',
     ModePassation: 'Appel d\'Offres Ouvert',
     SCT_person1: 'N/A',
+    BudgetEstimatif: 0,
     DateEnregistrement: this.getTodayDate(),
   };
 
@@ -76,6 +87,7 @@ export class MarketsComponent implements OnInit {
         Statut: 'À lancer',
         NatureOuverture: 'Fournitures',
         ModePassation: 'Appel d\'Offres Ouvert',
+        BudgetEstimatif: 0,
         DateEnregistrement: this.getTodayDate(),
       };
     } catch (error: any) {

@@ -7,6 +7,7 @@ CREATE TABLE Marche (
     DateEnregistrement DATE,
     Financement VARCHAR(250),
     ModePassation VARCHAR(250),
+    BudgetEstimatif INT CHECK (BudgetEstimatif > 0),
     Demandeur VARCHAR(150),
     Observation TEXT,
     ResponsableSuivi VARCHAR(250),

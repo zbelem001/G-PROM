@@ -53,6 +53,7 @@ export interface Marche {
   SCT_person4?: string;
   DatePrevReception?: string;
   Statut?: string;
+  BudgetEstimatif?: number;
 }
 
 export interface Fournisseur {
@@ -77,6 +78,7 @@ export interface Fournisseur {
   Telephone1Repr: string;
   EmailRepr: string;
   Statut?: string;
+  BudgetEstimatif?: number;
 }
 
 function normalizeMarchePayload(marche: Partial<Marche>): Record<string, unknown> {
@@ -106,6 +108,7 @@ function normalizeMarcheResponse(raw: any): Marche {
     SCT_person4: raw.SCT_person4 ?? raw.sct_person4,
     DatePrevReception: raw.DatePrevReception ?? raw.dateprevreception ?? raw.date_prev_reception,
     Statut: raw.Statut ?? raw.statut,
+    BudgetEstimatif: raw.BudgetEstimatif ?? raw.budgetestimatif ?? raw.budget_estimatif ?? 0,
   } as Marche;
 }
 
