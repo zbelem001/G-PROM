@@ -28,38 +28,50 @@
           <div class="text-sm text-outline font-medium">Affichage de {{ displayStart }} à {{ displayEnd }} sur {{ fournisseurs.length }} fournisseurs</div>
         </div>
 
-        <div class="flex flex-col gap-2">
-          <div *ngIf="!loading && fournisseurs.length > 0" class="grid grid-cols-12 gap-4 px-6 py-3 items-center text-xs font-semibold uppercase tracking-wider text-on-surface-variant border-b border-surface-container-low">
-            <div class="col-span-1">ID</div>
-            <div class="col-span-3">Raison sociale</div>
-            <div class="col-span-2">Domaine</div>
-            <div class="col-span-1">Ville</div>
-            <div class="col-span-2">Téléphone / Email</div>
-            <div class="col-span-2">Statut</div>
-            <div class="col-span-1 text-right">Actions</div>
-          </div>
-          <div *ngIf="loading" class="px-6 py-8 text-center text-on-surface-variant">Chargement des fournisseurs...</div>
-          <div *ngIf="!loading && fournisseurs.length === 0" class="px-6 py-8 text-center text-on-surface-variant">Aucun fournisseur trouvé. Ajoutez-en un pour commencer.</div>
-
-          <div *ngFor="let fournisseur of displayedFournisseurs" class="grid grid-cols-12 gap-4 px-6 py-4 items-center bg-surface-container-lowest rounded-[16px] shadow-[0_2px_8px_rgba(26,46,68,0.02)] hover:shadow-[0_6px_24px_rgba(26,46,68,0.06)] transition-all group">
-            <div class="col-span-1 text-sm font-medium text-outline">{{ fournisseur.idFournisseur }}</div>
-            <div class="col-span-3">
-              <p class="text-sm font-bold text-[#1a2e44] font-headline">{{ fournisseur.RaisonSocial }}</p>
-            </div>
-            <div class="col-span-2 text-sm text-on-surface-variant">{{ fournisseur.DomaineActivite }}</div>
-            <div class="col-span-1 text-sm text-on-surface-variant">{{ fournisseur.Ville }}</div>
-            <div class="col-span-2">
-              <p class="text-sm text-on-surface-variant">{{ fournisseur.Telephone1 }}</p>
-              <p class="text-xs text-outline truncate">{{ fournisseur.Email }}</p>
-            </div>
-            <div class="col-span-2">
-              <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-[#76d3c8]/15 text-[#43a399]">{{ fournisseur.Statut || 'Externe' }}</span>
-            </div>
-            <div class="col-span-1 flex justify-end gap-2 opacity-100 transition-opacity">
-              <button type="button" routerLink="/fournisseurs/details" class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">visibility</span></button>
-              <button type="button" class="text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
-              <button type="button" (click)="onDeleteFournisseur(fournisseur, $event)" class="text-error hover:text-red-600 transition-colors"><span class="material-symbols-outlined text-[20px]">delete</span></button>
-            </div>
+        <div class="bg-surface-container-lowest rounded-[16px] shadow-[0_6px_24px_rgba(26,46,68,0.06)] overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-surface-container-low border-b border-surface-container-lowest">
+                  <th class="px-6 py-4 text-xs font-semibold uppercase tracking-widest text-on-surface-variant">ID</th>
+                  <th class="px-6 py-4 text-xs font-semibold uppercase tracking-widest text-on-surface-variant">Raison sociale</th>
+                  <th class="px-6 py-4 text-xs font-semibold uppercase tracking-widest text-on-surface-variant">Domaine</th>
+                  <th class="px-6 py-4 text-xs font-semibold uppercase tracking-widest text-on-surface-variant">Ville</th>
+                  <th class="px-6 py-4 text-xs font-semibold uppercase tracking-widest text-on-surface-variant">Téléphone / Email</th>
+                  <th class="px-6 py-4 text-xs font-semibold uppercase tracking-widest text-on-surface-variant">Statut</th>
+                  <th class="px-6 py-4 text-xs font-semibold uppercase tracking-widest text-on-surface-variant text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-surface-container-low">
+                <tr *ngIf="loading">
+                  <td colspan="7" class="px-6 py-8 text-center text-on-surface-variant">Chargement des fournisseurs...</td>
+                </tr>
+                <tr *ngIf="!loading && fournisseurs.length === 0">
+                  <td colspan="7" class="px-6 py-8 text-center text-on-surface-variant">Aucun fournisseur trouvé. Ajoutez-en un pour commencer.</td>
+                </tr>
+                <tr *ngFor="let fournisseur of displayedFournisseurs" class="bg-white hover:bg-slate-50 transition-colors">
+                  <td class="px-6 py-4 text-sm font-medium text-slate-700">{{ fournisseur.idFournisseur }}</td>
+                  <td class="px-6 py-4">
+                    <p class="text-sm font-semibold text-slate-900">{{ fournisseur.RaisonSocial }}</p>
+                    <p class="text-xs text-slate-500">{{ fournisseur.FormeJuridique }}</p>
+                  </td>
+                  <td class="px-6 py-4 text-sm text-slate-700">{{ fournisseur.DomaineActivite }}</td>
+                  <td class="px-6 py-4 text-sm text-slate-700">{{ fournisseur.Ville }}</td>
+                  <td class="px-6 py-4 text-sm text-slate-700">
+                    <p>{{ fournisseur.Telephone1 }}</p>
+                    <p class="text-xs text-slate-500 truncate">{{ fournisseur.Email }}</p>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-[#76d3c8]/15 text-[#0f766e]">{{ fournisseur.Statut || 'Externe' }}</span>
+                  </td>
+                  <td class="px-6 py-4 text-right">
+                    <button type="button" routerLink="/fournisseurs/details" class="p-2 text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">visibility</span></button>
+                    <button type="button" class="p-2 text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+                    <button type="button" (click)="onDeleteFournisseur(fournisseur, $event)" class="p-2 text-error hover:text-red-600 transition-colors"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 

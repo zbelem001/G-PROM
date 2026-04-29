@@ -30,7 +30,7 @@
 
         <div *ngIf="loading" class="px-6 py-8 text-center text-on-surface-variant">Chargement du profil fournisseur...</div>
         <div *ngIf="!loading && errorMessage" class="px-6 py-8 text-center text-error">{{ errorMessage }}</div>
-        <section *ngIf="!loading" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <section *ngIf="!loading" class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
           <div class="bg-surface-container-lowest p-6 rounded-xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
             <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Marchés gagnés</p>
             <div class="flex items-end justify-between gap-4">
@@ -51,6 +51,13 @@
               <div class="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
                 <div class="bg-primary h-full" style="width: 68%;"></div>
               </div>
+            </div>
+          </div>
+          <div class="bg-surface-container-lowest p-6 rounded-xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
+            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Marchés candidaté</p>
+            <div class="flex items-end justify-between gap-4">
+              <span class="text-4xl font-black text-primary tracking-tight">00</span>
+              <span class="text-blue-600 bg-blue-50 px-2 py-1 rounded text-xs font-bold">Nouveaux</span>
             </div>
           </div>
         </section>
