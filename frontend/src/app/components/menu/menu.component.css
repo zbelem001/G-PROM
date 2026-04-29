@@ -9,6 +9,15 @@
   color: #ffffff !important;
 }
 
+.details-active {
+  background-color: rgba(3, 156, 211, 0.65) !important;
+  color: #ffffff !important;
+}
+
+.details-active .material-symbols-outlined {
+  color: #ffffff !important;
+}
+
 .logo-jump {
   animation: logo-jump 1.5s ease-in-out infinite;
 }

@@ -20,11 +20,11 @@
       <span class="material-symbols-outlined">dashboard</span>
       <span class="text-sm">Dashboard</span>
     </a>
-    <a href="/marches" (click)="navigate('/marches',$event)" routerLink="/marches" routerLinkActive="text-white bg-[#039CD3] no-hover" [routerLinkActiveOptions]="{ exact: true }" class="flex items-center gap-3 px-6 py-3 text-slate-700 font-bold hover:text-slate-900 hover:bg-slate-100 rounded-[12px] transition-all duration-200 scale-95 active:scale-100 transition-transform">
+    <a href="/marches" (click)="navigate('/marches',$event)" routerLink="/marches" routerLinkActive="text-white bg-[#039CD3] no-hover" [routerLinkActiveOptions]="{ exact: false }" [ngClass]="{ 'details-active': isDetailsRoute('marches') }" class="flex items-center gap-3 px-6 py-3 text-slate-700 font-bold hover:text-slate-900 hover:bg-slate-100 rounded-[12px] transition-all duration-200 scale-95 active:scale-100 transition-transform">
       <span class="material-symbols-outlined">inventory_2</span>
       <span class="text-sm">Marchés</span>
     </a>
-    <a href="/fournisseurs" (click)="navigate('/fournisseurs',$event)" routerLink="/fournisseurs" routerLinkActive="text-white bg-[#039CD3] no-hover" [routerLinkActiveOptions]="{ exact: true }" class="flex items-center gap-3 px-6 py-3 text-slate-700 font-bold hover:text-slate-900 hover:bg-slate-100 rounded-[12px] transition-all duration-200 scale-95 active:scale-100 transition-transform">
+    <a href="/fournisseurs" (click)="navigate('/fournisseurs',$event)" routerLink="/fournisseurs" routerLinkActive="text-white bg-[#039CD3] no-hover" [routerLinkActiveOptions]="{ exact: false }" [ngClass]="{ 'details-active': isDetailsRoute('fournisseurs') }" class="flex items-center gap-3 px-6 py-3 text-slate-700 font-bold hover:text-slate-900 hover:bg-slate-100 rounded-[12px] transition-all duration-200 scale-95 active:scale-100 transition-transform">
       <span class="material-symbols-outlined">groups</span>
       <span class="text-sm">Fournisseurs</span>
     </a>
