@@ -28,7 +28,7 @@ export class FournisseurService {
     const { data, error } = await this.supabaseService.client
       .from('Fournisseur')
       .select('*')
-      .eq('idFournisseur', idFournisseur)
+      .eq('idfournisseur', idFournisseur)
       .single();
     if (error) {
       throw new Error(error.message);
@@ -36,11 +36,51 @@ export class FournisseurService {
     return data;
   }
 
+  async findDetails(idFournisseur: number) {
+    const fournisseur = await this.findOne(idFournisseur);
+
+    const { data: soumissionsData, error: soumissionsError } = await this.supabaseService.client
+      .from('Soumission')
+      .select('*')
+      .eq('idfournisseur', idFournisseur);
+    if (soumissionsError) {
+      throw new Error(soumissionsError.message);
+    }
+
+    const lots = (soumissionsData ?? []).map((soumission: any) => soumission.numbLot).filter(Boolean);
+    const lotQuery = lots.length
+      ? await this.supabaseService.client.from('Lot').select('*').in('numbLot', lots)
+      : { data: [], error: null };
+    if (lotQuery.error) {
+      throw new Error(lotQuery.error.message);
+    }
+
+    const documentQuery = lots.length
+      ? await this.supabaseService.client.from('Document').select('*').in('numbLot', lots)
+      : { data: [], error: null };
+    if (documentQuery.error) {
+      throw new Error(documentQuery.error.message);
+    }
+
+    const lotByNumbLot = new Map<string, any>((lotQuery.data ?? []).map((lot: any) => [String(lot.numbLot), lot] as [string, any]));
+    const soumissions = (soumissionsData ?? []).map((soumission: any) => ({
+      ...soumission,
+      lotDescription: lotByNumbLot.get(String(soumission.numbLot))?.Description,
+      numbMarche: lotByNumbLot.get(String(soumission.numbLot))?.numbMarche,
+    }));
+
+    return {
+      fournisseur,
+      soumissions,
+      documents: documentQuery.data ?? [],
+    };
+  }
+
   async update(idFournisseur: number, updateFournisseurDto: Partial<CreateFournisseurDto>) {
     const { data, error } = await this.supabaseService.client
       .from('Fournisseur')
       .update(updateFournisseurDto)
-      .eq('idFournisseur', idFournisseur);
+      .eq('idfournisseur', idFournisseur);
     if (error) {
       throw new Error(error.message);
     }
@@ -51,7 +91,7 @@ export class FournisseurService {
     const { data, error } = await this.supabaseService.client
       .from('Fournisseur')
       .delete()
-      .eq('idFournisseur', idFournisseur);
+      .eq('idfournisseur', idFournisseur);
     if (error) {
       throw new Error(error.message);
     }

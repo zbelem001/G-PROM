@@ -16,6 +16,11 @@ export class FournisseurController {
     return this.fournisseurService.findAll();
   }
 
+  @Get('details/:idFournisseur')
+  findDetails(@Param('idFournisseur') idFournisseur: string) {
+    return this.fournisseurService.findDetails(Number(idFournisseur));
+  }
+
   @Get(':idFournisseur')
   findOne(@Param('idFournisseur') idFournisseur: string) {
     return this.fournisseurService.findOne(Number(idFournisseur));

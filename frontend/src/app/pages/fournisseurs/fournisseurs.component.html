@@ -65,7 +65,7 @@
                     <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-[#76d3c8]/15 text-[#0f766e]">{{ fournisseur.Statut || 'Externe' }}</span>
                   </td>
                   <td class="px-6 py-4 text-right">
-                    <button type="button" routerLink="/fournisseurs/details" class="p-2 text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">visibility</span></button>
+                    <button type="button" [routerLink]="['/fournisseurs/details']" [queryParams]="{ id: fournisseur.idFournisseur }" class="p-2 text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">visibility</span></button>
                     <button type="button" class="p-2 text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
                     <button type="button" (click)="onDeleteFournisseur(fournisseur, $event)" class="p-2 text-error hover:text-red-600 transition-colors"><span class="material-symbols-outlined text-[20px]">delete</span></button>
                   </td>

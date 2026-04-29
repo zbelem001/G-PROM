@@ -81,6 +81,40 @@ export interface Fournisseur {
   BudgetEstimatif?: number;
 }
 
+export interface Document {
+  numbLot: string;
+  PV_ouverture?: string;
+  RapportAnalyse?: string;
+  PV_attribution?: string;
+  Notification?: string;
+  Contrat?: string;
+  FED?: string;
+  BonCommande?: string;
+  Avenant?: string;
+  OrdreService?: string;
+  PV_reception_tech?: string;
+}
+
+export interface Soumission {
+  idSoumission: string;
+  numbLot: string;
+  idFournisseur: number;
+  DateDepot?: string;
+  Heure?: string;
+  Observation?: string;
+  DelaiExecutionPrev?: number;
+  MontantPrev?: number;
+  nbExemplaire?: number;
+  lotDescription?: string;
+  numbMarche?: string;
+}
+
+export interface FournisseurDetails {
+  fournisseur: Fournisseur;
+  soumissions: Soumission[];
+  documents: Document[];
+}
+
 function normalizeMarchePayload(marche: Partial<Marche>): Record<string, unknown> {
   const payload: Record<string, unknown> = {};
   Object.entries(marche).forEach(([key, value]) => {
@@ -132,6 +166,10 @@ export async function createMarche(marche: Partial<Marche>): Promise<Marche[]> {
 
 export async function getFournisseurs(): Promise<Fournisseur[]> {
   return request<Fournisseur[]>('/fournisseurs');
+}
+
+export async function getFournisseurDetails(idFournisseur: number): Promise<FournisseurDetails> {
+  return request<FournisseurDetails>(`/fournisseurs/details/${idFournisseur}`);
 }
 
 export async function createFournisseur(fournisseur: Partial<Fournisseur>): Promise<Fournisseur[]> {

@@ -34,29 +34,29 @@
           <div class="bg-surface-container-lowest p-6 rounded-xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
             <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Marchés gagnés</p>
             <div class="flex items-end justify-between gap-4">
-              <span class="text-4xl font-black text-primary tracking-tight">24</span>
-              <span class="text-green-600 bg-green-50 px-2 py-1 rounded text-xs font-bold">+12% vs LY</span>
+              <span class="text-4xl font-black text-primary tracking-tight">{{ stats.marchesGagnes }}</span>
+              <span class="text-green-600 bg-green-50 px-2 py-1 rounded text-xs font-bold">{{ stats.croissance }}</span>
             </div>
           </div>
           <div class="bg-surface-container-lowest p-6 rounded-xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
             <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Valeur totale contrats</p>
             <div class="flex items-end justify-between gap-4">
-              <span class="text-4xl font-black text-primary tracking-tight">412.5M <span class="text-lg font-bold opacity-40">FCFA</span></span>
+              <span class="text-4xl font-black text-primary tracking-tight">{{ stats.valeurContrats }}</span>
             </div>
           </div>
           <div class="bg-surface-container-lowest p-6 rounded-xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
             <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Taux de succès</p>
             <div class="flex items-end justify-between gap-4">
-              <span class="text-4xl font-black text-primary tracking-tight">68.4<span class="text-lg font-bold opacity-40">%</span></span>
+              <span class="text-4xl font-black text-primary tracking-tight">{{ stats.tauxSucces }}</span>
               <div class="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
-                <div class="bg-primary h-full" style="width: 68%;"></div>
+                <div class="bg-primary h-full" [style.width]="stats.tauxSucces"></div>
               </div>
             </div>
           </div>
           <div class="bg-surface-container-lowest p-6 rounded-xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
             <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Marchés candidaté</p>
             <div class="flex items-end justify-between gap-4">
-              <span class="text-4xl font-black text-primary tracking-tight">00</span>
+              <span class="text-4xl font-black text-primary tracking-tight">{{ stats.marchesCandidate }}</span>
               <span class="text-blue-600 bg-blue-50 px-2 py-1 rounded text-xs font-bold">Nouveaux</span>
             </div>
           </div>
@@ -151,32 +151,26 @@
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-50">
-                <tr class="group hover:bg-slate-50/50 transition-colors">
-                  <td class="px-6 py-4 text-xs font-bold text-primary">DAO-2023-015</td>
-                  <td class="px-6 py-4 text-xs font-medium">Infrastructures Réseau 2iE Kamboinsé</td>
-                  <td class="px-6 py-4 text-xs text-slate-500">14/11/2023</td>
-                  <td class="px-6 py-4 text-xs font-bold">124.000.000 FCFA</td>
+                <tr *ngFor="let offre of offres" class="group hover:bg-slate-50/50 transition-colors">
+                  <td class="px-6 py-4 text-xs font-bold text-primary">{{ offre.marche }}</td>
+                  <td class="px-6 py-4 text-xs font-medium">{{ offre.lot }}</td>
+                  <td class="px-6 py-4 text-xs text-slate-500">{{ offre.dateSoumission }}</td>
+                  <td class="px-6 py-4 text-xs font-bold">{{ offre.montantPropose }}</td>
                   <td class="px-6 py-4">
-                    <span class="bg-green-100 text-[#1E7A4E] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter">Adjugé</span>
+                    <span
+                      class="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter"
+                      [ngClass]="{
+                        'bg-green-100 text-[#1E7A4E]': offre.statut === 'Adjugé',
+                        'bg-blue-100 text-blue-700': offre.statut === 'En analyse',
+                        'bg-red-100 text-[#C0392B]': offre.statut === 'Rejeté'
+                      }"
+                    >
+                      {{ offre.statut }}
+                    </span>
                   </td>
                 </tr>
-                <tr class="group hover:bg-slate-50/50 transition-colors">
-                  <td class="px-6 py-4 text-xs font-bold text-primary">DAO-2024-002</td>
-                  <td class="px-6 py-4 text-xs font-medium">Fourniture de Serveurs Haute Performance</td>
-                  <td class="px-6 py-4 text-xs text-slate-500">02/01/2024</td>
-                  <td class="px-6 py-4 text-xs font-bold">85.500.000 FCFA</td>
-                  <td class="px-6 py-4">
-                    <span class="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter">En analyse</span>
-                  </td>
-                </tr>
-                <tr class="group hover:bg-slate-50/50 transition-colors">
-                  <td class="px-6 py-4 text-xs font-bold text-primary">DAO-2023-088</td>
-                  <td class="px-6 py-4 text-xs font-medium">Maintenance Parc Informatique (Lot 2)</td>
-                  <td class="px-6 py-4 text-xs text-slate-500">12/10/2023</td>
-                  <td class="px-6 py-4 text-xs font-bold">12.200.000 FCFA</td>
-                  <td class="px-6 py-4">
-                    <span class="bg-red-100 text-[#C0392B] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter">Rejeté</span>
-                  </td>
+                <tr *ngIf="offres.length === 0">
+                  <td colspan="5" class="px-6 py-8 text-center text-on-surface-variant">Aucune offre ou candidature enregistrée.</td>
                 </tr>
               </tbody>
             </table>
@@ -184,36 +178,23 @@
         </div>
         <div *ngIf="activeTab === 'Documents Légaux'" class="space-y-8">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="p-4 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-between hover:border-primary/20 transition-all cursor-pointer">
-              <div class="flex items-center gap-4">
-                <span class="material-symbols-outlined text-slate-400">description</span>
-                <div>
-                  <p class="text-xs font-bold text-primary">RCCM Certification</p>
-                  <p class="text-[10px] text-slate-500 uppercase tracking-tighter">Expire le: 12/03/2025</p>
+            <ng-container *ngFor="let doc of legalDocuments">
+              <div class="p-4 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-between hover:border-primary/20 transition-all cursor-pointer">
+                <div class="flex items-center gap-4">
+                  <span class="material-symbols-outlined text-slate-400">{{ doc.icon }}</span>
+                  <div>
+                    <p class="text-xs font-bold text-primary">{{ doc.nom }}</p>
+                    <p class="text-[10px] text-slate-500 uppercase tracking-tighter">
+                      {{ doc.statut }}<span *ngIf="doc.expiry"> • {{ doc.expiry }}</span>
+                    </p>
+                  </div>
                 </div>
+                <span [ngClass]="{
+                  'text-green-500': doc.color === 'green',
+                  'text-red-500': doc.color === 'red'
+                }" class="material-symbols-outlined text-lg">{{ doc.icon }}</span>
               </div>
-              <span class="material-symbols-outlined text-green-500 text-lg">check_circle</span>
-            </div>
-            <div class="p-4 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-between hover:border-primary/20 transition-all cursor-pointer">
-              <div class="flex items-center gap-4">
-                <span class="material-symbols-outlined text-slate-400">assignment_turned_in</span>
-                <div>
-                  <p class="text-xs font-bold text-primary">Quitus Fiscal 2024</p>
-                  <p class="text-[10px] text-slate-500 uppercase tracking-tighter">Valide</p>
-                </div>
-              </div>
-              <span class="material-symbols-outlined text-green-500 text-lg">check_circle</span>
-            </div>
-            <div class="p-4 rounded-xl bg-red-50/30 border border-red-100 shadow-sm flex items-center justify-between hover:border-red-200 transition-all cursor-pointer">
-              <div class="flex items-center gap-4">
-                <span class="material-symbols-outlined text-red-400">warning</span>
-                <div>
-                  <p class="text-xs font-bold text-red-900">Attestation CNSS</p>
-                  <p class="text-[10px] text-red-500 uppercase tracking-tighter">Expiré (30/05/2024)</p>
-                </div>
-              </div>
-              <span class="material-symbols-outlined text-red-500 text-lg">error</span>
-            </div>
+            </ng-container>
             <div class="p-4 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-center hover:border-primary/20 transition-all cursor-pointer">
               <button class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 text-primary hover:bg-slate-200 transition-colors">
                 <span class="material-symbols-outlined text-2xl">add</span>
