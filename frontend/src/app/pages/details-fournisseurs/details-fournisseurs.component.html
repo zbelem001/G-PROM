@@ -139,10 +139,6 @@
             </div>
           </div>
         <div *ngIf="activeTab === 'Offres & Candidatures'" class="space-y-8">
-          <div class="flex items-center justify-between">
-            <h3 class="text-lg font-bold text-primary">Offres &amp; Candidatures Récentes</h3>
-            <button class="text-xs font-bold text-primary uppercase tracking-widest">Tout voir</button>
-          </div>
           <div class="overflow-x-auto">
             <table class="w-full text-left border-separate border-spacing-0">
               <thead>
@@ -187,8 +183,7 @@
           </div>
         </div>
         <div *ngIf="activeTab === 'Documents Légaux'" class="space-y-8">
-          <h3 class="text-lg font-bold text-primary mb-8">Dossier Administratif</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="p-4 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-between hover:border-primary/20 transition-all cursor-pointer">
               <div class="flex items-center gap-4">
                 <span class="material-symbols-outlined text-slate-400">description</span>
@@ -218,6 +213,11 @@
                 </div>
               </div>
               <span class="material-symbols-outlined text-red-500 text-lg">error</span>
+            </div>
+            <div class="p-4 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-center hover:border-primary/20 transition-all cursor-pointer">
+              <button class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 text-primary hover:bg-slate-200 transition-colors">
+                <span class="material-symbols-outlined text-2xl">add</span>
+              </button>
             </div>
           </div>
         </div>
