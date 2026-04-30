@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../../components/header/header.component';
 import { MenuComponent } from '../../components/menu/menu.component';
-import { getLots, getFournisseurs, getMarcheDetails, getSoumissions, Marche, Lot as ApiLot, Soumission } from '../../api.service';
+import { createLot, getLots, getFournisseurs, getMarcheDetails, getSoumissions, Marche, Lot as ApiLot, Soumission } from '../../api.service';
 
 interface LotDocument {
   id: string;
@@ -95,6 +95,8 @@ export class DetailsMarchesComponent implements OnInit {
   lotCount = 0;
   submissionCount = 0;
   showAddLot = false;
+  newLotDescription = '';
+  newLotContract = '';
   showConsultationDrawer = false;
   showSoumissionDrawer = false;
   showAnalyseDrawer = false;
@@ -258,8 +260,42 @@ export class DetailsMarchesComponent implements OnInit {
     this.activeTab = tab;
   }
 
+  get nextLotNumero(): string {
+    const newIndex = this.lots.length + 1;
+    return `Lot ${String(newIndex).padStart(2, '0')}`;
+  }
+
   toggleAddLot() {
     this.showAddLot = !this.showAddLot;
+    if (this.showAddLot) {
+      this.newLotDescription = '';
+      this.newLotContract = '';
+    }
+  }
+
+  async addLot() {
+    if (!this.newLotDescription.trim() || !this.market) {
+      return;
+    }
+
+    const lotPayload: Partial<ApiLot> = {
+      numbLot: this.nextLotNumero,
+      numbMarche: this.market.numbMarche,
+      Description: this.newLotDescription.trim(),
+      numbContrat: this.newLotContract.trim() || undefined,
+    };
+
+    try {
+      const createdLots = await createLot(lotPayload);
+      const createdLot = createdLots[0];
+      if (createdLot && this.market) {
+        await this.loadMarcheDetails(this.market.numbMarche);
+      }
+      this.toggleAddLot();
+    } catch (error: any) {
+      console.error('[DetailsMarches] createLot failed', error);
+      this.errorMessage = error?.message || 'Impossible d’ajouter le lot.';
+    }
   }
 
   toggleConsultationDrawer() {

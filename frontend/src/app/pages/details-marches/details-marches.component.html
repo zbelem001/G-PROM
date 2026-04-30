@@ -901,7 +901,7 @@
         <header class="flex justify-between items-start mb-8">
           <div>
             <h2 class="text-[22px] font-headline font-bold text-on-surface tracking-tight">Ajouter un Lot</h2>
-            <p class="text-sm text-on-surface-variant mt-1">Subdivision du marché MAR-2023-001</p>
+            <p class="text-sm text-on-surface-variant mt-1">Subdivision du marché {{ market?.numbMarche || 'sélectionné' }}</p>
           </div>
           <button type="button" aria-label="Fermer" class="text-outline hover:text-on-surface transition-colors p-1" (click)="toggleAddLot()">
             <span class="material-symbols-outlined">close</span>
@@ -912,7 +912,7 @@
             <div class="space-y-2">
               <label class="block text-sm font-medium text-on-surface" for="lotNumber">Numéro du Lot</label>
               <div class="relative">
-                <input id="lotNumber" type="text" value="Lot 03" readonly class="w-full bg-surface-container-highest border border-transparent rounded-[10px] text-sm text-on-surface-variant px-4 py-3 focus:ring-0 cursor-not-allowed" />
+                <input id="lotNumber" type="text" [value]="nextLotNumero" readonly class="w-full bg-surface-container-highest border border-transparent rounded-[10px] text-sm text-on-surface-variant px-4 py-3 focus:ring-0 cursor-not-allowed" />
                 <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                   <span class="material-symbols-outlined text-outline-variant text-[20px]">lock</span>
                 </div>
@@ -921,17 +921,17 @@
             </div>
             <div class="space-y-2">
               <label class="block text-sm font-medium text-on-surface" for="description">Description <span class="text-error">*</span></label>
-              <textarea id="description" rows="4" required class="w-full bg-surface-container-highest border border-transparent rounded-[10px] text-sm text-on-surface px-4 py-3 focus:bg-surface-container-lowest focus:border-primary/20 focus:ring-0 transition-colors resize-none" placeholder="Détaillez les spécifications du lot..."></textarea>
+              <textarea id="description" rows="4" required [(ngModel)]="newLotDescription" name="newLotDescription" class="w-full bg-surface-container-highest border border-transparent rounded-[10px] text-sm text-on-surface px-4 py-3 focus:bg-surface-container-lowest focus:border-primary/20 focus:ring-0 transition-colors resize-none" placeholder="Détaillez les spécifications du lot..."></textarea>
             </div>
             <div class="space-y-2">
               <label class="block text-sm font-medium text-on-surface" for="contractNumber">Numéro de Contrat</label>
-              <input id="contractNumber" type="text" placeholder="Ex: CTR-2024-01" class="w-full bg-surface-container-highest border border-transparent rounded-[10px] text-sm text-on-surface px-4 py-3 focus:bg-surface-container-lowest focus:border-primary/20 focus:ring-0 transition-colors" />
+              <input id="contractNumber" type="text" placeholder="Ex: CTR-2024-01" [(ngModel)]="newLotContract" name="newLotContract" class="w-full bg-surface-container-highest border border-transparent rounded-[10px] text-sm text-on-surface px-4 py-3 focus:bg-surface-container-lowest focus:border-primary/20 focus:ring-0 transition-colors" />
             </div>
           </form>
         </div>
         <footer class="pt-6 flex items-center justify-end gap-4 mt-auto">
           <button type="button" class="px-5 py-2.5 text-sm font-medium text-on-secondary-container bg-transparent hover:bg-surface-container-high rounded-[10px] transition-colors" (click)="toggleAddLot()">Annuler</button>
-          <button type="button" class="px-5 py-2.5 text-sm font-medium text-on-primary bg-[#039CD3] hover:bg-[#0284b6] rounded-[10px] transition-all" (click)="toggleAddLot()">Enregistrer le Lot</button>
+          <button type="button" class="px-5 py-2.5 text-sm font-medium text-on-primary bg-[#039CD3] hover:bg-[#0284b6] rounded-[10px] transition-all" [disabled]="!newLotDescription.trim()" (click)="addLot()">Enregistrer le Lot</button>
         </footer>
       </aside>
     </div>

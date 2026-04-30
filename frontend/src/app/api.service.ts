@@ -113,6 +113,7 @@ export interface Lot {
   numbLot: string;
   numbMarche: string;
   Description?: string;
+  numbContrat?: string;
 }
 
 export interface FournisseurDetails {
@@ -135,7 +136,20 @@ function normalizeLotResponse(raw: any): Lot {
     numbLot: raw.numbLot ?? raw.numblot ?? raw.numb_lot ?? '',
     numbMarche: raw.numbMarche ?? raw.numbmarche ?? raw.numb_marche ?? '',
     Description: raw.Description ?? raw.description ?? raw.description ?? '',
+    numbContrat: raw.numbContrat ?? raw.numbcontrat ?? raw.numb_contrat ?? '',
   } as Lot;
+}
+
+export async function createLot(lot: Partial<Lot>): Promise<Lot[]> {
+  const response = await request<any>('/lots', {
+    method: 'POST',
+    body: JSON.stringify(lot),
+  });
+  if (!response || (Array.isArray(response) && response.length === 0)) {
+    return [];
+  }
+  const rows = Array.isArray(response) ? response : [response];
+  return rows.map(normalizeLotResponse);
 }
 
 function normalizeSoumissionResponse(raw: any): Soumission {
