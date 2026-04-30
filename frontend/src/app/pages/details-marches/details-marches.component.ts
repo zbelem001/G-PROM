@@ -95,6 +95,8 @@ export class DetailsMarchesComponent implements OnInit {
   lotCount = 0;
   submissionCount = 0;
   showAddLot = false;
+  newLotNumero = '';
+  newLotNumbMarche = '';
   newLotDescription = '';
   newLotContract = '';
   showConsultationDrawer = false;
@@ -261,26 +263,35 @@ export class DetailsMarchesComponent implements OnInit {
   }
 
   get nextLotNumero(): string {
-    const newIndex = this.lots.length + 1;
-    return `Lot ${String(newIndex).padStart(2, '0')}`;
+    const lotNumbers = this.lots
+      .map((lot) => {
+        const match = /Lot\s*0*(\d+)/i.exec(lot.numero);
+        return match ? Number(match[1]) : 0;
+      })
+      .filter((value) => value > 0);
+
+    const nextNumber = lotNumbers.length > 0 ? Math.max(...lotNumbers) + 1 : 1;
+    return `Lot ${String(nextNumber).padStart(2, '0')}`;
   }
 
   toggleAddLot() {
     this.showAddLot = !this.showAddLot;
     if (this.showAddLot) {
+      this.newLotNumero = this.nextLotNumero;
+      this.newLotNumbMarche = this.market?.numbMarche ?? '';
       this.newLotDescription = '';
       this.newLotContract = '';
     }
   }
 
   async addLot() {
-    if (!this.newLotDescription.trim() || !this.market) {
+    if (!this.newLotNumero.trim() || !this.newLotDescription.trim() || !this.newLotNumbMarche.trim()) {
       return;
     }
 
     const lotPayload: Partial<ApiLot> = {
-      numbLot: this.nextLotNumero,
-      numbMarche: this.market.numbMarche,
+      numbLot: this.newLotNumero.trim(),
+      numbMarche: this.newLotNumbMarche.trim(),
       Description: this.newLotDescription.trim(),
       numbContrat: this.newLotContract.trim() || undefined,
     };

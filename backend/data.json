@@ -1,6 +1,19 @@
 {
   "marches": [],
-  "lots": [],
+  "lots": [
+    {
+      "numbLot": "Lot 01",
+      "numbMarche": "MAR-2025-02",
+      "Description": "cool",
+      "numbContrat": "CTR-2026-10"
+    },
+    {
+      "numbLot": "Lot 02",
+      "numbMarche": "MAR-2025-02",
+      "Description": "bien",
+      "numbContrat": "CTR-2026-12"
+    }
+  ],
   "fournisseurs": [
     {
       "idFournisseur": 1,

@@ -33,31 +33,7 @@ export class AppController {
   // Marches
   // Les routes des marchés sont gérées par MarcheController pour utiliser Supabase.
 
-  // Lots
-  @Get('lots')
-  getLots(): Lot[] {
-    return this.appService.getLots();
-  }
-
-  @Get('lots/:numbLot')
-  getLot(@Param('numbLot') numbLot: string): Lot {
-    return this.appService.getLot(numbLot);
-  }
-
-  @Post('lots')
-  createLot(@Body() lot: Partial<Lot>): Lot {
-    return this.appService.createLot(lot);
-  }
-
-  @Put('lots/:numbLot')
-  updateLot(@Param('numbLot') numbLot: string, @Body() changes: Partial<Lot>): Lot {
-    return this.appService.updateLot(numbLot, changes);
-  }
-
-  @Delete('lots/:numbLot')
-  deleteLot(@Param('numbLot') numbLot: string): void {
-    return this.appService.deleteLot(numbLot);
-  }
+  // Lots routes are handled by LotModule/LotController using Supabase.
 
   // Fournisseurs
   @Get('fournisseurs')
