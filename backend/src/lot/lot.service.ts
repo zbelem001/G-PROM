@@ -25,6 +25,20 @@ export class LotService {
   constructor(private readonly supabaseService: SupabaseService) {}
 
   async create(createLotDto: CreateLotDto) {
+    const { data: existingLot, error: existsError } = await this.supabaseService.client
+      .from('Lot')
+      .select('numblot')
+      .eq('numblot', createLotDto.numbLot)
+      .maybeSingle();
+
+    if (existsError) {
+      throw new BadRequestException(existsError.message);
+    }
+
+    if (existingLot) {
+      throw new BadRequestException(`Le numéro de lot ${createLotDto.numbLot} existe déjà.`);
+    }
+
     const payload = normalizeLotPayload(createLotDto);
     const { data, error } = await this.supabaseService.client.from('Lot').insert([payload]);
     if (error) {
@@ -45,7 +59,7 @@ export class LotService {
     const { data, error } = await this.supabaseService.client
       .from('Lot')
       .select('*')
-      .eq('numbLot', numbLot)
+      .eq('numblot', numbLot)
       .single();
 
     if (error) {
@@ -59,7 +73,7 @@ export class LotService {
     const { data, error } = await this.supabaseService.client
       .from('Lot')
       .update(payload)
-      .eq('numbLot', numbLot);
+      .eq('numblot', numbLot);
 
     if (error) {
       throw new BadRequestException(error.message);

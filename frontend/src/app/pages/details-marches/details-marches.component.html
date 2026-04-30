@@ -909,6 +909,9 @@
         </header>
         <div class="flex-1 overflow-y-auto">
           <form class="space-y-6">
+            <div *ngIf="lotErrorMessage" class="rounded-[10px] border border-error/20 bg-error/10 p-4 text-sm text-error">
+              {{ lotErrorMessage }}
+            </div>
             <div class="space-y-2">
               <label class="block text-sm font-medium text-on-surface" for="lotNumber">Numéro du Lot</label>
               <div class="relative">
@@ -933,7 +936,10 @@
         </div>
         <footer class="pt-6 flex items-center justify-end gap-4 mt-auto">
           <button type="button" class="px-5 py-2.5 text-sm font-medium text-on-secondary-container bg-transparent hover:bg-surface-container-high rounded-[10px] transition-colors" (click)="toggleAddLot()">Annuler</button>
-          <button type="button" class="px-5 py-2.5 text-sm font-medium text-on-primary bg-[#039CD3] hover:bg-[#0284b6] rounded-[10px] transition-all" [disabled]="!newLotDescription.trim()" (click)="addLot()">Enregistrer le Lot</button>
+          <button type="button" class="px-5 py-2.5 text-sm font-medium text-on-primary bg-[#039CD3] hover:bg-[#0284b6] rounded-[10px] transition-all flex items-center justify-center gap-2" [disabled]="!newLotDescription.trim() || isSavingLot" (click)="addLot()">
+            <span *ngIf="isSavingLot" class="spinner-border animate-spin inline-block w-4 h-4 border-2 border-current border-r-transparent rounded-full"></span>
+            {{ isSavingLot ? 'Enregistrement...' : 'Enregistrer le Lot' }}
+          </button>
         </footer>
       </aside>
     </div>

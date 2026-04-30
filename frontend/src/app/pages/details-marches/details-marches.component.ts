@@ -90,6 +90,7 @@ export class DetailsMarchesComponent implements OnInit {
   loadingMarket = false;
   errorMessage = '';
   market: Marche | null = null;
+  allLots: ApiLot[] = [];
   lots: MarketLot[] = [];
   submissions: Submission[] = [];
   lotCount = 0;
@@ -99,6 +100,8 @@ export class DetailsMarchesComponent implements OnInit {
   newLotNumbMarche = '';
   newLotDescription = '';
   newLotContract = '';
+  lotErrorMessage = '';
+  isSavingLot = false;
   showConsultationDrawer = false;
   showSoumissionDrawer = false;
   showAnalyseDrawer = false;
@@ -276,6 +279,8 @@ export class DetailsMarchesComponent implements OnInit {
 
   toggleAddLot() {
     this.showAddLot = !this.showAddLot;
+    this.isSavingLot = false;
+    this.lotErrorMessage = '';
     if (this.showAddLot) {
       this.newLotNumero = this.nextLotNumero;
       this.newLotNumbMarche = this.market?.numbMarche ?? '';
@@ -285,17 +290,29 @@ export class DetailsMarchesComponent implements OnInit {
   }
 
   async addLot() {
+    if (this.isSavingLot) {
+      return;
+    }
+
+    this.lotErrorMessage = '';
     if (!this.newLotNumero.trim() || !this.newLotDescription.trim() || !this.newLotNumbMarche.trim()) {
       return;
     }
 
+    const lotNumero = this.newLotNumero.trim();
+    if (this.allLots.some((lot) => String(lot.numbLot).trim().toLowerCase() === lotNumero.toLowerCase())) {
+      this.lotErrorMessage = `Le numéro de lot ${lotNumero} existe déjà.`;
+      return;
+    }
+
     const lotPayload: Partial<ApiLot> = {
-      numbLot: this.newLotNumero.trim(),
+      numbLot: lotNumero,
       numbMarche: this.newLotNumbMarche.trim(),
       Description: this.newLotDescription.trim(),
       numbContrat: this.newLotContract.trim() || undefined,
     };
 
+    this.isSavingLot = true;
     try {
       const createdLots = await createLot(lotPayload);
       const createdLot = createdLots[0];
@@ -304,8 +321,11 @@ export class DetailsMarchesComponent implements OnInit {
       }
       this.toggleAddLot();
     } catch (error: any) {
+      this.lotErrorMessage = error?.message || 'Impossible d’ajouter le lot.';
       console.error('[DetailsMarches] createLot failed', error);
       this.errorMessage = error?.message || 'Impossible d’ajouter le lot.';
+    } finally {
+      this.isSavingLot = false;
     }
   }
 
@@ -404,6 +424,7 @@ export class DetailsMarchesComponent implements OnInit {
         getFournisseurs(),
       ]);
 
+      this.allLots = lots;
       const filteredLots = lots.filter((lot) => String(lot.numbMarche) === String(numbMarche));
       this.lots = filteredLots.map((rawLot) => ({
         id: rawLot.numbLot,
