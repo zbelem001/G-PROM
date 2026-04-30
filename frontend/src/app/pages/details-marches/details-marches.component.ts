@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../../components/header/header.component';
 import { MenuComponent } from '../../components/menu/menu.component';
+import { getLots, getFournisseurs, getMarcheDetails, getSoumissions, Marche, Lot as ApiLot, Soumission } from '../../api.service';
 
 interface LotDocument {
   id: string;
@@ -15,7 +17,7 @@ interface LotDocument {
   lot?: string;
 }
 
-interface Lot {
+interface MarketLot {
   id: string;
   numero: string;
   description: string;
@@ -82,8 +84,16 @@ interface SctMember {
   templateUrl: './details-marches.component.html',
   styleUrls: ['./details-marches.component.css'],
 })
-export class DetailsMarchesComponent {
+export class DetailsMarchesComponent implements OnInit {
+  constructor(private route: ActivatedRoute, private cd: ChangeDetectorRef) {}
   activeTab = 'Informations générales';
+  loadingMarket = false;
+  errorMessage = '';
+  market: Marche | null = null;
+  lots: MarketLot[] = [];
+  submissions: Submission[] = [];
+  lotCount = 0;
+  submissionCount = 0;
   showAddLot = false;
   showConsultationDrawer = false;
   showSoumissionDrawer = false;
@@ -95,7 +105,7 @@ export class DetailsMarchesComponent {
   showLotModal = false;
   showProviderModal = false;
   showSubmissionModal = false;
-  selectedLot: Lot | null = null;
+  selectedLot: MarketLot | null = null;
   selectedDocument: LotDocument | null = null;
   selectedProvider: Provider | null = null;
   selectedSubmission: Submission | null = null;
@@ -131,29 +141,6 @@ export class DetailsMarchesComponent {
       nom: 'Jean Diarra',
       role: 'Membre Technique',
       email: 'j.diarra@2ie.bf',
-    },
-  ];
-
-  lots: Lot[] = [
-    {
-      id: 'lot-1',
-      numero: 'MAR001_LOT1',
-      description: 'Fourniture de matériel informatique',
-      contrat: 'CTR-2024-01',
-      documents: [
-        { id: 'doc-1', nom: 'CCTP_Lot1.pdf', type: 'Spécifications', date: '12 Oct 2023', statut: 'Validé' },
-        { id: 'doc-2', nom: 'Devis_Lot1.xlsx', type: 'Offre fournisseur', date: '15 Oct 2023', statut: 'En attente' },
-      ],
-    },
-    {
-      id: 'lot-2',
-      numero: 'MAR001_LOT2',
-      description: 'Installation et configuration',
-      contrat: '—',
-      documents: [
-        { id: 'doc-3', nom: 'Plan_Installation.pdf', type: 'Plan', date: '18 Oct 2023', statut: 'Validé' },
-        { id: 'doc-4', nom: 'Rapport_Reception.docx', type: 'Réception', date: '22 Oct 2023', statut: 'Brouillon' },
-      ],
     },
   ];
 
@@ -267,98 +254,6 @@ export class DetailsMarchesComponent {
     },
   ];
 
-  submissions: Submission[] = [
-    {
-      id: 'SM-2023-015',
-      lot: 'Lot 1',
-      dateDepot: '12 Oct 2023',
-      heureDepot: '10:30',
-      montant: '33 500 000 FCFA',
-      delai: '45',
-      exemplaires: 3,
-      observation: 'Offre valable 90 jours.',
-      statut: 'En attente',
-      fournisseur: {
-        id: 'prov-1',
-        nom: 'Tech Solutions S.A.',
-        domaine: 'Équipement Informatique',
-        adresse: '01 Avenue de la Technologie',
-        ville: 'Ouagadougou',
-        pays: 'Burkina Faso',
-        email: 'contact@techsolutions.bf',
-        telephone1: '+226 25 00 00 01',
-        telephone2: '+226 25 00 00 02',
-        contact: 'A. Traoré',
-        fonction: 'Directeur des achats',
-        ifu: '123456789',
-        rccm: 'BF-OUA-2023-B-12345',
-        statut: 'Actif',
-        documents: [
-          { id: 'doc-p1', nom: 'Offre_TechSolutions.pdf', type: 'Offre', date: '12 Oct 2023', statut: 'Soumis' },
-          { id: 'doc-p2', nom: 'RCCM_TechSolutions.pdf', type: 'Document légal', date: '11 Oct 2023', statut: 'Validé' },
-        ],
-      },
-    },
-    {
-      id: 'SM-2023-016',
-      lot: 'Lot 2',
-      dateDepot: '14 Oct 2023',
-      heureDepot: '09:45',
-      montant: '12 250 000 FCFA',
-      delai: '30',
-      exemplaires: 2,
-      observation: 'Prix compétitif et délais respectés.',
-      statut: 'Validé',
-      fournisseur: {
-        id: 'prov-3',
-        nom: 'Bureau Plus',
-        domaine: 'Aménagement Espace',
-        adresse: '22 Boulevard du Bureau',
-        ville: 'Ouagadougou',
-        pays: 'Burkina Faso',
-        email: 'contact@bureauplus.bf',
-        telephone1: '+226 25 00 02 34',
-        contact: 'N. Kaboré',
-        fonction: 'Responsable commercial',
-        ifu: '456789123',
-        rccm: 'BF-OUA-2023-B-98765',
-        statut: 'Actif',
-        documents: [
-          { id: 'doc-p4', nom: 'Catalogue_BureauPlus.pdf', type: 'Catalogue', date: '09 Oct 2023', statut: 'Validé' },
-        ],
-      },
-    },
-    {
-      id: 'SM-2023-017',
-      lot: 'Lot 3',
-      dateDepot: '15 Oct 2023',
-      heureDepot: '11:20',
-      montant: '5 500 000 FCFA',
-      delai: '15',
-      exemplaires: 4,
-      observation: 'Offre conforme aux exigences.',
-      statut: 'Soumis',
-      fournisseur: {
-        id: 'prov-4',
-        nom: 'Papeterie Centrale',
-        domaine: 'Fournitures de bureau',
-        adresse: '10 Rue du Commerce',
-        ville: 'Ouagadougou',
-        pays: 'Burkina Faso',
-        email: 'contact@papeteriecentrale.bf',
-        telephone1: '+226 25 00 03 45',
-        contact: 'E. Zongo',
-        fonction: 'Chef de dépôt',
-        ifu: '789123456',
-        rccm: 'BF-OUA-2023-B-11223',
-        statut: 'Actif',
-        documents: [
-          { id: 'doc-p5', nom: 'Offre_Papeterie.pdf', type: 'Offre', date: '15 Oct 2023', statut: 'Soumis' },
-        ],
-      },
-    },
-  ];
-
   setActiveTab(tab: string) {
     this.activeTab = tab;
   }
@@ -395,7 +290,7 @@ export class DetailsMarchesComponent {
     this.showStatusDrawer = !this.showStatusDrawer;
   }
 
-  openLotPopup(lot: Lot) {
+  openLotPopup(lot: MarketLot) {
     this.selectedLot = lot;
     this.selectedDocument = null;
     this.showLotModal = true;
@@ -425,6 +320,99 @@ export class DetailsMarchesComponent {
   closeSubmissionPopup() {
     this.showSubmissionModal = false;
     this.selectedSubmission = null;
+  }
+
+  ngOnInit() {
+    this.route.queryParamMap.subscribe((params) => {
+      const id = params.get('id');
+      const tab = params.get('tab');
+      if (tab) {
+        this.activeTab = tab;
+      }
+      if (id) {
+        this.loadMarcheDetails(id);
+      }
+      this.cd.detectChanges();
+    });
+  }
+
+  async loadMarcheDetails(numbMarche: string) {
+    this.loadingMarket = true;
+    this.errorMessage = '';
+    try {
+      this.market = await getMarcheDetails(numbMarche);
+      this.cd.detectChanges();
+    } catch (error: any) {
+      console.error('[DetailsMarches] getMarcheDetails failed', error);
+      this.errorMessage = error?.message || 'Impossible de charger les informations du marché.';
+      this.loadingMarket = false;
+      this.cd.detectChanges();
+      return;
+    }
+
+    try {
+      const [lots, submissions, fournisseurs] = await Promise.all([
+        getLots(),
+        getSoumissions(),
+        getFournisseurs(),
+      ]);
+
+      const filteredLots = lots.filter((lot) => String(lot.numbMarche) === String(numbMarche));
+      this.lots = filteredLots.map((rawLot) => ({
+        id: rawLot.numbLot,
+        numero: rawLot.numbLot,
+        description: rawLot.Description || '',
+        contrat: (rawLot as any).numbContrat ?? '—',
+        documents: [],
+      }));
+
+      this.submissions = submissions
+        .filter(
+          (submission) =>
+            String(submission.numbMarche) === String(numbMarche) ||
+            filteredLots.some((lot) => String(lot.numbLot) === String(submission.numbLot))
+        )
+        .map((submission) => {
+          const fournisseur = fournisseurs.find((f) => f.idFournisseur === submission.idFournisseur);
+          return {
+            id: submission.idSoumission,
+            lot: submission.numbLot,
+            fournisseur: {
+              id: fournisseur?.idFournisseur.toString() ?? String(submission.idFournisseur),
+              nom: fournisseur?.RaisonSocial ?? `Fournisseur ${submission.idFournisseur}`,
+              domaine: fournisseur?.DomaineActivite ?? '—',
+              adresse: fournisseur?.AdresseGeo || fournisseur?.AdressePost || '—',
+              ville: fournisseur?.Ville ?? '—',
+              pays: fournisseur?.Pays ?? '—',
+              email: fournisseur?.Email ?? '—',
+              telephone1: fournisseur?.Telephone1 ?? '—',
+              telephone2: fournisseur?.Telephone2,
+              contact: fournisseur?.NomPrenomRepr ?? '—',
+              fonction: fournisseur?.FonctionRepr ?? '—',
+              ifu: fournisseur?.numIFU ?? '—',
+              rccm: fournisseur?.numRCCM ?? '—',
+              statut: fournisseur?.Statut ?? '—',
+              documents: [],
+            },
+            dateDepot: submission.DateDepot ?? '',
+            heureDepot: submission.Heure ?? '',
+            montant: submission.MontantPrev ? `${submission.MontantPrev.toLocaleString()} XOF` : '—',
+            delai: submission.DelaiExecutionPrev?.toString() ?? '—',
+            exemplaires: submission.nbExemplaire ?? 0,
+            observation: submission.Observation ?? '—',
+            statut: (submission as any).Statut ?? '—',
+          };
+        });
+
+      this.lotCount = this.lots.length;
+      this.submissionCount = this.submissions.length;
+      this.cd.detectChanges();
+    } catch (error: any) {
+      console.error('[DetailsMarches] getLots/getSoumissions/getFournisseurs failed', error);
+    } finally {
+      this.loadingMarket = false;
+      this.cd.detectChanges();
+    }
   }
 
   toggleAddSctMember() {

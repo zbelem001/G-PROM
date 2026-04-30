@@ -109,6 +109,12 @@ export interface Soumission {
   numbMarche?: string;
 }
 
+export interface Lot {
+  numbLot: string;
+  numbMarche: string;
+  Description?: string;
+}
+
 export interface FournisseurDetails {
   fournisseur: Fournisseur;
   soumissions: Soumission[];
@@ -122,6 +128,30 @@ function normalizeMarchePayload(marche: Partial<Marche>): Record<string, unknown
     payload[lowerKey] = value;
   });
   return payload;
+}
+
+function normalizeLotResponse(raw: any): Lot {
+  return {
+    numbLot: raw.numbLot ?? raw.numblot ?? raw.numb_lot ?? '',
+    numbMarche: raw.numbMarche ?? raw.numbmarche ?? raw.numb_marche ?? '',
+    Description: raw.Description ?? raw.description ?? raw.description ?? '',
+  } as Lot;
+}
+
+function normalizeSoumissionResponse(raw: any): Soumission {
+  return {
+    idSoumission: raw.idSoumission ?? raw.idsoumission ?? raw.id_soumission ?? '',
+    numbLot: raw.numbLot ?? raw.numblot ?? raw.numb_lot ?? '',
+    idFournisseur: raw.idFournisseur ?? raw.idfournisseur ?? raw.id_fournisseur ?? 0,
+    DateDepot: raw.DateDepot ?? raw.datedepot ?? raw.date_depot,
+    Heure: raw.Heure ?? raw.heure,
+    Observation: raw.Observation ?? raw.observation,
+    DelaiExecutionPrev: raw.DelaiExecutionPrev ?? raw.delaiexecutionprev ?? raw.delai_execution_prev,
+    MontantPrev: raw.MontantPrev ?? raw.montantprev ?? raw.montant_prev,
+    nbExemplaire: raw.nbExemplaire ?? raw.nbexemplaire ?? raw.nb_exemplaire,
+    lotDescription: raw.lotDescription ?? raw.lotdescription ?? raw.lot_description,
+    numbMarche: raw.numbMarche ?? raw.numbmarche ?? raw.numb_marche,
+  } as Soumission;
 }
 
 function normalizeMarcheResponse(raw: any): Marche {
@@ -151,6 +181,11 @@ export async function getMarches(): Promise<Marche[]> {
   return data.map(normalizeMarcheResponse);
 }
 
+export async function getMarcheDetails(numbMarche: string): Promise<Marche> {
+  const data = await request<any>(`/marches/${encodeURIComponent(numbMarche)}`);
+  return normalizeMarcheResponse(data);
+}
+
 export async function createMarche(marche: Partial<Marche>): Promise<Marche[]> {
   const payload = normalizeMarchePayload(marche);
   const response = await request<any>('/marches', {
@@ -162,6 +197,16 @@ export async function createMarche(marche: Partial<Marche>): Promise<Marche[]> {
   }
   const rows = Array.isArray(response) ? response : [response];
   return rows.map(normalizeMarcheResponse);
+}
+
+export async function getLots(): Promise<Lot[]> {
+  const data = await request<any[]>('/lots');
+  return data.map(normalizeLotResponse);
+}
+
+export async function getSoumissions(): Promise<Soumission[]> {
+  const data = await request<any[]>('/soumissions');
+  return data.map(normalizeSoumissionResponse);
 }
 
 export async function getFournisseurs(): Promise<Fournisseur[]> {

@@ -43,7 +43,7 @@ export class MarcheService {
     const { data, error } = await this.supabaseService.client
       .from('Marche')
       .select('*')
-      .eq('numbMarche', numbMarche)
+      .eq('numbmarche', numbMarche)
       .single();
 
     if (error) {
@@ -57,7 +57,7 @@ export class MarcheService {
     const { data, error } = await this.supabaseService.client
       .from('Marche')
       .update(updateMarcheDto)
-      .eq('numbMarche', numbMarche);
+      .eq('numbmarche', numbMarche);
 
     if (error) {
       throw new Error(error.message);
@@ -70,7 +70,7 @@ export class MarcheService {
     const { data, error } = await this.supabaseService.client
       .from('Marche')
       .delete()
-      .eq('numbMarche', numbMarche);
+      .eq('numbmarche', numbMarche);
 
     if (error) {
       throw new Error(error.message);
