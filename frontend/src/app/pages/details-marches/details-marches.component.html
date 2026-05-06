@@ -455,10 +455,22 @@
                 <span class="material-symbols-outlined">filter_list</span>
                 Filtrer par Lot :
               </span>
-              <button class="px-4 py-1.5 rounded-full text-sm font-medium bg-[#76d3c8] text-[#1a2e44] shadow-sm">Tous</button>
-              <button class="px-4 py-1.5 rounded-full text-sm font-medium bg-surface-container-lowest text-on-surface hover:bg-surface-container-high transition-all border border-outline-variant/15">Lot 1 - Matériel Informatique</button>
-              <button class="px-4 py-1.5 rounded-full text-sm font-medium bg-surface-container-lowest text-on-surface hover:bg-surface-container-high transition-all border border-outline-variant/15">Lot 2 - Mobilier de Bureau</button>
-              <button class="px-4 py-1.5 rounded-full text-sm font-medium bg-surface-container-lowest text-on-surface hover:bg-surface-container-high transition-all border border-outline-variant/15">Lot 3 - Fournitures</button>
+              <button (click)="setLotFilter('Tous')" 
+                [class.bg-[#76d3c8]]="selectedLotFilter === 'Tous'"
+                [class.text-[#1a2e44]]="selectedLotFilter === 'Tous'"
+                [class.bg-surface-container-lowest]="selectedLotFilter !== 'Tous'"
+                class="px-4 py-1.5 rounded-full text-sm font-medium shadow-sm transition-all border border-outline-variant/15">
+                Tous
+              </button>
+              
+              <button *ngFor="let lot of lots" 
+                (click)="setLotFilter(lot.numero)"
+                [class.bg-[#76d3c8]]="selectedLotFilter === lot.numero"
+                [class.text-[#1a2e44]]="selectedLotFilter === lot.numero"
+                [class.bg-surface-container-lowest]="selectedLotFilter !== lot.numero"
+                class="px-4 py-1.5 rounded-full text-sm font-medium hover:bg-surface-container-high transition-all border border-outline-variant/15">
+                {{ lot.numero }} - {{ lot.description | slice:0:30 }}{{ lot.description.length > 30 ? '...' : '' }}
+              </button>
             </div>
             <div class="bg-surface-container-lowest rounded-[16px] overflow-hidden shadow-[0_4px_20px_rgba(26,46,68,0.03)] border border-white/50">
               <table class="w-full text-left border-collapse">
@@ -472,7 +484,7 @@
                   </tr>
                 </thead>
                 <tbody class="text-sm divide-y divide-surface-container-high/50">
-                  <tr *ngFor="let consultation of consultations" class="hover:bg-surface-bright transition-colors group">
+                  <tr *ngFor="let consultation of filteredConsultations" class="hover:bg-surface-bright transition-colors group">
                     <td class="px-6 py-4"><span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-[#76d3c8]/15 text-[#43a399]">{{ consultation.lot }}</span></td>
                     <td class="px-6 py-4 font-medium text-[#1a2e44]">{{ consultation.fournisseur.nom }}</td>
                     <td class="px-6 py-4 text-on-surface-variant">{{ consultation.fournisseur.domaine }}</td>
@@ -956,21 +968,22 @@
             </button>
           </header>
           <div class="flex-1 overflow-y-auto">
+            <div *ngIf="consultationErrorMessage" class="mb-6 p-4 bg-error-container text-on-error-container rounded-[10px] text-sm font-medium">
+              {{ consultationErrorMessage }}
+            </div>
             <div class="bg-[#f0fdfb] rounded-[10px] p-4 mb-6 relative before:absolute before:inset-0 before:rounded-[10px] before:border before:border-primary before:opacity-15 pointer-events-none">
               <span class="material-symbols-outlined text-primary-container shrink-0 mt-0.5">info</span>
               <p class="text-sm text-primary-container leading-relaxed mt-2">
                 Un fournisseur peut être consulté sur plusieurs lots distincts du même marché.
               </p>
             </div>
-            <form class="space-y-6">
+            <form class="space-y-6" #consultationForm="ngForm">
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-on-surface" for="numbLot">Numéro de Lot</label>
                 <div class="relative">
-                  <select id="numbLot" class="w-full appearance-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
-                    <option disabled selected value="">Sélectionner un lot...</option>
-                    <option value="lot1">Lot 01 - Matériel Informatique</option>
-                    <option value="lot2">Lot 02 - Fournitures de Bureau</option>
-                    <option value="lot3">Lot 03 - Mobilier</option>
+                  <select id="numbLot" name="numbLot" [(ngModel)]="newConsultationLot" required class="w-full appearance-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
+                    <option disabled value="">Sélectionner un lot...</option>
+                    <option *ngFor="let lot of lots" [value]="lot.numero">{{ lot.numero }} - {{ lot.description }}</option>
                   </select>
                   <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant">expand_more</span>
                 </div>
@@ -978,21 +991,27 @@
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-on-surface" for="idFournisseur">Fournisseur</label>
                 <div class="relative">
-                  <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
-                  <input id="idFournisseur" type="text" placeholder="Rechercher un fournisseur..." class="w-full bg-surface-container-highest border-0 rounded-[10px] pl-11 pr-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors" />
+                  <select id="idFournisseur" name="idFournisseur" [(ngModel)]="newConsultationFournisseurId" required class="w-full appearance-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
+                    <option disabled [value]="0">Sélectionner un fournisseur...</option>
+                    <option *ngFor="let f of availableFournisseurs" [value]="f.idFournisseur">{{ f.RaisonSocial }} ({{ f.DomaineActivite }})</option>
+                  </select>
+                  <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant">expand_more</span>
                 </div>
               </div>
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-on-surface" for="DateConsultation">Date de Consultation</label>
                 <div class="relative">
-                  <input id="DateConsultation" type="date" class="w-full bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors" />
+                  <input id="DateConsultation" name="DateConsultation" [(ngModel)]="newConsultationDate" type="date" class="w-full bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors" />
                 </div>
               </div>
             </form>
           </div>
           <footer class="pt-6 flex items-center justify-end gap-4 mt-auto">
             <button type="button" class="px-5 py-2.5 text-sm font-medium text-on-secondary-container bg-transparent hover:bg-surface-container-high rounded-[10px] transition-colors" (click)="toggleConsultationDrawer()">Annuler</button>
-            <button type="button" class="px-5 py-2.5 text-sm font-medium text-white bg-[#039CD3] hover:bg-[#0284b6] rounded-[10px] transition-all" (click)="toggleConsultationDrawer()">Enregistrer la Consultation</button>
+            <button type="button" [disabled]="isSavingConsultation || !newConsultationLot || !newConsultationFournisseurId" class="px-5 py-2.5 text-sm font-medium text-white bg-[#039CD3] hover:bg-[#0284b6] rounded-[10px] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2" (click)="addConsultation()">
+              <span *ngIf="isSavingConsultation" class="spinner-border animate-spin inline-block w-4 h-4 border-2 border-current border-r-transparent rounded-full"></span>
+              {{ isSavingConsultation ? 'Enregistrement...' : 'Enregistrer la Consultation' }}
+            </button>
           </footer>
         </aside>
       </div>

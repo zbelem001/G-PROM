@@ -4,7 +4,20 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../../components/header/header.component';
 import { MenuComponent } from '../../components/menu/menu.component';
-import { createLot, getLots, getFournisseurs, getMarcheDetails, getSoumissions, Marche, Lot as ApiLot, Soumission } from '../../api.service';
+import {
+  createLot,
+  getLots,
+  getFournisseurs,
+  getMarcheDetails,
+  getSoumissions,
+  Marche,
+  Lot as ApiLot,
+  Soumission,
+  getConsultations,
+  createConsultation,
+  ConsultationApi,
+  Fournisseur,
+} from '../../api.service';
 
 interface LotDocument {
   id: string;
@@ -102,7 +115,14 @@ export class DetailsMarchesComponent implements OnInit {
   newLotContract = '';
   lotErrorMessage = '';
   isSavingLot = false;
+  selectedLotFilter: string = 'Tous';
   showConsultationDrawer = false;
+  newConsultationLot = '';
+  newConsultationFournisseurId = 0;
+  newConsultationDate = '';
+  isSavingConsultation = false;
+  consultationErrorMessage = '';
+  availableFournisseurs: Fournisseur[] = [];
   showSoumissionDrawer = false;
   showAnalyseDrawer = false;
   showDocumentDrawer = false;
@@ -323,14 +343,51 @@ export class DetailsMarchesComponent implements OnInit {
     } catch (error: any) {
       this.lotErrorMessage = error?.message || 'Impossible d’ajouter le lot.';
       console.error('[DetailsMarches] createLot failed', error);
-      this.errorMessage = error?.message || 'Impossible d’ajouter le lot.';
     } finally {
       this.isSavingLot = false;
+      this.cd.detectChanges();
     }
   }
 
   toggleConsultationDrawer() {
     this.showConsultationDrawer = !this.showConsultationDrawer;
+    this.consultationErrorMessage = '';
+    this.isSavingConsultation = false;
+    if (this.showConsultationDrawer) {
+      this.newConsultationLot = this.lots[0]?.numero || '';
+      this.newConsultationFournisseurId = this.availableFournisseurs[0]?.idFournisseur || 0;
+      this.newConsultationDate = new Date().toISOString().split('T')[0];
+    }
+  }
+
+  async addConsultation() {
+    if (this.isSavingConsultation) return;
+    if (!this.newConsultationLot || !this.newConsultationFournisseurId) {
+      this.consultationErrorMessage = 'Veuillez remplir tous les champs obligatoires.';
+      return;
+    }
+
+    this.isSavingConsultation = true;
+    this.consultationErrorMessage = '';
+
+    try {
+      await createConsultation({
+        numbLot: this.newConsultationLot,
+        idFournisseur: Number(this.newConsultationFournisseurId),
+        DateConsultation: this.newConsultationDate,
+      });
+
+      if (this.market) {
+        await this.loadMarcheDetails(this.market.numbMarche);
+      }
+      this.toggleConsultationDrawer();
+    } catch (error: any) {
+      this.consultationErrorMessage = error?.message || 'Erreur lors de l’enregistrement de la consultation.';
+      console.error('[DetailsMarches] addConsultation failed', error);
+    } finally {
+      this.isSavingConsultation = false;
+      this.cd.detectChanges();
+    }
   }
 
   toggleSoumissionDrawer() {
@@ -418,13 +475,15 @@ export class DetailsMarchesComponent implements OnInit {
     }
 
     try {
-      const [lots, submissions, fournisseurs] = await Promise.all([
+      const [lots, submissions, fournisseurs, consultations] = await Promise.all([
         getLots(),
         getSoumissions(),
         getFournisseurs(),
+        getConsultations(),
       ]);
 
       this.allLots = lots;
+      this.availableFournisseurs = fournisseurs;
       const filteredLots = lots.filter((lot) => String(lot.numbMarche) === String(numbMarche));
       this.lots = filteredLots.map((rawLot) => ({
         id: rawLot.numbLot,
@@ -433,6 +492,32 @@ export class DetailsMarchesComponent implements OnInit {
         contrat: (rawLot as any).numbContrat ?? '—',
         documents: [],
       }));
+
+      this.consultations = consultations
+        .filter((c) => filteredLots.some((lot) => lot.numbLot === c.numbLot))
+        .map((c) => {
+          const f = fournisseurs.find((fourn) => fourn.idFournisseur === c.idFournisseur);
+          return {
+            lot: c.numbLot,
+            date: c.DateConsultation || '—',
+            fournisseur: {
+              id: f?.idFournisseur.toString() ?? String(c.idFournisseur),
+              nom: f?.RaisonSocial ?? `Fournisseur ${c.idFournisseur}`,
+              domaine: f?.DomaineActivite ?? '—',
+              adresse: f?.AdresseGeo || '—',
+              ville: f?.Ville ?? '—',
+              pays: f?.Pays ?? '—',
+              email: f?.Email ?? '—',
+              telephone1: f?.Telephone1 ?? '—',
+              contact: f?.NomPrenomRepr ?? '—',
+              fonction: f?.FonctionRepr ?? '—',
+              ifu: f?.numIFU ?? '—',
+              rccm: f?.numRCCM ?? '—',
+              statut: f?.Statut ?? '—',
+              documents: [],
+            },
+          };
+        });
 
       this.submissions = submissions
         .filter(
@@ -520,5 +605,17 @@ export class DetailsMarchesComponent implements OnInit {
       return;
     }
     window.open(url, '_blank', 'noopener,noreferrer');
+  }
+
+  setLotFilter(filter: string) {
+    this.selectedLotFilter = filter;
+    this.cd.detectChanges();
+  }
+
+  get filteredConsultations(): Consultation[] {
+    if (this.selectedLotFilter === 'Tous') {
+      return this.consultations;
+    }
+    return this.consultations.filter((c) => c.lot === this.selectedLotFilter);
   }
 }

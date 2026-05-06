@@ -116,6 +116,12 @@ export interface Lot {
   numbContrat?: string;
 }
 
+export interface ConsultationApi {
+  numbLot: string;
+  idFournisseur: number;
+  DateConsultation?: string;
+}
+
 export interface FournisseurDetails {
   fournisseur: Fournisseur;
   soumissions: Soumission[];
@@ -235,5 +241,26 @@ export async function createFournisseur(fournisseur: Partial<Fournisseur>): Prom
   return request<Fournisseur[]>('/fournisseurs', {
     method: 'POST',
     body: JSON.stringify(fournisseur),
+  });
+}
+
+export async function getConsultations(): Promise<ConsultationApi[]> {
+  const data = await request<any[]>('/consultations');
+  return data.map((raw) => ({
+    numbLot: raw.numbLot ?? raw.numblot ?? raw.numb_lot ?? '',
+    idFournisseur: raw.idFournisseur ?? raw.idfournisseur ?? raw.id_fournisseur ?? 0,
+    DateConsultation: raw.DateConsultation ?? raw.dateconsultation ?? raw.date_consultation,
+  }));
+}
+
+export async function createConsultation(consultation: Partial<ConsultationApi>): Promise<ConsultationApi> {
+  const payload: any = {};
+  if (consultation.numbLot) payload.numblot = consultation.numbLot;
+  if (consultation.idFournisseur) payload.idfournisseur = consultation.idFournisseur;
+  if (consultation.DateConsultation) payload.dateconsultation = consultation.DateConsultation;
+
+  return request<ConsultationApi>('/consultations', {
+    method: 'POST',
+    body: JSON.stringify(payload),
   });
 }

@@ -7,9 +7,14 @@ export class ConsultationService {
   constructor(private readonly supabaseService: SupabaseService) {}
 
   async create(createConsultationDto: CreateConsultationDto) {
+    const payload: any = {};
+    if (createConsultationDto.numbLot) payload.numblot = createConsultationDto.numbLot;
+    if (createConsultationDto.idFournisseur) payload.idfournisseur = createConsultationDto.idFournisseur;
+    if (createConsultationDto.DateConsultation) payload.dateconsultation = createConsultationDto.DateConsultation;
+
     const { data, error } = await this.supabaseService.client
       .from('Consultation')
-      .insert([createConsultationDto]);
+      .insert([payload]);
     if (error) {
       throw new Error(error.message);
     }
