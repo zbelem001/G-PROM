@@ -362,8 +362,22 @@ export class DetailsMarchesComponent implements OnInit {
 
   async addConsultation() {
     if (this.isSavingConsultation) return;
-    if (!this.newConsultationLot || !this.newConsultationFournisseurId) {
-      this.consultationErrorMessage = 'Veuillez remplir tous les champs obligatoires.';
+    
+    const fournisseurId = Number(this.newConsultationFournisseurId);
+    
+    if (!this.newConsultationLot || !fournisseurId || fournisseurId === 0) {
+      this.consultationErrorMessage = 'Veuillez sélectionner un lot et un fournisseur.';
+      return;
+    }
+
+    // Vérifier si cette consultation existe déjà localement pour éviter l'erreur 500
+    const exists = this.consultations.some(c => 
+      c.lot === this.newConsultationLot && 
+      Number(c.fournisseur.id) === fournisseurId
+    );
+
+    if (exists) {
+      this.consultationErrorMessage = 'Ce fournisseur a déjà été consulté pour ce lot.';
       return;
     }
 
@@ -373,7 +387,7 @@ export class DetailsMarchesComponent implements OnInit {
     try {
       await createConsultation({
         numbLot: this.newConsultationLot,
-        idFournisseur: Number(this.newConsultationFournisseurId),
+        idFournisseur: fournisseurId,
         DateConsultation: this.newConsultationDate,
       });
 

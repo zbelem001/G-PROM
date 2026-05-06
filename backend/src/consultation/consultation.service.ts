@@ -7,14 +7,24 @@ export class ConsultationService {
   constructor(private readonly supabaseService: SupabaseService) {}
 
   async create(createConsultationDto: CreateConsultationDto) {
-    // Supabase column names are lowercase. Mapping explicitly to avoid issues.
+    // Determine the exact keys sent from frontend
+    // Use fallback to handle both CamelCase and lowercase incoming properties
+    const numbLot = createConsultationDto.numbLot || (createConsultationDto as any).numblot;
+    const idFournisseur = createConsultationDto.idFournisseur || (createConsultationDto as any).idfournisseur;
+    const DateConsultation = createConsultationDto.DateConsultation || (createConsultationDto as any).dateconsultation;
+
+    // Supabase columns are lowercase: numblot, idfournisseur, dateconsultation
     const payload = {
-      numblot: String(createConsultationDto.numbLot),
-      idfournisseur: Number(createConsultationDto.idFournisseur),
-      dateconsultation: createConsultationDto.DateConsultation || new Date().toISOString().split('T')[0]
+      numblot: String(numbLot),
+      idfournisseur: Number(idFournisseur),
+      dateconsultation: DateConsultation || new Date().toISOString().split('T')[0]
     };
 
-    console.log('[ConsultationService] Inserting payload:', payload);
+    console.log('[ConsultationService] Final payload for Supabase:', payload);
+
+    if (!payload.numblot || isNaN(payload.idfournisseur)) {
+      throw new Error(`Invalid data: numblot=${payload.numblot}, idfournisseur=${payload.idfournisseur}`);
+    }
 
     const { data, error } = await this.supabaseService.client
       .from('Consultation')
@@ -23,7 +33,7 @@ export class ConsultationService {
 
     if (error) {
       console.error('[ConsultationService] Supabase insert error:', error);
-      throw new Error(`Supabase error: ${error.message} (Code: ${error.code})`);
+      throw new Error(`Supabase error [${error.code}]: ${error.message}`);
     }
     return data;
   }
