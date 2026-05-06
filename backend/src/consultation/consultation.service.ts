@@ -18,6 +18,7 @@ export class ConsultationService {
       .select();
 
     if (error) {
+      console.error('[ConsultationService] Supabase insert error:', error);
       throw new Error(error.message);
     }
     return data;
