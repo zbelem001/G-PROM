@@ -82,36 +82,9 @@ export class AppController {
     return this.appService.updateUtilisateur(Number(idUtilisateur), changes);
   }
 
-  @Delete('utilisateurs/:idUtilisateur')
-  deleteUtilisateur(@Param('idUtilisateur') idUtilisateur: string): void {
-    return this.appService.deleteUtilisateur(Number(idUtilisateur));
-  }
+  // Utilisateurs are handled by local appService for now
 
-  // Consultations
-  @Get('consultations')
-  getConsultations(): Consultation[] {
-    return this.appService.getConsultations();
-  }
-
-  @Get('consultations/:numbLot/:idFournisseur')
-  getConsultation(@Param('numbLot') numbLot: string, @Param('idFournisseur') idFournisseur: string): Consultation {
-    return this.appService.getConsultation(numbLot, Number(idFournisseur));
-  }
-
-  @Post('consultations')
-  createConsultation(@Body() consultation: Partial<Consultation>): Consultation {
-    return this.appService.createConsultation(consultation);
-  }
-
-  @Put('consultations/:numbLot/:idFournisseur')
-  updateConsultation(@Param('numbLot') numbLot: string, @Param('idFournisseur') idFournisseur: string, @Body() changes: Partial<Consultation>): Consultation {
-    return this.appService.updateConsultation(numbLot, Number(idFournisseur), changes);
-  }
-
-  @Delete('consultations/:numbLot/:idFournisseur')
-  deleteConsultation(@Param('numbLot') numbLot: string, @Param('idFournisseur') idFournisseur: string): void {
-    return this.appService.deleteConsultation(numbLot, Number(idFournisseur));
-  }
+  // Consultations are handled by ConsultationController using Supabase.
 
   // Soumissions
   @Get('soumissions')
