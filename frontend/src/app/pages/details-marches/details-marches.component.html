@@ -520,16 +520,24 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div class="bg-surface-container-lowest rounded-[16px] p-5 shadow-[0_2px_12px_rgba(26,46,68,0.04)]">
                 <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-3">Total soumissions</p>
-                <p class="text-3xl font-bold text-[#1a2e44]">18</p>
+                <p class="text-3xl font-bold text-[#1a2e44]">{{ submissionCount }}</p>
               </div>
               <div class="bg-surface-container-lowest rounded-[16px] p-5 shadow-[0_2px_12px_rgba(26,46,68,0.04)]">
                 <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-3">Montant moyen</p>
-                <p class="text-3xl font-bold text-[#1a2e44]">32M FCFA</p>
+                <p class="text-3xl font-bold text-[#1a2e44]">
+                  {{ averageSubmissionAmount > 1000000 ? (averageSubmissionAmount / 1000000 | number:'1.0-1') + 'M' : (averageSubmissionAmount | number) }} 
+                  <span class="text-sm font-normal text-on-surface-variant ml-1">FCFA</span>
+                </p>
               </div>
               <div class="bg-surface-container-lowest rounded-[16px] p-5 shadow-[0_2px_12px_rgba(26,46,68,0.04)]">
                 <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-3">Soumission la plus récente</p>
-                <p class="text-base font-semibold text-[#1a2e44]">Lot 2 - Bureau Plus</p>
-                <p class="text-sm text-on-surface-variant mt-1">18 Oct 2023</p>
+                <ng-container *ngIf="latestSubmission; else noSubmission">
+                  <p class="text-base font-semibold text-[#1a2e44]">{{ latestSubmission.lot }} - {{ latestSubmission.supplier }}</p>
+                  <p class="text-sm text-on-surface-variant mt-1">{{ latestSubmission.date | date:'dd MMM yyyy' }}</p>
+                </ng-container>
+                <ng-template #noSubmission>
+                  <p class="text-sm text-on-surface-variant italic">Aucune soumission</p>
+                </ng-template>
               </div>
             </div>
             <div class="bg-surface-container-lowest rounded-[16px] overflow-hidden shadow-[0_4px_20px_rgba(26,46,68,0.03)] border border-white/50">
@@ -554,9 +562,14 @@
                     <td class="px-6 py-4 text-center">{{ submission.delai }}</td>
                     <td class="px-6 py-4 text-center text-on-surface-variant">{{ submission.exemplaires }}</td>
                     <td class="px-6 py-4 text-right">
-                      <button type="button" (click)="openSubmissionPopup(submission)" class="text-slate-400 hover:text-[#76d3c8] transition-colors p-1 opacity-0 group-hover:opacity-100">
-                        <span class="material-symbols-outlined text-[20px]">visibility</span>
-                      </button>
+                      <div class="flex items-center justify-end gap-2">
+                        <button type="button" (click)="openSubmissionPopup(submission)" class="text-slate-400 hover:text-[#76d3c8] transition-colors p-1 opacity-0 group-hover:opacity-100" title="Voir détails">
+                          <span class="material-symbols-outlined text-[20px]">visibility</span>
+                        </button>
+                        <button type="button" (click)="removeSoumission(submission)" class="text-slate-400 hover:text-error transition-colors p-1 opacity-0 group-hover:opacity-100" title="Supprimer">
+                          <span class="material-symbols-outlined text-[20px]">delete</span>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 </tbody>
@@ -1402,7 +1415,7 @@
           <header class="flex justify-between items-start mb-8">
             <div>
               <h2 class="text-[22px] font-headline font-bold text-on-surface tracking-tight">Enregistrer une Soumission</h2>
-              <p class="text-sm text-on-surface-variant mt-1">Ajouter une offre déposée pour le marché MAR-2023-001</p>
+              <p class="text-sm text-on-surface-variant mt-1">Ajouter une offre déposée pour le marché</p>
             </div>
             <button type="button" aria-label="Fermer" class="text-outline hover:text-on-surface transition-colors p-1" (click)="toggleSoumissionDrawer()">
               <span class="material-symbols-outlined">close</span>
@@ -1415,71 +1428,55 @@
                 Cette soumission sera associée au lot sélectionné et enregistrée dans le flux de marché.
               </p>
             </div>
-            <form class="space-y-6">
+            <form (ngSubmit)="addSoumission()" #soumissionForm="ngForm" class="space-y-6">
               <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface" for="submissionId">ID Soumission</label>
-                <div class="relative">
-                  <input id="submissionId" type="text" value="SM-2023-018" readonly class="w-full bg-surface-container-highest border border-transparent rounded-[10px] text-sm text-on-surface-variant px-4 py-3 focus:ring-0 cursor-not-allowed" />
-                </div>
-              </div>
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface" for="lotSelect">Lot Concerné</label>
+                <label class="block text-sm font-medium text-on-surface">Lot Concerné</label>
                 <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow">
-                  <select id="lotSelect" class="w-full bg-surface-container-highest border-none text-sm text-on-surface px-4 py-3 appearance-none focus:bg-surface-container-lowest focus:ring-0">
+                  <select name="newSoumissionLot" [(ngModel)]="newSoumissionLot" required class="w-full bg-surface-container-highest border-none text-sm text-on-surface px-4 py-3 appearance-none focus:bg-surface-container-lowest focus:ring-0">
                     <option disabled selected value="">Sélectionner un lot</option>
-                    <option value="lot1">Lot 1 : Gros Œuvre</option>
-                    <option value="lot2">Lot 2 : Plomberie</option>
-                    <option value="lot3">Lot 3 : Électricité</option>
+                    <option *ngFor="let lot of lots" [value]="lot.numblot">Lot {{lot.numblot}}</option>
                   </select>
                   <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
                 </div>
               </div>
+
               <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface" for="supplierSearch">Fournisseur</label>
-                <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow flex items-center bg-surface-container-highest focus-within:bg-surface-container-lowest">
-                  <span class="material-symbols-outlined pl-4 text-on-surface-variant">search</span>
-                  <input id="supplierSearch" class="w-full bg-transparent border-none text-sm text-on-surface px-3 py-3 focus:ring-0" placeholder="Rechercher un fournisseur..." type="text" />
-                  <span class="material-symbols-outlined pr-4 text-on-surface-variant cursor-pointer">close</span>
+                <label class="block text-sm font-medium text-on-surface">Fournisseur</label>
+                <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow">
+                  <select name="newSoumissionIdFournisseur" [(ngModel)]="newSoumissionIdFournisseur" required class="w-full bg-surface-container-highest border-none text-sm text-on-surface px-4 py-3 appearance-none focus:bg-surface-container-lowest focus:ring-0">
+                    <option disabled selected value="">Sélectionner un fournisseur</option>
+                    <option *ngFor="let f of fournisseurs" [value]="f.idfournisseur">{{f.nom}}</option>
+                  </select>
+                  <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
                 </div>
               </div>
+
               <div class="grid grid-cols-2 gap-4">
                 <div class="flex flex-col gap-1.5">
-                  <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Date de Dépôt</label>
+                  <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Montant (HT)</label>
                   <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow flex items-center bg-surface-container-highest focus-within:bg-surface-container-lowest">
-                    <input class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0" type="date" />
+                    <input name="newSoumissionMontant" [(ngModel)]="newSoumissionMontant" required class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0" placeholder="0.00" type="number" />
                   </div>
                 </div>
                 <div class="flex flex-col gap-1.5">
-                  <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Heure</label>
+                  <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Délai</label>
                   <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow flex items-center bg-surface-container-highest focus-within:bg-surface-container-lowest">
-                    <input class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0" type="time" />
+                    <input name="newSoumissionDelai" [(ngModel)]="newSoumissionDelai" required class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0" placeholder="Ex: 90 jours" type="text" />
                   </div>
                 </div>
               </div>
-              <div class="grid grid-cols-2 gap-4">
-                <div class="flex flex-col gap-1.5">
-                  <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Montant Prév. (FCFA)</label>
-                  <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow flex items-center bg-surface-container-highest focus-within:bg-surface-container-lowest">
-                    <input class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0" placeholder="Ex: 15000000" type="number" />
-                  </div>
-                </div>
-                <div class="flex flex-col gap-1.5">
-                  <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Délai (Jours)</label>
-                  <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow flex items-center bg-surface-container-highest focus-within:bg-surface-container-lowest">
-                    <input class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0" placeholder="Ex: 90" type="number" />
-                  </div>
-                </div>
-              </div>
+
               <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface" for="copies">Nombre d'Exemplaires</label>
+                <label class="block text-sm font-medium text-on-surface">Note Technique / Score</label>
                 <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow flex items-center bg-surface-container-highest focus-within:bg-surface-container-lowest">
-                  <input id="copies" class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0" min="1" type="number" value="3" />
+                  <input name="newSoumissionNote" [(ngModel)]="newSoumissionNote" class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0" placeholder="Note optionnelle" type="number" />
                 </div>
               </div>
+
               <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface" for="observation">Observation</label>
+                <label class="block text-sm font-medium text-on-surface">Observation</label>
                 <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow flex items-center bg-surface-container-highest focus-within:bg-surface-container-lowest">
-                  <textarea id="observation" class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0 resize-none" placeholder="Notes éventuelles..." rows="3"></textarea>
+                  <textarea name="newSoumissionId" [(ngModel)]="newSoumissionId" class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0 resize-none" placeholder="Numéro de soumission (ID)..." rows="2"></textarea>
                 </div>
               </div>
             </form>
@@ -1488,8 +1485,9 @@
             <button type="button" class="w-full bg-transparent hover:bg-surface-container-high text-on-secondary-container font-body font-semibold text-sm py-3 px-6 rounded-[10px] transition-all duration-200" (click)="toggleSoumissionDrawer()">
               Annuler
             </button>
-            <button type="button" class="w-full bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white font-body font-semibold text-sm py-3 px-6 rounded-[10px] shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-200" (click)="toggleSoumissionDrawer()">
-              Enregistrer la Soumission
+            <button type="button" (click)="addSoumission()" [disabled]="!soumissionForm.valid || isSavingSoumission" class="w-full bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white font-body font-semibold text-sm py-3 px-6 rounded-[10px] shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-200 flex items-center justify-center gap-2">
+              <span *ngIf="isSavingSoumission" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+              {{ isSavingSoumission ? 'Enregistrement...' : 'Enregistrer la Soumission' }}
             </button>
           </footer>
         </aside>

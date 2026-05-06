@@ -16,6 +16,8 @@ import {
   getConsultations,
   createConsultation,
   deleteConsultation,
+  createSoumission,
+  deleteSoumission,
   ConsultationApi,
   Fournisseur,
 } from '../../api.service';
@@ -34,6 +36,7 @@ interface LotDocument {
 interface MarketLot {
   id: string;
   numero: string;
+  numbLot?: string; // Ajouté pour compatibilité avec le template si nécessaire
   description: string;
   contrat: string;
   documents: LotDocument[];
@@ -109,6 +112,8 @@ export class DetailsMarchesComponent implements OnInit {
   submissions: Submission[] = [];
   lotCount = 0;
   submissionCount = 0;
+  averageSubmissionAmount = 0;
+  latestSubmission: { lot: string; supplier: string; date: string } | null = null;
   showAddLot = false;
   newLotNumero = '';
   newLotNumbMarche = '';
@@ -123,7 +128,24 @@ export class DetailsMarchesComponent implements OnInit {
   newConsultationDate = '';
   isSavingConsultation = false;
   consultationErrorMessage = '';
+  
+  // Soumission Form State
+  newSoumissionId = '';
+  newSoumissionLot = '';
+  newSoumissionIdFournisseur: number = 0;
+  newSoumissionFournisseurId: number = 0;
+  newSoumissionDate: string = '';
+  newSoumissionHeure: string = '';
+  newSoumissionMontant: number = 0;
+  newSoumissionDelai: number = 0;
+  newSoumissionNote: number = 0;
+  newSoumissionExemplaires: number = 3;
+  newSoumissionObservation: string = '';
+  isSavingSoumission = false;
+  soumissionErrorMessage = '';
+
   availableFournisseurs: Fournisseur[] = [];
+  fournisseurs: Fournisseur[] = [];
   showSoumissionDrawer = false;
   showAnalyseDrawer = false;
   showDocumentDrawer = false;
@@ -434,6 +456,78 @@ export class DetailsMarchesComponent implements OnInit {
 
   toggleSoumissionDrawer() {
     this.showSoumissionDrawer = !this.showSoumissionDrawer;
+    this.isSavingSoumission = false;
+    this.soumissionErrorMessage = '';
+    if (this.showSoumissionDrawer) {
+      this.newSoumissionId = `SM-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+      this.newSoumissionLot = this.lots[0]?.numero || '';
+      this.newSoumissionFournisseurId = 0;
+      this.newSoumissionIdFournisseur = 0;
+      this.newSoumissionDate = new Date().toISOString().split('T')[0];
+      this.newSoumissionHeure = new Date().toTimeString().split(' ')[0].substring(0, 5);
+      this.newSoumissionMontant = 0;
+      this.newSoumissionDelai = 0;
+      this.newSoumissionNote = 0;
+      this.newSoumissionExemplaires = 3;
+      this.newSoumissionObservation = '';
+    }
+  }
+
+  async addSoumission() {
+    if (this.isSavingSoumission) return;
+
+    // Utiliser soit l'un soit l'autre selon ce qui est lié dans le template
+    const fournisseurId = Number(this.newSoumissionIdFournisseur || this.newSoumissionFournisseurId);
+    if (!this.newSoumissionId || !this.newSoumissionLot || !fournisseurId) {
+      this.soumissionErrorMessage = 'Veuillez remplir les champs obligatoires (Lot et Fournisseur).';
+      return;
+    }
+
+    this.isSavingSoumission = true;
+    this.soumissionErrorMessage = '';
+
+    try {
+      await createSoumission({
+        idSoumission: this.newSoumissionId,
+        numbLot: this.newSoumissionLot,
+        idFournisseur: fournisseurId,
+        DateDepot: this.newSoumissionDate,
+        Heure: this.newSoumissionHeure,
+        MontantPrev: this.newSoumissionMontant,
+        DelaiExecutionPrev: this.newSoumissionDelai,
+        nbExemplaire: this.newSoumissionExemplaires,
+        Observation: this.newSoumissionObservation,
+      });
+
+      if (this.market) {
+        await this.loadMarcheDetails(this.market.numbMarche);
+      }
+      this.showSoumissionDrawer = false;
+    } catch (error: any) {
+      this.soumissionErrorMessage = error?.message || 'Erreur lors de l’enregistrement de la soumission.';
+      console.error('[DetailsMarches] addSoumission failed', error);
+    } finally {
+      this.isSavingSoumission = false;
+      this.cd.detectChanges();
+    }
+  }
+
+  async removeSoumission(submission: Submission) {
+    if (!confirm(`Voulez-vous vraiment supprimer la soumission ${submission.id} ?`)) {
+      return;
+    }
+
+    try {
+      await deleteSoumission(submission.id);
+      if (this.market) {
+        await this.loadMarcheDetails(this.market.numbMarche);
+      }
+    } catch (error: any) {
+      console.error('[DetailsMarches] deleteSoumission failed', error);
+      alert('Impossible de supprimer la soumission.');
+    } finally {
+      this.cd.detectChanges();
+    }
   }
 
   toggleAnalyseDrawer() {
@@ -526,10 +620,12 @@ export class DetailsMarchesComponent implements OnInit {
 
       this.allLots = lots;
       this.availableFournisseurs = fournisseurs;
+      this.fournisseurs = fournisseurs; // Pour le formulaire de soumission
       const filteredLots = lots.filter((lot) => String(lot.numbMarche) === String(numbMarche));
       this.lots = filteredLots.map((rawLot) => ({
         id: rawLot.numbLot,
         numero: rawLot.numbLot,
+        numblot: rawLot.numbLot, // Pour le template HTML
         description: rawLot.Description || '',
         contrat: (rawLot as any).numbContrat ?? '—',
         documents: [],
@@ -601,6 +697,40 @@ export class DetailsMarchesComponent implements OnInit {
 
       this.lotCount = this.lots.length;
       this.submissionCount = this.submissions.length;
+
+      // Calcul des statistiques pour les soumissions
+      if (this.submissions.length > 0) {
+        const amounts = this.submissions
+          .map(s => {
+            const raw = s.montant.replace(/[^0-9]/g, '');
+            return raw ? Number(raw) : 0;
+          })
+          .filter(a => a > 0);
+        
+        if (amounts.length > 0) {
+          const total = amounts.reduce((acc, val) => acc + val, 0);
+          this.averageSubmissionAmount = Math.round(total / amounts.length);
+        } else {
+          this.averageSubmissionAmount = 0;
+        }
+
+        // Trouver la soumission la plus récente par date
+        const sorted = [...this.submissions].sort((a, b) => {
+          return new Date(b.dateDepot).getTime() - new Date(a.dateDepot).getTime();
+        });
+        const latest = sorted[0];
+        if (latest) {
+          this.latestSubmission = {
+            lot: latest.lot,
+            supplier: latest.fournisseur.nom,
+            date: latest.dateDepot
+          };
+        }
+      } else {
+        this.averageSubmissionAmount = 0;
+        this.latestSubmission = null;
+      }
+
       this.cd.detectChanges();
     } catch (error: any) {
       console.error('[DetailsMarches] getLots/getSoumissions/getFournisseurs failed', error);

@@ -244,6 +244,19 @@ export async function createFournisseur(fournisseur: Partial<Fournisseur>): Prom
   });
 }
 
+export async function createSoumission(soumission: Partial<Soumission>): Promise<Soumission> {
+  return request<Soumission>('/soumissions', {
+    method: 'POST',
+    body: JSON.stringify(soumission),
+  });
+}
+
+export async function deleteSoumission(idSoumission: string): Promise<void> {
+  await request(`/soumissions/${idSoumission}`, {
+    method: 'DELETE',
+  });
+}
+
 export async function getConsultations(): Promise<ConsultationApi[]> {
   const data = await request<any[]>('/consultations');
   return data.map((raw) => ({
