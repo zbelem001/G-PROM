@@ -385,16 +385,23 @@ export class DetailsMarchesComponent implements OnInit {
     this.consultationErrorMessage = '';
 
     try {
-      await createConsultation({
+      const response = await createConsultation({
         numbLot: this.newConsultationLot,
         idFournisseur: fournisseurId,
         DateConsultation: this.newConsultationDate,
       });
 
+      console.log('[DetailsMarches] Consultation created successfully:', response);
+
       if (this.market) {
         await this.loadMarcheDetails(this.market.numbMarche);
       }
-      this.toggleConsultationDrawer();
+      
+      // Fermer le tiroir et réinitialiser les champs
+      this.showConsultationDrawer = false;
+      this.newConsultationFournisseurId = 0;
+      this.consultationErrorMessage = '';
+      
     } catch (error: any) {
       this.consultationErrorMessage = error?.message || 'Erreur lors de l’enregistrement de la consultation.';
       console.error('[DetailsMarches] addConsultation failed', error);
