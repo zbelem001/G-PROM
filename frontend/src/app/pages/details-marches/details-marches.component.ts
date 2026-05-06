@@ -15,6 +15,7 @@ import {
   Soumission,
   getConsultations,
   createConsultation,
+  deleteConsultation,
   ConsultationApi,
   Fournisseur,
 } from '../../api.service';
@@ -363,6 +364,8 @@ export class DetailsMarchesComponent implements OnInit {
   async addConsultation() {
     if (this.isSavingConsultation) return;
     
+    // ... existing validation code omitted for brevity but preserved in real execution
+    
     const fournisseurId = Number(this.newConsultationFournisseurId);
     
     if (!this.newConsultationLot || !fournisseurId || fournisseurId === 0) {
@@ -407,6 +410,24 @@ export class DetailsMarchesComponent implements OnInit {
       console.error('[DetailsMarches] addConsultation failed', error);
     } finally {
       this.isSavingConsultation = false;
+      this.cd.detectChanges();
+    }
+  }
+
+  async removeConsultation(consultation: Consultation) {
+    if (!confirm(`Voulez-vous vraiment supprimer la consultation du fournisseur ${consultation.fournisseur.nom} pour le ${consultation.lot} ?`)) {
+      return;
+    }
+
+    try {
+      await deleteConsultation(consultation.lot, Number(consultation.fournisseur.id));
+      if (this.market) {
+        await this.loadMarcheDetails(this.market.numbMarche);
+      }
+    } catch (error: any) {
+      console.error('[DetailsMarches] deleteConsultation failed', error);
+      alert('Impossible de supprimer la consultation.');
+    } finally {
       this.cd.detectChanges();
     }
   }

@@ -264,3 +264,9 @@ export async function createConsultation(consultation: Partial<ConsultationApi>)
     body: JSON.stringify(payload),
   });
 }
+
+export async function deleteConsultation(numbLot: string, idFournisseur: number): Promise<void> {
+  await request(`/consultations/${numbLot}/${idFournisseur}`, {
+    method: 'DELETE',
+  });
+}
