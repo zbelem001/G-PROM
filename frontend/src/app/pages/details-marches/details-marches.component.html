@@ -1434,7 +1434,7 @@
                 <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow">
                   <select name="newSoumissionLot" [(ngModel)]="newSoumissionLot" required class="w-full bg-surface-container-highest border-none text-sm text-on-surface px-4 py-3 appearance-none focus:bg-surface-container-lowest focus:ring-0">
                     <option disabled selected value="">Sélectionner un lot</option>
-                    <option *ngFor="let lot of lots" [value]="lot.numblot">Lot {{lot.numblot}}</option>
+                    <option *ngFor="let lot of lots" [value]="lot.numbLot">Lot {{lot.numbLot}}</option>
                   </select>
                   <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
                 </div>
@@ -1445,7 +1445,7 @@
                 <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow">
                   <select name="newSoumissionIdFournisseur" [(ngModel)]="newSoumissionIdFournisseur" required class="w-full bg-surface-container-highest border-none text-sm text-on-surface px-4 py-3 appearance-none focus:bg-surface-container-lowest focus:ring-0">
                     <option disabled selected value="">Sélectionner un fournisseur</option>
-                    <option *ngFor="let f of fournisseurs" [value]="f.idfournisseur">{{f.nom}}</option>
+                    <option *ngFor="let f of availableFournisseurs" [value]="f.idFournisseur">{{ f.RaisonSocial }}</option>
                   </select>
                   <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
                 </div>
