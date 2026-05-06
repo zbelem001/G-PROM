@@ -7,10 +7,14 @@ export class ConsultationService {
   constructor(private readonly supabaseService: SupabaseService) {}
 
   async create(createConsultationDto: CreateConsultationDto) {
-    const payload: any = {};
-    if (createConsultationDto.numbLot) payload.numblot = createConsultationDto.numbLot;
-    if (createConsultationDto.idFournisseur) payload.idfournisseur = createConsultationDto.idFournisseur;
-    if (createConsultationDto.DateConsultation) payload.dateconsultation = createConsultationDto.DateConsultation;
+    // Supabase column names are lowercase. Mapping explicitly to avoid issues.
+    const payload = {
+      numblot: String(createConsultationDto.numbLot),
+      idfournisseur: Number(createConsultationDto.idFournisseur),
+      dateconsultation: createConsultationDto.DateConsultation || new Date().toISOString().split('T')[0]
+    };
+
+    console.log('[ConsultationService] Inserting payload:', payload);
 
     const { data, error } = await this.supabaseService.client
       .from('Consultation')
@@ -19,7 +23,7 @@ export class ConsultationService {
 
     if (error) {
       console.error('[ConsultationService] Supabase insert error:', error);
-      throw new Error(error.message);
+      throw new Error(`Supabase error: ${error.message} (Code: ${error.code})`);
     }
     return data;
   }
