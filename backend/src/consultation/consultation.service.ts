@@ -14,7 +14,9 @@ export class ConsultationService {
 
     const { data, error } = await this.supabaseService.client
       .from('Consultation')
-      .insert([payload]);
+      .insert([payload])
+      .select();
+
     if (error) {
       throw new Error(error.message);
     }
@@ -33,8 +35,8 @@ export class ConsultationService {
     const { data, error } = await this.supabaseService.client
       .from('Consultation')
       .select('*')
-      .eq('numbLot', numbLot)
-      .eq('idFournisseur', idFournisseur)
+      .eq('numblot', numbLot)
+      .eq('idfournisseur', idFournisseur)
       .single();
     if (error) {
       throw new Error(error.message);
@@ -43,11 +45,18 @@ export class ConsultationService {
   }
 
   async update(numbLot: string, idFournisseur: number, updateConsultationDto: Partial<CreateConsultationDto>) {
+    const payload: any = {};
+    if (updateConsultationDto.numbLot) payload.numblot = updateConsultationDto.numbLot;
+    if (updateConsultationDto.idFournisseur) payload.idfournisseur = updateConsultationDto.idFournisseur;
+    if (updateConsultationDto.DateConsultation) payload.dateconsultation = updateConsultationDto.DateConsultation;
+
     const { data, error } = await this.supabaseService.client
       .from('Consultation')
-      .update(updateConsultationDto)
-      .eq('numbLot', numbLot)
-      .eq('idFournisseur', idFournisseur);
+      .update(payload)
+      .eq('numblot', numbLot)
+      .eq('idfournisseur', idFournisseur)
+      .select();
+
     if (error) {
       throw new Error(error.message);
     }
@@ -58,8 +67,8 @@ export class ConsultationService {
     const { data, error } = await this.supabaseService.client
       .from('Consultation')
       .delete()
-      .eq('numbLot', numbLot)
-      .eq('idFournisseur', idFournisseur);
+      .eq('numblot', numbLot)
+      .eq('idfournisseur', idFournisseur);
     if (error) {
       throw new Error(error.message);
     }
