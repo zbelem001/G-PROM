@@ -1,0 +1,30 @@
+Ce problème de "double clic" dans Angular est un grand classique, surtout après l'intégration d'une API. Ce n'est généralement pas un problème de récupération de données (le back-end fait son travail), mais un problème de Détection de Changement (Change Detection) ou de Gestion de l'Asynchronisme.
+
+Voici les trois raisons techniques les plus probables :
+1. La Zone d'Exécution (NgZone)
+
+Angular utilise une bibliothèque appelée Zone.js pour savoir quand rafraîchir l'écran. Si vos données reviennent d'une source "extérieure" à Angular (comme une bibliothèque JS tierce, une WebSocket, ou parfois certains types de callbacks async/await mal gérés), Angular ne "voit" pas que les données sont arrivées.
+
+    Le symptôme : Le premier clic déclenche l'action, les données arrivent, mais l'écran reste vide. Le deuxième clic force Angular à vérifier l'état des variables, et là, il affiche ce qu'il a reçu au premier tour.
+
+2. La stratégie OnPush
+
+Si vous utilisez la stratégie ChangeDetectionStrategy.OnPush dans votre composant, Angular ne vérifie les changements que si une référence d'entrée (@Input) change ou si un événement explicite se produit.
+
+    Si vous modifiez une variable interne après un appel API sans notifier manuellement Angular, la vue ne se mettra pas à jour.
+
+    Solution : Injecter ChangeDetectorRef et appeler this.cdr.detectChanges() après la réception des données.
+
+3. La désynchronisation entre l'Asynchrone et l'UI
+
+C'est le scénario le plus courant :
+
+    Tu cliques.
+
+    L'appel API est lancé (asynchrone).
+
+    Angular termine le cycle de rendu du clic avant que le back-end n'ait répondu.
+
+    La réponse arrive, mais le cycle est fini.
+
+    Tu recliques : ce deuxième clic déclenche un nouveau cycle qui affiche enfin les données stockées lors du premier clic.
