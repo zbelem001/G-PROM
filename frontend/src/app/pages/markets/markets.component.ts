@@ -15,6 +15,17 @@ import { createMarche, getMarches, Marche } from '../../api.service';
   styleUrls: ['./markets.component.css'],
 })
 export class MarketsComponent implements OnInit {
+  departements = [
+    'Académiques',
+    'Génie Civil et Bâtiments Travaux Publics (GC-BTP)',
+    "Génie de l'Eau, de l'Assainissement et des Aménagements Hydro-agricoles (GEAAH)",
+    'Génie Électrique, Énergétique et Industriel (GEEI)',
+    "Sciences et Techniques de l'Ingénieur (STI)",
+    'Sciences Humaines, Sociales et Managériales (SHSM)',
+    'Formation Professionnelle en Ligne',
+    'IA',
+  ];
+
   showAddMarket = false;
   loading = false;
   submitting = false;

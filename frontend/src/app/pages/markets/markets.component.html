@@ -214,7 +214,10 @@
           <div class="space-y-4">
             <div class="space-y-2">
               <label class="text-sm font-semibold text-secondary ml-1">Demandeur du Marché</label>
-              <input [(ngModel)]="newMarche.Demandeur" name="demandeur" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="Département" type="text" />
+              <select [(ngModel)]="newMarche.Demandeur" name="demandeur" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none appearance-none">
+                <option value="" disabled>Sélectionner un département</option>
+                <option *ngFor="let departement of departements" [value]="departement">{{ departement }}</option>
+              </select>
             </div>
             <div class="space-y-2">
               <label class="text-sm font-semibold text-secondary ml-1">Responsable Suivi</label>
