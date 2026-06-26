@@ -3,6 +3,7 @@ CREATE TABLE Marche (
     numbMarche VARCHAR(150) PRIMARY KEY NOT NULL,
     Description TEXT NOT NULL,
     NombreLot INT NOT NULL CHECK (NombreLot > 0),
+    Devise VARCHAR(3) NOT NULL DEFAULT 'XOF' CHECK (Devise IN ('XOF', 'EUR', 'USD')),
     NatureOuverture VARCHAR(100),
     DateEnregistrement DATE,
     Financement VARCHAR(250),

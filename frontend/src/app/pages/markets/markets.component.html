@@ -170,10 +170,18 @@
             </div>
             <div class="space-y-2">
               <label class="text-sm font-semibold text-secondary ml-1">Budget estimatif</label>
-              <input [(ngModel)]="newMarche.BudgetEstimatif" name="budgetEstimatif" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="45 000 000 XOF" min="0" type="number" />
+              <input [(ngModel)]="newMarche.BudgetEstimatif" name="budgetEstimatif" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="45 000 000" min="0" type="number" />
             </div>
           </div>
           <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-secondary ml-1">Devise</label>
+              <select [(ngModel)]="newMarche.Devise" name="devise" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none appearance-none">
+                <option value="XOF">XOF</option>
+                <option value="EUR">EUR</option>
+                <option value="USD">USD</option>
+              </select>
+            </div>
             <div class="space-y-2">
               <label class="text-sm font-semibold text-secondary ml-1">Nature d'ouverture</label>
               <input [(ngModel)]="newMarche.NatureOuverture" name="natureOuverture" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="Ex: Ouverture publique" type="text" />

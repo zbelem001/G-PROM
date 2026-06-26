@@ -40,6 +40,7 @@ export interface Marche {
   numbMarche: string;
   Description: string;
   NombreLot: number;
+  Devise?: 'XOF' | 'EUR' | 'USD';
   NatureOuverture?: string;
   DateEnregistrement?: string;
   Financement?: string;
@@ -179,6 +180,7 @@ function normalizeMarcheResponse(raw: any): Marche {
     numbMarche: raw.numbMarche ?? raw.numbmarche ?? raw.numb_marche ?? '',
     Description: raw.Description ?? raw.description ?? raw.description ?? '',
     NombreLot: raw.NombreLot ?? raw.nombrelot ?? raw.nombre_lot ?? 0,
+    Devise: raw.Devise ?? raw.devise ?? 'XOF',
     NatureOuverture: raw.NatureOuverture ?? raw.natureouverture ?? raw.nature_ouverture,
     DateEnregistrement: raw.DateEnregistrement ?? raw.dateenregistrement ?? raw.date_enregistrement,
     Financement: raw.Financement ?? raw.financement,

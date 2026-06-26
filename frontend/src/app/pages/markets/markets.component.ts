@@ -37,6 +37,7 @@ export class MarketsComponent implements OnInit {
 
   newMarche: Partial<Marche> = {
     NombreLot: 1,
+    Devise: 'XOF',
     Statut: 'À lancer',
     NatureOuverture: 'Fournitures',
     ModePassation: 'Appel d\'Offres Ouvert',
@@ -84,6 +85,7 @@ export class MarketsComponent implements OnInit {
       this.showAddMarket = false;
       this.newMarche = {
         NombreLot: 1,
+        Devise: 'XOF',
         Statut: 'À lancer',
         NatureOuverture: 'Fournitures',
         ModePassation: 'Appel d\'Offres Ouvert',

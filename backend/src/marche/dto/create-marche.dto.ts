@@ -2,6 +2,7 @@ export class CreateMarcheDto {
   numbMarche: string;
   Description: string;
   NombreLot: number;
+  Devise?: 'XOF' | 'EUR' | 'USD';
   NatureOuverture?: string;
   DateEnregistrement?: string;
   Financement?: string;
