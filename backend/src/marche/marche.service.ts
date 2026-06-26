@@ -6,12 +6,16 @@ import { CreateMarcheDto } from './dto/create-marche.dto';
 export class MarcheService {
   constructor(private readonly supabaseService: SupabaseService) {}
 
-  async create(createMarcheDto: CreateMarcheDto) {
-    const payload = Object.entries(createMarcheDto).reduce((normalized, [key, value]) => {
+  private normalizeKeys(dto: object): Record<string, unknown> {
+    return Object.entries(dto).reduce((normalized, [key, value]) => {
       const lowerKey = key.replace(/([A-Z])/g, (match) => match.toLowerCase());
       normalized[lowerKey] = value;
       return normalized;
     }, {} as Record<string, unknown>);
+  }
+
+  async create(createMarcheDto: CreateMarcheDto) {
+    const payload = this.normalizeKeys(createMarcheDto);
 
     try {
       const { data, error } = await this.supabaseService.client
@@ -54,10 +58,13 @@ export class MarcheService {
   }
 
   async update(numbMarche: string, updateMarcheDto: Partial<CreateMarcheDto>) {
+    const payload = this.normalizeKeys(updateMarcheDto);
     const { data, error } = await this.supabaseService.client
       .from('Marche')
-      .update(updateMarcheDto)
-      .eq('numbmarche', numbMarche);
+      .update(payload)
+      .eq('numbmarche', numbMarche)
+      .select()
+      .single();
 
     if (error) {
       throw new Error(error.message);

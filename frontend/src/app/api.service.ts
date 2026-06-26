@@ -221,6 +221,15 @@ export async function createMarche(marche: Partial<Marche>): Promise<Marche[]> {
   return rows.map(normalizeMarcheResponse);
 }
 
+export async function updateMarche(numbMarche: string, marche: Record<string, unknown>): Promise<Marche> {
+  const payload = normalizeMarchePayload(marche as Partial<Marche>);
+  const response = await request<any>(`/marches/${encodeURIComponent(numbMarche)}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  });
+  return normalizeMarcheResponse(response);
+}
+
 export async function getLots(): Promise<Lot[]> {
   const data = await request<any[]>('/lots');
   return data.map(normalizeLotResponse);

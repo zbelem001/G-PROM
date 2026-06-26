@@ -18,9 +18,12 @@ import {
   deleteConsultation,
   createSoumission,
   deleteSoumission,
+  updateMarche,
   ConsultationApi,
   Fournisseur,
 } from '../../api.service';
+
+const SCT_MEMBER_SLOTS = 4;
 
 interface LotDocument {
   id: string;
@@ -85,13 +88,6 @@ interface Consultation {
   lot: string;
   fournisseur: Provider;
   date: string;
-}
-
-interface SctMember {
-  id: string;
-  nom: string;
-  role: string;
-  email?: string;
 }
 
 @Component({
@@ -163,8 +159,8 @@ export class DetailsMarchesComponent implements OnInit {
   statusOptions = ['Réception', 'Ouvert', 'Consultation', 'Soumissions', 'Analyse SCT', 'Attribution', 'Clôturé'];
   showAddSctMember = false;
   newSctMemberName = '';
-  newSctMemberRole = '';
-  newSctMemberEmail = '';
+  isSavingSctMember = false;
+  sctMemberErrorMessage = '';
 
   documentFlags = {
     PV_ouverture: false,
@@ -178,21 +174,6 @@ export class DetailsMarchesComponent implements OnInit {
     OrdreService: false,
     PV_reception_tech: false,
   };
-
-  sctMembers: SctMember[] = [
-    {
-      id: 'sct-1',
-      nom: 'Sarah Ouédraogo',
-      role: 'Présidente',
-      email: 's.ouedraogo@2ie.bf',
-    },
-    {
-      id: 'sct-2',
-      nom: 'Jean Diarra',
-      role: 'Membre Technique',
-      email: 'j.diarra@2ie.bf',
-    },
-  ];
 
   consultations: Consultation[] = [
     {
@@ -740,32 +721,60 @@ export class DetailsMarchesComponent implements OnInit {
     }
   }
 
-  toggleAddSctMember() {
-    this.showAddSctMember = !this.showAddSctMember;
+  get sctMembers(): string[] {
+    if (!this.market) {
+      return [];
+    }
+    return [this.market.SCT_person1, this.market.SCT_person2, this.market.SCT_person3, this.market.SCT_person4]
+      .filter((nom): nom is string => !!nom && nom.trim() !== '' && nom.trim().toUpperCase() !== 'N/A');
   }
 
-  addSctMember() {
+  get canAddSctMember(): boolean {
+    return this.sctMembers.length < SCT_MEMBER_SLOTS;
+  }
+
+  toggleAddSctMember() {
+    this.showAddSctMember = !this.showAddSctMember;
+    this.newSctMemberName = '';
+    this.sctMemberErrorMessage = '';
+  }
+
+  private async persistSctMembers(members: string[]) {
+    if (!this.market) {
+      return;
+    }
+    const updated = await updateMarche(this.market.numbMarche, {
+      SCT_person1: members[0] || 'N/A',
+      SCT_person2: members[1] || null,
+      SCT_person3: members[2] || null,
+      SCT_person4: members[3] || null,
+    });
+    this.market = { ...this.market, ...updated };
+  }
+
+  async addSctMember() {
     const name = this.newSctMemberName.trim();
-    const role = this.newSctMemberRole.trim();
-    if (!name || !role) {
+    if (!name || !this.market) {
+      return;
+    }
+    if (!this.canAddSctMember) {
+      this.sctMemberErrorMessage = `La sous-commission technique est limitée à ${SCT_MEMBER_SLOTS} membres.`;
       return;
     }
 
-    this.sctMembers.push({
-      id: `sct-${Date.now()}`,
-      nom: name,
-      role,
-      email: this.newSctMemberEmail.trim() || undefined,
-    });
-
-    this.newSctMemberName = '';
-    this.newSctMemberRole = '';
-    this.newSctMemberEmail = '';
-    this.showAddSctMember = false;
-  }
-
-  removeSctMember(member: SctMember) {
-    this.sctMembers = this.sctMembers.filter((item) => item.id !== member.id);
+    this.isSavingSctMember = true;
+    this.sctMemberErrorMessage = '';
+    try {
+      await this.persistSctMembers([...this.sctMembers, name]);
+      this.newSctMemberName = '';
+      this.showAddSctMember = false;
+    } catch (error: any) {
+      this.sctMemberErrorMessage = error?.message || 'Impossible d’ajouter le membre.';
+      console.error('[DetailsMarches] addSctMember failed', error);
+    } finally {
+      this.isSavingSctMember = false;
+      this.cd.detectChanges();
+    }
   }
 
   consultDocument(document: LotDocument) {
