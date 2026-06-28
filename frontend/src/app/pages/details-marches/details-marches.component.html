@@ -945,11 +945,11 @@
                 Un fournisseur peut être consulté sur plusieurs lots distincts du même marché.
               </p>
             </div>
-            <form class="space-y-6" #consultationForm="ngForm">
+            <form class="space-y-6">
               <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface" for="numbLot">Numéro de Lot</label>
+                <label class="block text-sm font-medium text-on-surface" for="numbLot">Numéro de Lot <span class="text-error">*</span></label>
                 <div class="relative">
-                  <select id="numbLot" name="numbLot" [(ngModel)]="newConsultationLot" required class="w-full appearance-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
+                  <select id="numbLot" name="numbLot" [(ngModel)]="newConsultationLot" required class="w-full appearance-none bg-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
                     <option disabled value="">Sélectionner un lot...</option>
                     <option *ngFor="let lot of lots" [value]="lot.numero">{{ lot.numero }} - {{ lot.description }}</option>
                   </select>
@@ -959,7 +959,7 @@
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-on-surface" for="idFournisseur">Fournisseur <span class="text-error">*</span></label>
                 <div class="relative">
-                  <select id="idFournisseur" name="idFournisseur" [(ngModel)]="newConsultationFournisseurId" required class="w-full appearance-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
+                  <select id="idFournisseur" name="idFournisseur" [(ngModel)]="newConsultationFournisseurId" required class="w-full appearance-none bg-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
                     <option [value]="0" disabled>Sélectionner un fournisseur...</option>
                     <option *ngFor="let f of availableFournisseurs" [value]="f.idFournisseur">
                       {{ f.RaisonSocial }}

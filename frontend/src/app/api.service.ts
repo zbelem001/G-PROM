@@ -268,13 +268,17 @@ export async function deleteSoumission(idSoumission: string): Promise<void> {
   });
 }
 
-export async function getConsultations(): Promise<ConsultationApi[]> {
-  const data = await request<any[]>('/consultations');
-  return data.map((raw) => ({
+function normalizeConsultationResponse(raw: any): ConsultationApi {
+  return {
     numbLot: raw.numbLot ?? raw.numblot ?? raw.numb_lot ?? '',
     idFournisseur: raw.idFournisseur ?? raw.idfournisseur ?? raw.id_fournisseur ?? 0,
     DateConsultation: raw.DateConsultation ?? raw.dateconsultation ?? raw.date_consultation,
-  }));
+  };
+}
+
+export async function getConsultations(): Promise<ConsultationApi[]> {
+  const data = await request<any[]>('/consultations');
+  return data.map(normalizeConsultationResponse);
 }
 
 export async function createConsultation(consultation: Partial<ConsultationApi>): Promise<ConsultationApi> {
@@ -283,10 +287,12 @@ export async function createConsultation(consultation: Partial<ConsultationApi>)
   if (consultation.idFournisseur) payload.idfournisseur = consultation.idFournisseur;
   if (consultation.DateConsultation) payload.dateconsultation = consultation.DateConsultation;
 
-  return request<ConsultationApi>('/consultations', {
+  const response = await request<any>('/consultations', {
     method: 'POST',
     body: JSON.stringify(payload),
   });
+  const row = Array.isArray(response) ? response[0] : response;
+  return normalizeConsultationResponse(row);
 }
 
 export async function deleteConsultation(numbLot: string, idFournisseur: number): Promise<void> {
