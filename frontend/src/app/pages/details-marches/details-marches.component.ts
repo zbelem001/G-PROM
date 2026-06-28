@@ -38,7 +38,6 @@ interface LotDocument {
 
 interface MarketLot {
   numero: string;
-  numbLot?: string;
   description: string;
   contrat: string;
 }
