@@ -37,12 +37,10 @@ interface LotDocument {
 }
 
 interface MarketLot {
-  id: string;
   numero: string;
   numbLot?: string;
   description: string;
   contrat: string;
-  documents: LotDocument[];
 }
 
 interface ProviderDocument {
@@ -152,7 +150,6 @@ export class DetailsMarchesComponent implements OnInit {
   showProviderModal = false;
   showSubmissionModal = false;
   selectedLot: MarketLot | null = null;
-  selectedDocument: LotDocument | null = null;
   selectedProvider: Provider | null = null;
   selectedSubmission: Submission | null = null;
   currentStatus = 'Réception';
@@ -533,14 +530,12 @@ export class DetailsMarchesComponent implements OnInit {
 
   openLotPopup(lot: MarketLot) {
     this.selectedLot = lot;
-    this.selectedDocument = null;
     this.showLotModal = true;
   }
 
   closeLotPopup() {
     this.showLotModal = false;
     this.selectedLot = null;
-    this.selectedDocument = null;
   }
 
   openProviderPopup(consultation: Consultation) {
@@ -604,12 +599,9 @@ export class DetailsMarchesComponent implements OnInit {
       this.fournisseurs = fournisseurs; // Pour le formulaire de soumission
       const filteredLots = lots.filter((lot) => String(lot.numbMarche) === String(numbMarche));
       this.lots = filteredLots.map((rawLot) => ({
-        id: rawLot.numbLot,
         numero: rawLot.numbLot,
-        numblot: rawLot.numbLot, // Pour le template HTML
         description: rawLot.Description || '',
-        contrat: (rawLot as any).numbContrat ?? '—',
-        documents: [],
+        contrat: rawLot.numbContrat ?? '—',
       }));
 
       this.consultations = consultations
@@ -775,10 +767,6 @@ export class DetailsMarchesComponent implements OnInit {
       this.isSavingSctMember = false;
       this.cd.detectChanges();
     }
-  }
-
-  consultDocument(document: LotDocument) {
-    this.selectedDocument = document;
   }
 
   openDocument(url?: string) {
