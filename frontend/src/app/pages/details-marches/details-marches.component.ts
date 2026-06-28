@@ -659,7 +659,7 @@ export class DetailsMarchesComponent implements OnInit {
             },
             dateDepot: submission.DateDepot ?? '',
             heureDepot: submission.Heure ?? '',
-            montant: submission.MontantPrev ? `${submission.MontantPrev.toLocaleString()} XOF` : '—',
+            montant: submission.MontantPrev ? `${submission.MontantPrev.toLocaleString()} ${this.market?.Devise || 'XOF'}` : '—',
             delai: submission.DelaiExecutionPrev?.toString() ?? '—',
             exemplaires: submission.nbExemplaire ?? 0,
             observation: submission.Observation ?? '—',

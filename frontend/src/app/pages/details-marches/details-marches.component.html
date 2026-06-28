@@ -475,8 +475,8 @@
               <div class="bg-surface-container-lowest rounded-[16px] p-5 shadow-[0_2px_12px_rgba(26,46,68,0.04)]">
                 <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-3">Montant moyen</p>
                 <p class="text-3xl font-bold text-[#1a2e44]">
-                  {{ averageSubmissionAmount > 1000000 ? (averageSubmissionAmount / 1000000 | number:'1.0-1') + 'M' : (averageSubmissionAmount | number) }} 
-                  <span class="text-sm font-normal text-on-surface-variant ml-1">FCFA</span>
+                  {{ averageSubmissionAmount > 1000000 ? (averageSubmissionAmount / 1000000 | number:'1.0-1') + 'M' : (averageSubmissionAmount | number) }}
+                  <span class="text-sm font-normal text-on-surface-variant ml-1">{{ market?.Devise || 'XOF' }}</span>
                 </p>
               </div>
               <div class="bg-surface-container-lowest rounded-[16px] p-5 shadow-[0_2px_12px_rgba(26,46,68,0.04)]">
@@ -1406,12 +1406,14 @@
                   <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Montant (HT)</label>
                   <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow flex items-center bg-surface-container-highest focus-within:bg-surface-container-lowest">
                     <input name="newSoumissionMontant" [(ngModel)]="newSoumissionMontant" required class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0" placeholder="0.00" type="number" />
+                    <span class="pr-4 text-xs font-semibold text-on-surface-variant whitespace-nowrap">{{ market?.Devise || 'XOF' }}</span>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1.5">
                   <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Délai</label>
                   <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow flex items-center bg-surface-container-highest focus-within:bg-surface-container-lowest">
-                    <input name="newSoumissionDelai" [(ngModel)]="newSoumissionDelai" required class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0" placeholder="Ex: 90 jours" type="text" />
+                    <input name="newSoumissionDelai" [(ngModel)]="newSoumissionDelai" required class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0" placeholder="Ex: 90" type="number" min="1" />
+                    <span class="pr-4 text-xs font-semibold text-on-surface-variant whitespace-nowrap">jours</span>
                   </div>
                 </div>
               </div>
