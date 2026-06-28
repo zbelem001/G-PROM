@@ -40,7 +40,7 @@ export class LotService {
     }
 
     const payload = normalizeLotPayload(createLotDto);
-    const { data, error } = await this.supabaseService.client.from('Lot').insert([payload]);
+    const { data, error } = await this.supabaseService.client.from('Lot').insert([payload]).select();
     if (error) {
       throw new BadRequestException(error.message);
     }
@@ -85,7 +85,7 @@ export class LotService {
     const { data, error } = await this.supabaseService.client
       .from('Lot')
       .delete()
-      .eq('numbLot', numbLot);
+      .eq('numblot', numbLot);
 
     if (error) {
       throw new Error(error.message);
