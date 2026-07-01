@@ -270,7 +270,7 @@
                   <tr *ngFor="let lot of lots; let index = index" class="group hover:bg-[#76d3c8]/5 transition-colors duration-200">
                     <td class="py-4 px-6 font-medium text-[#1a2e44]">{{ index + 1 }}</td>
                     <td class="py-4 px-6">
-                      <span class="inline-flex items-center px-2.5 py-1 rounded-[6px] bg-[#1a2e44]/10 text-[#1a2e44] font-semibold text-xs tracking-wide">{{ lot.numero }}</span>
+                      <span class="inline-flex items-center px-2.5 py-1 rounded-[6px] bg-[#1a2e44]/10 text-[#1a2e44] font-semibold text-xs tracking-wide">{{ lot.nomLot }}</span>
                     </td>
                     <td class="py-4 px-6 text-on-surface">{{ lot.description }}</td>
                     <td class="py-4 px-6 text-on-surface-variant font-medium">{{ lot.contrat }}</td>
@@ -293,7 +293,7 @@
               <div class="flex items-start justify-between gap-4 mb-6">
                 <div>
                   <p class="text-xs uppercase tracking-[0.2em] text-on-surface-variant">Détail du Lot</p>
-                  <h2 class="font-headline text-[24px] font-bold text-on-surface mt-2">{{ selectedLot?.numero }}</h2>
+                  <h2 class="font-headline text-[24px] font-bold text-on-surface mt-2">{{ selectedLot?.nomLot }}</h2>
                   <p class="mt-3 text-sm leading-6 text-on-surface-variant">{{ selectedLot?.description }}</p>
                 </div>
                 <button (click)="closeLotPopup()" class="rounded-full p-2 bg-surface-container shadow-sm hover:bg-surface-container-hover transition-colors">
@@ -303,8 +303,8 @@
 
               <div class="grid gap-4 sm:grid-cols-2 mb-6">
                 <div class="rounded-3xl bg-surface-container-low p-4">
-                  <p class="font-label text-[11px] uppercase text-on-surface-variant mb-2">Numéro du lots</p>
-                  <p class="font-semibold text-on-surface">{{ selectedLot?.numero }}</p>
+                  <p class="font-label text-[11px] uppercase text-on-surface-variant mb-2">Nom du lot</p>
+                  <p class="font-semibold text-on-surface">{{ selectedLot?.nomLot }}</p>
                 </div>
                 <div class="rounded-3xl bg-surface-container-low p-4">
                   <p class="font-label text-[11px] uppercase text-on-surface-variant mb-2">Contrat</p>
@@ -414,12 +414,12 @@
               </button>
               
               <button *ngFor="let lot of lots" 
-                (click)="setLotFilter(lot.numero)"
-                [class.bg-[#76d3c8]]="selectedLotFilter === lot.numero"
-                [class.text-[#1a2e44]]="selectedLotFilter === lot.numero"
-                [class.bg-surface-container-lowest]="selectedLotFilter !== lot.numero"
+                (click)="setLotFilter(lot.nomLot)"
+                [class.bg-[#76d3c8]]="selectedLotFilter === lot.nomLot"
+                [class.text-[#1a2e44]]="selectedLotFilter === lot.nomLot"
+                [class.bg-surface-container-lowest]="selectedLotFilter !== lot.nomLot"
                 class="px-4 py-1.5 rounded-full text-sm font-medium hover:bg-surface-container-high transition-all border border-outline-variant/15">
-                {{ lot.numero }} - {{ lot.description | slice:0:30 }}{{ lot.description.length > 30 ? '...' : '' }}
+                {{ lot.nomLot }}
               </button>
             </div>
             <div class="bg-surface-container-lowest rounded-[16px] overflow-hidden shadow-[0_4px_20px_rgba(26,46,68,0.03)] border border-white/50">
@@ -947,11 +947,11 @@
             </div>
             <form class="space-y-6">
               <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface" for="numbLot">Numéro de Lot <span class="text-error">*</span></label>
+                <label class="block text-sm font-medium text-on-surface" for="numbLot">Nom du lot <span class="text-error">*</span></label>
                 <div class="relative">
                   <select id="numbLot" name="numbLot" [(ngModel)]="newConsultationLot" required class="w-full appearance-none bg-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
                     <option disabled value="">Sélectionner un lot...</option>
-                    <option *ngFor="let lot of lots" [value]="lot.numero">{{ lot.numero }} - {{ lot.description }}</option>
+                    <option *ngFor="let lot of lots" [value]="lot.id">{{ lot.nomLot }} - {{ lot.description }}</option>
                   </select>
                   <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant">expand_more</span>
                 </div>
@@ -1384,7 +1384,7 @@
                 <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow">
                   <select name="newSoumissionLot" [(ngModel)]="newSoumissionLot" required class="w-full bg-surface-container-highest border-none text-sm text-on-surface px-4 py-3 appearance-none focus:bg-surface-container-lowest focus:ring-0">
                     <option disabled selected value="">Sélectionner un lot</option>
-                    <option *ngFor="let lot of lots" [value]="lot.numero">{{ lot.numero }}</option>
+                    <option *ngFor="let lot of lots" [value]="lot.id">{{ lot.nomLot }}</option>
                   </select>
                   <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
                 </div>

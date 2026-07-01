@@ -112,6 +112,7 @@ export interface Soumission {
 
 export interface Lot {
   numbLot: string;
+  nomLot: string;
   numbMarche: string;
   Description?: string;
   numbContrat?: string;
@@ -141,8 +142,9 @@ function normalizeMarchePayload(marche: Partial<Marche>): Record<string, unknown
 function normalizeLotResponse(raw: any): Lot {
   return {
     numbLot: raw.numbLot ?? raw.numblot ?? raw.numb_lot ?? '',
+    nomLot: raw.nomLot ?? raw.nomlot ?? raw.nom_lot ?? '',
     numbMarche: raw.numbMarche ?? raw.numbmarche ?? raw.numb_marche ?? '',
-    Description: raw.Description ?? raw.description ?? raw.description ?? '',
+    Description: raw.Description ?? raw.description ?? '',
     numbContrat: raw.numbContrat ?? raw.numbcontrat ?? raw.numb_contrat ?? '',
   } as Lot;
 }

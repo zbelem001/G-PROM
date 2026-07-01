@@ -23,10 +23,12 @@ CREATE TABLE Marche (
 -- 2. Table Lot
 CREATE TABLE Lot (
     numbLot VARCHAR(150) PRIMARY KEY NOT NULL,
+    nomLot VARCHAR(150) NOT NULL,
     numbMarche VARCHAR(150) NOT NULL,
     Description TEXT NOT NULL,
     numbContrat VARCHAR(250) DEFAULT NULL,
-    CONSTRAINT fk_marche FOREIGN KEY (numbMarche) REFERENCES Marche(numbMarche) ON DELETE CASCADE
+    CONSTRAINT fk_marche FOREIGN KEY (numbMarche) REFERENCES Marche(numbMarche) ON DELETE CASCADE,
+    CONSTRAINT uq_lot_nom_marche UNIQUE (nomLot, numbMarche)
 );
 
 -- 3. Table Fournisseur

@@ -1,5 +1,5 @@
 export class CreateLotDto {
-  numbLot: string;
+  nomLot: string;
   numbMarche: string;
   Description: string;
   numbContrat?: string;

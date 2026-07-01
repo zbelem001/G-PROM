@@ -2,9 +2,16 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
 import { CreateLotDto } from './dto/create-lot.dto';
 
-function normalizeLotPayload(lot: CreateLotDto): Record<string, unknown> {
+function generateLotId(): string {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const rand = () => chars[Math.floor(Math.random() * chars.length)];
+  return `L-${rand()}${rand()}${rand()}${rand()}`;
+}
+
+function normalizeLotPayload(lot: CreateLotDto, numblot: string): Record<string, unknown> {
   return {
-    numblot: lot.numbLot,
+    numblot,
+    nomlot: lot.nomLot,
     numbmarche: lot.numbMarche,
     description: lot.Description,
     numbcontrat: lot.numbContrat ?? null,
@@ -13,7 +20,7 @@ function normalizeLotPayload(lot: CreateLotDto): Record<string, unknown> {
 
 function normalizeUpdateLotPayload(lot: Partial<CreateLotDto>): Record<string, unknown> {
   const payload: Record<string, unknown> = {};
-  if (lot.numbLot !== undefined) payload.numblot = lot.numbLot;
+  if (lot.nomLot !== undefined) payload.nomlot = lot.nomLot;
   if (lot.numbMarche !== undefined) payload.numbmarche = lot.numbMarche;
   if (lot.Description !== undefined) payload.description = lot.Description;
   if (lot.numbContrat !== undefined) payload.numbcontrat = lot.numbContrat;
@@ -25,10 +32,12 @@ export class LotService {
   constructor(private readonly supabaseService: SupabaseService) {}
 
   async create(createLotDto: CreateLotDto) {
+    // Check uniqueness within the same market (not globally)
     const { data: existingLot, error: existsError } = await this.supabaseService.client
       .from('Lot')
       .select('numblot')
-      .eq('numblot', createLotDto.numbLot)
+      .eq('nomlot', createLotDto.nomLot)
+      .eq('numbmarche', createLotDto.numbMarche)
       .maybeSingle();
 
     if (existsError) {
@@ -36,10 +45,26 @@ export class LotService {
     }
 
     if (existingLot) {
-      throw new BadRequestException(`Le numéro de lot ${createLotDto.numbLot} existe déjà.`);
+      throw new BadRequestException(
+        `Un lot nommé "${createLotDto.nomLot}" existe déjà dans ce marché.`,
+      );
     }
 
-    const payload = normalizeLotPayload(createLotDto);
+    // Generate a unique technical ID
+    let numblot = generateLotId();
+    let attempts = 0;
+    while (attempts < 5) {
+      const { data: conflict } = await this.supabaseService.client
+        .from('Lot')
+        .select('numblot')
+        .eq('numblot', numblot)
+        .maybeSingle();
+      if (!conflict) break;
+      numblot = generateLotId();
+      attempts++;
+    }
+
+    const payload = normalizeLotPayload(createLotDto, numblot);
     const { data, error } = await this.supabaseService.client.from('Lot').insert([payload]).select();
     if (error) {
       throw new BadRequestException(error.message);

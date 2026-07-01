@@ -37,7 +37,8 @@ interface LotDocument {
 }
 
 interface MarketLot {
-  numero: string;
+  id: string;
+  nomLot: string;
   description: string;
   contrat: string;
 }
@@ -288,7 +289,7 @@ export class DetailsMarchesComponent implements OnInit {
   get nextLotNumero(): string {
     const lotNumbers = this.lots
       .map((lot) => {
-        const match = /Lot\s*0*(\d+)/i.exec(lot.numero);
+        const match = /Lot\s*0*(\d+)/i.exec(lot.nomLot);
         return match ? Number(match[1]) : 0;
       })
       .filter((value) => value > 0);
@@ -320,14 +321,20 @@ export class DetailsMarchesComponent implements OnInit {
     }
 
     const lotNumero = this.newLotNumero.trim();
-    if (this.allLots.some((lot) => String(lot.numbLot).trim().toLowerCase() === lotNumero.toLowerCase())) {
-      this.lotErrorMessage = `Le numéro de lot ${lotNumero} existe déjà.`;
+    const currentMarche = this.newLotNumbMarche.trim();
+    const duplicate = this.allLots.some(
+      (lot) =>
+        String(lot.nomLot).trim().toLowerCase() === lotNumero.toLowerCase() &&
+        String(lot.numbMarche).trim() === currentMarche,
+    );
+    if (duplicate) {
+      this.lotErrorMessage = `Un lot nommé "${lotNumero}" existe déjà dans ce marché.`;
       return;
     }
 
     const lotPayload: Partial<ApiLot> = {
-      numbLot: lotNumero,
-      numbMarche: this.newLotNumbMarche.trim(),
+      nomLot: lotNumero,
+      numbMarche: currentMarche,
       Description: this.newLotDescription.trim(),
       numbContrat: this.newLotContract.trim() || undefined,
     };
@@ -354,8 +361,8 @@ export class DetailsMarchesComponent implements OnInit {
     this.consultationErrorMessage = '';
     this.isSavingConsultation = false;
     if (this.showConsultationDrawer) {
-      this.newConsultationLot = this.lots[0]?.numero || '';
-      this.newConsultationFournisseurId = this.availableFournisseurs[0]?.idFournisseur || 0;
+      this.newConsultationLot = '';
+      this.newConsultationFournisseurId = 0;
       this.newConsultationDate = new Date().toISOString().split('T')[0];
     }
   }
@@ -437,7 +444,7 @@ export class DetailsMarchesComponent implements OnInit {
     this.soumissionErrorMessage = '';
     if (this.showSoumissionDrawer) {
       this.newSoumissionId = `SM-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
-      this.newSoumissionLot = this.lots[0]?.numero || '';
+      this.newSoumissionLot = this.lots[0]?.id || '';
       this.newSoumissionFournisseurId = 0;
       this.newSoumissionIdFournisseur = 0;
       this.newSoumissionDate = new Date().toISOString().split('T')[0];
@@ -598,7 +605,8 @@ export class DetailsMarchesComponent implements OnInit {
       this.fournisseurs = fournisseurs; // Pour le formulaire de soumission
       const filteredLots = lots.filter((lot) => String(lot.numbMarche) === String(numbMarche));
       this.lots = filteredLots.map((rawLot) => ({
-        numero: rawLot.numbLot,
+        id: rawLot.numbLot,
+        nomLot: rawLot.nomLot,
         description: rawLot.Description || '',
         contrat: rawLot.numbContrat ?? '—',
       }));
@@ -607,8 +615,9 @@ export class DetailsMarchesComponent implements OnInit {
         .filter((c) => filteredLots.some((lot) => lot.numbLot === c.numbLot))
         .map((c) => {
           const f = fournisseurs.find((fourn) => fourn.idFournisseur === c.idFournisseur);
+          const matchedLot = filteredLots.find((lot) => lot.numbLot === c.numbLot);
           return {
-            lot: c.numbLot,
+            lot: matchedLot?.nomLot ?? c.numbLot,
             date: c.DateConsultation || '—',
             fournisseur: {
               id: f?.idFournisseur.toString() ?? String(c.idFournisseur),
@@ -637,9 +646,10 @@ export class DetailsMarchesComponent implements OnInit {
         )
         .map((submission) => {
           const fournisseur = fournisseurs.find((f) => f.idFournisseur === submission.idFournisseur);
+          const matchedLot = filteredLots.find((lot) => String(lot.numbLot) === String(submission.numbLot));
           return {
             id: submission.idSoumission,
-            lot: submission.numbLot,
+            lot: matchedLot?.nomLot ?? submission.numbLot,
             fournisseur: {
               id: fournisseur?.idFournisseur.toString() ?? String(submission.idFournisseur),
               nom: fournisseur?.RaisonSocial ?? `Fournisseur ${submission.idFournisseur}`,
