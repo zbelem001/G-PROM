@@ -127,12 +127,11 @@ export class DetailsMarchesComponent implements OnInit {
   newSoumissionId = '';
   newSoumissionLot = '';
   newSoumissionIdFournisseur: number = 0;
-  newSoumissionFournisseurId: number = 0;
   newSoumissionDate: string = '';
   newSoumissionHeure: string = '';
   newSoumissionMontant: number = 0;
+  newSoumissionDevise: string = 'XOF';
   newSoumissionDelai: number = 0;
-  newSoumissionNote: number = 0;
   newSoumissionExemplaires: number = 3;
   newSoumissionObservation: string = '';
   isSavingSoumission = false;
@@ -444,14 +443,13 @@ export class DetailsMarchesComponent implements OnInit {
     this.soumissionErrorMessage = '';
     if (this.showSoumissionDrawer) {
       this.newSoumissionId = `SM-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
-      this.newSoumissionLot = this.lots[0]?.id || '';
-      this.newSoumissionFournisseurId = 0;
+      this.newSoumissionLot = '';
       this.newSoumissionIdFournisseur = 0;
       this.newSoumissionDate = new Date().toISOString().split('T')[0];
       this.newSoumissionHeure = new Date().toTimeString().split(' ')[0].substring(0, 5);
       this.newSoumissionMontant = 0;
+      this.newSoumissionDevise = this.market?.Devise || 'XOF';
       this.newSoumissionDelai = 0;
-      this.newSoumissionNote = 0;
       this.newSoumissionExemplaires = 3;
       this.newSoumissionObservation = '';
     }
@@ -460,8 +458,7 @@ export class DetailsMarchesComponent implements OnInit {
   async addSoumission() {
     if (this.isSavingSoumission) return;
 
-    // Utiliser soit l'un soit l'autre selon ce qui est lié dans le template
-    const fournisseurId = Number(this.newSoumissionIdFournisseur || this.newSoumissionFournisseurId);
+    const fournisseurId = Number(this.newSoumissionIdFournisseur);
     if (!this.newSoumissionId || !this.newSoumissionLot || !fournisseurId) {
       this.soumissionErrorMessage = 'Veuillez remplir les champs obligatoires (Lot et Fournisseur).';
       return;
@@ -478,6 +475,7 @@ export class DetailsMarchesComponent implements OnInit {
         DateDepot: this.newSoumissionDate,
         Heure: this.newSoumissionHeure,
         MontantPrev: this.newSoumissionMontant,
+        Devise: this.newSoumissionDevise as 'XOF' | 'EUR' | 'USD',
         DelaiExecutionPrev: this.newSoumissionDelai,
         nbExemplaire: this.newSoumissionExemplaires,
         Observation: this.newSoumissionObservation,
@@ -641,7 +639,6 @@ export class DetailsMarchesComponent implements OnInit {
       this.submissions = submissions
         .filter(
           (submission) =>
-            String(submission.numbMarche) === String(numbMarche) ||
             filteredLots.some((lot) => String(lot.numbLot) === String(submission.numbLot))
         )
         .map((submission) => {
@@ -669,7 +666,7 @@ export class DetailsMarchesComponent implements OnInit {
             },
             dateDepot: submission.DateDepot ?? '',
             heureDepot: submission.Heure ?? '',
-            montant: submission.MontantPrev ? `${submission.MontantPrev.toLocaleString()} ${this.market?.Devise || 'XOF'}` : '—',
+            montant: submission.MontantPrev ? `${submission.MontantPrev.toLocaleString()} ${submission.Devise || this.market?.Devise || 'XOF'}` : '—',
             delai: submission.DelaiExecutionPrev?.toString() ?? '—',
             exemplaires: submission.nbExemplaire ?? 0,
             observation: submission.Observation ?? '—',

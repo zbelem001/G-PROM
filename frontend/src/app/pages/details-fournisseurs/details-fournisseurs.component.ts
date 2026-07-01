@@ -91,8 +91,8 @@ export class DetailsFournisseursComponent implements OnInit {
 
   private populateFromDetails(details: FournisseurDetails) {
     this.offres = details.soumissions.map((soumission: Soumission) => ({
-      marche: soumission.numbMarche ?? soumission.numbLot,
-      lot: soumission.lotDescription ?? soumission.numbLot,
+      marche: soumission.numbLot,
+      lot: soumission.numbLot,
       dateSoumission: soumission.DateDepot ?? soumission.Heure ?? 'N/A',
       montantPropose: this.formatCurrency(soumission.MontantPrev ?? 0),
       statut: 'Soumis',

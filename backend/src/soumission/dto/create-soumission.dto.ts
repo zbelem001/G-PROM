@@ -8,4 +8,5 @@ export class CreateSoumissionDto {
   DelaiExecutionPrev?: number;
   MontantPrev?: number;
   nbExemplaire?: number;
+  Devise?: 'XOF' | 'EUR' | 'USD';
 }

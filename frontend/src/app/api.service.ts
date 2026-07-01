@@ -106,8 +106,7 @@ export interface Soumission {
   DelaiExecutionPrev?: number;
   MontantPrev?: number;
   nbExemplaire?: number;
-  lotDescription?: string;
-  numbMarche?: string;
+  Devise?: 'XOF' | 'EUR' | 'USD';
 }
 
 export interface Lot {
@@ -172,9 +171,22 @@ function normalizeSoumissionResponse(raw: any): Soumission {
     DelaiExecutionPrev: raw.DelaiExecutionPrev ?? raw.delaiexecutionprev ?? raw.delai_execution_prev,
     MontantPrev: raw.MontantPrev ?? raw.montantprev ?? raw.montant_prev,
     nbExemplaire: raw.nbExemplaire ?? raw.nbexemplaire ?? raw.nb_exemplaire,
-    lotDescription: raw.lotDescription ?? raw.lotdescription ?? raw.lot_description,
-    numbMarche: raw.numbMarche ?? raw.numbmarche ?? raw.numb_marche,
-  } as Soumission;
+    Devise: raw.Devise ?? raw.devise ?? 'XOF',
+  };
+}
+
+export async function getSoumissions(): Promise<Soumission[]> {
+  const data = await request<any[]>('/soumissions');
+  return data.map(normalizeSoumissionResponse);
+}
+
+export async function createSoumission(soumission: Partial<Soumission>): Promise<Soumission> {
+  const response = await request<any>('/soumissions', {
+    method: 'POST',
+    body: JSON.stringify(soumission),
+  });
+  const row = Array.isArray(response) ? response[0] : response;
+  return normalizeSoumissionResponse(row);
 }
 
 function normalizeMarcheResponse(raw: any): Marche {
@@ -237,11 +249,6 @@ export async function getLots(): Promise<Lot[]> {
   return data.map(normalizeLotResponse);
 }
 
-export async function getSoumissions(): Promise<Soumission[]> {
-  const data = await request<any[]>('/soumissions');
-  return data.map(normalizeSoumissionResponse);
-}
-
 export async function getFournisseurs(): Promise<Fournisseur[]> {
   return request<Fournisseur[]>('/fournisseurs');
 }
@@ -254,13 +261,6 @@ export async function createFournisseur(fournisseur: Partial<Fournisseur>): Prom
   return request<Fournisseur[]>('/fournisseurs', {
     method: 'POST',
     body: JSON.stringify(fournisseur),
-  });
-}
-
-export async function createSoumission(soumission: Partial<Soumission>): Promise<Soumission> {
-  return request<Soumission>('/soumissions', {
-    method: 'POST',
-    body: JSON.stringify(soumission),
   });
 }
 

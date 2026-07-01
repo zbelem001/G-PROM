@@ -18,6 +18,7 @@ export class SoumissionService {
       delaiexecutionprev: createSoumissionDto.DelaiExecutionPrev ? Number(createSoumissionDto.DelaiExecutionPrev) : null,
       montantprev: createSoumissionDto.MontantPrev ? Number(createSoumissionDto.MontantPrev) : null,
       nbexemplaire: createSoumissionDto.nbExemplaire ? Number(createSoumissionDto.nbExemplaire) : null,
+      devise: createSoumissionDto.Devise ?? 'XOF',
     };
 
     console.log('[SoumissionService] Final payload for Supabase:', payload);

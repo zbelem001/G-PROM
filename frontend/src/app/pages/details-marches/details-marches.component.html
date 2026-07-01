@@ -949,7 +949,7 @@
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-on-surface" for="numbLot">Nom du lot <span class="text-error">*</span></label>
                 <div class="relative">
-                  <select id="numbLot" name="numbLot" [(ngModel)]="newConsultationLot" required class="w-full appearance-none bg-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
+                  <select id="numbLot" name="numbLot" [(ngModel)]="newConsultationLot" required style="background-image:none" class="w-full appearance-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
                     <option disabled value="">Sélectionner un lot...</option>
                     <option *ngFor="let lot of lots" [value]="lot.id">{{ lot.nomLot }} - {{ lot.description }}</option>
                   </select>
@@ -959,7 +959,7 @@
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-on-surface" for="idFournisseur">Fournisseur <span class="text-error">*</span></label>
                 <div class="relative">
-                  <select id="idFournisseur" name="idFournisseur" [(ngModel)]="newConsultationFournisseurId" required class="w-full appearance-none bg-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
+                  <select id="idFournisseur" name="idFournisseur" [(ngModel)]="newConsultationFournisseurId" required style="background-image:none" class="w-full appearance-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
                     <option [value]="0" disabled>Sélectionner un fournisseur...</option>
                     <option *ngFor="let f of availableFournisseurs" [value]="f.idFournisseur">
                       {{ f.RaisonSocial }}
@@ -1382,7 +1382,7 @@
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-on-surface">Lot Concerné</label>
                 <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow">
-                  <select name="newSoumissionLot" [(ngModel)]="newSoumissionLot" required class="w-full bg-surface-container-highest border-none text-sm text-on-surface px-4 py-3 appearance-none focus:bg-surface-container-lowest focus:ring-0">
+                  <select name="newSoumissionLot" [(ngModel)]="newSoumissionLot" required style="background-image:none" class="w-full bg-surface-container-highest border-none text-sm text-on-surface px-4 py-3 appearance-none focus:bg-surface-container-lowest focus:ring-0">
                     <option disabled selected value="">Sélectionner un lot</option>
                     <option *ngFor="let lot of lots" [value]="lot.id">{{ lot.nomLot }}</option>
                   </select>
@@ -1393,8 +1393,8 @@
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-on-surface">Fournisseur</label>
                 <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow">
-                  <select name="newSoumissionIdFournisseur" [(ngModel)]="newSoumissionIdFournisseur" required class="w-full bg-surface-container-highest border-none text-sm text-on-surface px-4 py-3 appearance-none focus:bg-surface-container-lowest focus:ring-0">
-                    <option disabled selected value="">Sélectionner un fournisseur</option>
+                  <select name="newSoumissionIdFournisseur" [(ngModel)]="newSoumissionIdFournisseur" required style="background-image:none" class="w-full bg-surface-container-highest border-none text-sm text-on-surface px-4 py-3 appearance-none focus:bg-surface-container-lowest focus:ring-0">
+                    <option [value]="0" disabled>Sélectionner un fournisseur</option>
                     <option *ngFor="let f of availableFournisseurs" [value]="f.idFournisseur">{{ f.RaisonSocial }}</option>
                   </select>
                   <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
@@ -1406,7 +1406,11 @@
                   <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Montant (HT)</label>
                   <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow flex items-center bg-surface-container-highest focus-within:bg-surface-container-lowest">
                     <input name="newSoumissionMontant" [(ngModel)]="newSoumissionMontant" required class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0" placeholder="0.00" type="number" />
-                    <span class="pr-4 text-xs font-semibold text-on-surface-variant whitespace-nowrap">{{ market?.Devise || 'XOF' }}</span>
+                    <select name="newSoumissionDevise" [(ngModel)]="newSoumissionDevise" style="background-image:none" class="border-none border-l border-outline-variant/20 bg-surface-container-high text-xs font-semibold text-on-surface-variant px-2 py-3 focus:ring-0 appearance-none cursor-pointer">
+                      <option value="XOF">XOF</option>
+                      <option value="EUR">EUR</option>
+                      <option value="USD">USD</option>
+                    </select>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1.5">
@@ -1419,16 +1423,9 @@
               </div>
 
               <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface">Note Technique / Score</label>
-                <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow flex items-center bg-surface-container-highest focus-within:bg-surface-container-lowest">
-                  <input name="newSoumissionNote" [(ngModel)]="newSoumissionNote" class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0" placeholder="Note optionnelle" type="number" />
-                </div>
-              </div>
-
-              <div class="space-y-2">
                 <label class="block text-sm font-medium text-on-surface">Observation</label>
                 <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow flex items-center bg-surface-container-highest focus-within:bg-surface-container-lowest">
-                  <textarea name="newSoumissionId" [(ngModel)]="newSoumissionId" class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0 resize-none" placeholder="Numéro de soumission (ID)..." rows="2"></textarea>
+                  <textarea name="newSoumissionObservation" [(ngModel)]="newSoumissionObservation" class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0 resize-none" placeholder="Remarques ou précisions sur la soumission..." rows="2"></textarea>
                 </div>
               </div>
             </form>
