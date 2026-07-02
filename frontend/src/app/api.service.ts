@@ -302,3 +302,72 @@ export async function deleteConsultation(numbLot: string, idFournisseur: number)
     method: 'DELETE',
   });
 }
+
+function normalizeDocumentResponse(raw: any): Document {
+  return {
+    numbLot: raw.numbLot ?? raw.numblot ?? '',
+    PV_ouverture: raw.PV_ouverture ?? raw.pv_ouverture ?? undefined,
+    RapportAnalyse: raw.RapportAnalyse ?? raw.rapportanalyse ?? undefined,
+    PV_attribution: raw.PV_attribution ?? raw.pv_attribution ?? undefined,
+    Notification: raw.Notification ?? raw.notification ?? undefined,
+    Contrat: raw.Contrat ?? raw.contrat ?? undefined,
+    FED: raw.FED ?? raw.fed ?? undefined,
+    BonCommande: raw.BonCommande ?? raw.boncommande ?? undefined,
+    Avenant: raw.Avenant ?? raw.avenant ?? undefined,
+    OrdreService: raw.OrdreService ?? raw.ordreservice ?? undefined,
+    PV_reception_tech: raw.PV_reception_tech ?? raw.pv_reception_tech ?? undefined,
+  };
+}
+
+export async function getDocuments(): Promise<Document[]> {
+  const data = await request<any[]>('/documents');
+  return data.map(normalizeDocumentResponse);
+}
+
+export async function upsertDocument(numbLot: string, doc: Partial<Document>): Promise<Document> {
+  const response = await request<any>(`/documents/${encodeURIComponent(numbLot)}`, {
+    method: 'PUT',
+    body: JSON.stringify(doc),
+  });
+  return normalizeDocumentResponse(response);
+}
+
+export interface Analyse {
+  numbLot: string;
+  DateEffecReception?: string;
+  Observation?: string;
+  idAttributairePrev?: number;
+  DatePresentationRapport?: string;
+}
+
+function normalizeAnalyseResponse(raw: any): Analyse {
+  return {
+    numbLot: raw.numbLot ?? raw.numblot ?? '',
+    DateEffecReception: raw.DateEffecReception ?? raw.dateeffecreception ?? undefined,
+    Observation: raw.Observation ?? raw.observation ?? undefined,
+    idAttributairePrev: raw.idAttributairePrev ?? raw.idattributaireprev ?? undefined,
+    DatePresentationRapport: raw.DatePresentationRapport ?? raw.datepresentationrapport ?? undefined,
+  };
+}
+
+export async function getAnalyses(): Promise<Analyse[]> {
+  const data = await request<any[]>('/analyses');
+  return data.map(normalizeAnalyseResponse);
+}
+
+export async function createAnalyse(analyse: Analyse): Promise<Analyse> {
+  const response = await request<any>('/analyses', {
+    method: 'POST',
+    body: JSON.stringify(analyse),
+  });
+  const row = Array.isArray(response) ? response[0] : response;
+  return normalizeAnalyseResponse(row);
+}
+
+export async function updateAnalyse(numbLot: string, analyse: Partial<Analyse>): Promise<Analyse> {
+  const response = await request<any>(`/analyses/${encodeURIComponent(numbLot)}`, {
+    method: 'PATCH',
+    body: JSON.stringify(analyse),
+  });
+  return normalizeAnalyseResponse(response);
+}

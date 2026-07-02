@@ -19,11 +19,31 @@ import {
   createSoumission,
   deleteSoumission,
   updateMarche,
+  getAnalyses,
+  createAnalyse,
+  updateAnalyse,
+  Analyse,
+  getDocuments,
+  upsertDocument,
+  Document as ApiDocument,
   ConsultationApi,
   Fournisseur,
 } from '../../api.service';
 
 const SCT_MEMBER_SLOTS = 4;
+
+const DOC_TYPES: { key: keyof ApiDocument; label: string }[] = [
+  { key: 'PV_ouverture', label: "PV d'ouverture des offres" },
+  { key: 'RapportAnalyse', label: "Rapport d'analyse SCT" },
+  { key: 'PV_attribution', label: "PV d'attribution" },
+  { key: 'Notification', label: "Notification d'attribution" },
+  { key: 'Contrat', label: 'Contrat' },
+  { key: 'FED', label: "Fichier d'Engagement des Dépenses (FED)" },
+  { key: 'BonCommande', label: 'Bon de commande' },
+  { key: 'Avenant', label: 'Avenant' },
+  { key: 'OrdreService', label: "Ordre de service" },
+  { key: 'PV_reception_tech', label: 'PV de réception technique' },
+];
 
 interface LotDocument {
   id: string;
@@ -83,6 +103,7 @@ interface Submission {
 }
 
 interface Consultation {
+  lotId: string;
   lot: string;
   fournisseur: Provider;
   date: string;
@@ -137,6 +158,25 @@ export class DetailsMarchesComponent implements OnInit {
   isSavingSoumission = false;
   soumissionErrorMessage = '';
 
+  // Documents
+  documents: ApiDocument[] = [];
+  selectedLotDocument: ApiDocument | null = null;
+  editingDocField = '';
+  editingDocValue = '';
+  isSavingDoc = false;
+  docSaveError = '';
+  readonly DOC_TYPES = DOC_TYPES;
+
+  // Analyse Form State
+  analyses: Analyse[] = [];
+  newAnalyseLot = '';
+  newAnalyseDateReception = '';
+  newAnalyseDatePresentation = '';
+  newAnalyseIdAttributaire: number = 0;
+  newAnalyseObservation = '';
+  isSavingAnalyse = false;
+  analyseErrorMessage = '';
+
   availableFournisseurs: Fournisseur[] = [];
   fournisseurs: Fournisseur[] = [];
   showSoumissionDrawer = false;
@@ -173,6 +213,7 @@ export class DetailsMarchesComponent implements OnInit {
 
   consultations: Consultation[] = [
     {
+      lotId: '',
       lot: 'Lot 1',
       date: '12 Oct 2023',
       fournisseur: {
@@ -197,6 +238,7 @@ export class DetailsMarchesComponent implements OnInit {
       },
     },
     {
+      lotId: '',
       lot: 'Lot 1',
       date: '12 Oct 2023',
       fournisseur: {
@@ -219,6 +261,7 @@ export class DetailsMarchesComponent implements OnInit {
       },
     },
     {
+      lotId: '',
       lot: 'Lot 2',
       date: '14 Oct 2023',
       fournisseur: {
@@ -514,6 +557,76 @@ export class DetailsMarchesComponent implements OnInit {
 
   toggleAnalyseDrawer() {
     this.showAnalyseDrawer = !this.showAnalyseDrawer;
+    this.analyseErrorMessage = '';
+    this.isSavingAnalyse = false;
+    if (this.showAnalyseDrawer) {
+      this.newAnalyseLot = this.lots[0]?.id || '';
+      this.newAnalyseDateReception = '';
+      this.newAnalyseDatePresentation = '';
+      this.newAnalyseIdAttributaire = 0;
+      this.newAnalyseObservation = '';
+    }
+  }
+
+  get analyseConsultedFournisseurs(): Fournisseur[] {
+    if (!this.newAnalyseLot) return [];
+    const consultedIds = new Set(
+      this.consultations
+        .filter((c) => c.lotId === this.newAnalyseLot)
+        .map((c) => Number(c.fournisseur.id))
+    );
+    return this.availableFournisseurs.filter((f) => consultedIds.has(f.idFournisseur));
+  }
+
+  onAnalyseLotChange() {
+    this.newAnalyseIdAttributaire = 0;
+  }
+
+  getAnalyseForLot(lotId: string): Analyse | undefined {
+    return this.analyses.find((a) => a.numbLot === lotId);
+  }
+
+  getLotNom(lotId: string): string {
+    return this.lots.find((l) => l.id === lotId)?.nomLot ?? lotId;
+  }
+
+  getFournisseurNom(id: number): string {
+    return this.availableFournisseurs.find((f) => f.idFournisseur === id)?.RaisonSocial ?? `#${id}`;
+  }
+
+  async saveAnalyse() {
+    if (this.isSavingAnalyse || !this.newAnalyseLot) return;
+
+    this.isSavingAnalyse = true;
+    this.analyseErrorMessage = '';
+
+    const payload: Analyse = {
+      numbLot: this.newAnalyseLot,
+      DateEffecReception: this.newAnalyseDateReception || undefined,
+      DatePresentationRapport: this.newAnalyseDatePresentation || undefined,
+      idAttributairePrev: this.newAnalyseIdAttributaire || undefined,
+      Observation: this.newAnalyseObservation || undefined,
+    };
+
+    try {
+      const existing = this.getAnalyseForLot(this.newAnalyseLot);
+      if (existing) {
+        const { numbLot, ...update } = payload;
+        await updateAnalyse(this.newAnalyseLot, update);
+      } else {
+        await createAnalyse(payload);
+      }
+      if (this.market) {
+        await this.loadMarcheDetails(this.market.numbMarche);
+      }
+      this.showAnalyseDrawer = false;
+    } catch (error: any) {
+      this.analyseErrorMessage = error?.message || 'Impossible d\'enregistrer l\'analyse.';
+      console.error('[DetailsMarches] saveAnalyse failed', error);
+    } finally {
+      this.isSavingAnalyse = false;
+      this.cd.detectChanges();
+    }
   }
 
   toggleDocumentDrawer() {
@@ -534,12 +647,57 @@ export class DetailsMarchesComponent implements OnInit {
 
   openLotPopup(lot: MarketLot) {
     this.selectedLot = lot;
+    this.selectedLotDocument = this.documents.find((d) => d.numbLot === lot.id) ?? null;
+    this.editingDocField = '';
+    this.editingDocValue = '';
+    this.docSaveError = '';
     this.showLotModal = true;
   }
 
   closeLotPopup() {
     this.showLotModal = false;
     this.selectedLot = null;
+    this.selectedLotDocument = null;
+    this.editingDocField = '';
+  }
+
+  getDocValue(field: string): string | undefined {
+    if (!this.selectedLotDocument) return undefined;
+    const val = (this.selectedLotDocument as any)[field];
+    return val || undefined;
+  }
+
+  startEditDoc(field: string, currentValue?: string) {
+    this.editingDocField = field;
+    this.editingDocValue = currentValue ?? '';
+    this.docSaveError = '';
+  }
+
+  cancelEditDoc() {
+    this.editingDocField = '';
+    this.editingDocValue = '';
+    this.docSaveError = '';
+  }
+
+  async saveDocField(field: string) {
+    if (!this.selectedLot || this.isSavingDoc) return;
+    this.isSavingDoc = true;
+    this.docSaveError = '';
+    try {
+      const updated = await upsertDocument(this.selectedLot.id, {
+        [field]: this.editingDocValue.trim() || undefined,
+      } as Partial<ApiDocument>);
+      this.selectedLotDocument = updated;
+      const idx = this.documents.findIndex((d) => d.numbLot === this.selectedLot!.id);
+      if (idx >= 0) this.documents[idx] = updated;
+      else this.documents.push(updated);
+      this.cancelEditDoc();
+    } catch (error: any) {
+      this.docSaveError = error?.message || 'Erreur lors de la sauvegarde.';
+    } finally {
+      this.isSavingDoc = false;
+      this.cd.detectChanges();
+    }
   }
 
   openProviderPopup(consultation: Consultation) {
@@ -591,17 +749,22 @@ export class DetailsMarchesComponent implements OnInit {
     }
 
     try {
-      const [lots, submissions, fournisseurs, consultations] = await Promise.all([
+      const [lots, submissions, fournisseurs, consultations, allAnalyses, allDocuments] = await Promise.all([
         getLots(),
         getSoumissions(),
         getFournisseurs(),
         getConsultations(),
+        getAnalyses(),
+        getDocuments(),
       ]);
 
       this.allLots = lots;
       this.availableFournisseurs = fournisseurs;
-      this.fournisseurs = fournisseurs; // Pour le formulaire de soumission
+      this.fournisseurs = fournisseurs;
       const filteredLots = lots.filter((lot) => String(lot.numbMarche) === String(numbMarche));
+      const filteredLotIds = new Set(filteredLots.map((l) => l.numbLot));
+      this.analyses = allAnalyses.filter((a) => filteredLotIds.has(a.numbLot));
+      this.documents = allDocuments.filter((d) => filteredLotIds.has(d.numbLot));
       this.lots = filteredLots.map((rawLot) => ({
         id: rawLot.numbLot,
         nomLot: rawLot.nomLot,
@@ -615,6 +778,7 @@ export class DetailsMarchesComponent implements OnInit {
           const f = fournisseurs.find((fourn) => fourn.idFournisseur === c.idFournisseur);
           const matchedLot = filteredLots.find((lot) => lot.numbLot === c.numbLot);
           return {
+            lotId: c.numbLot,
             lot: matchedLot?.nomLot ?? c.numbLot,
             date: c.DateConsultation || '—',
             fournisseur: {

@@ -289,31 +289,68 @@
           </div>
 
           <div *ngIf="showLotModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
-            <div class="w-full max-w-3xl rounded-[28px] bg-surface p-6 shadow-2xl border border-surface-container-high overflow-hidden">
-              <div class="flex items-start justify-between gap-4 mb-6">
+            <div class="w-full max-w-2xl rounded-[28px] bg-surface shadow-2xl border border-surface-container-high flex flex-col" style="max-height:90vh">
+              <!-- En-tête -->
+              <div class="flex items-start justify-between gap-4 px-6 pt-6 pb-4 border-b border-outline-variant/20 shrink-0">
                 <div>
-                  <p class="text-xs uppercase tracking-[0.2em] text-on-surface-variant">Détail du Lot</p>
-                  <h2 class="font-headline text-[24px] font-bold text-on-surface mt-2">{{ selectedLot?.nomLot }}</h2>
-                  <p class="mt-3 text-sm leading-6 text-on-surface-variant">{{ selectedLot?.description }}</p>
+                  <p class="text-xs uppercase tracking-[0.2em] text-on-surface-variant">Documents du lot</p>
+                  <h2 class="font-headline text-[22px] font-bold text-on-surface mt-1">{{ selectedLot?.nomLot }}</h2>
+                  <p class="text-sm text-on-surface-variant mt-0.5">{{ selectedLot?.description }}</p>
                 </div>
-                <button (click)="closeLotPopup()" class="rounded-full p-2 bg-surface-container shadow-sm hover:bg-surface-container-hover transition-colors">
+                <button (click)="closeLotPopup()" class="rounded-full p-2 bg-surface-container shadow-sm hover:bg-surface-container-hover transition-colors shrink-0">
                   <span class="material-symbols-outlined text-[22px]">close</span>
                 </button>
               </div>
-
-              <div class="grid gap-4 sm:grid-cols-2 mb-6">
-                <div class="rounded-3xl bg-surface-container-low p-4">
-                  <p class="font-label text-[11px] uppercase text-on-surface-variant mb-2">Nom du lot</p>
-                  <p class="font-semibold text-on-surface">{{ selectedLot?.nomLot }}</p>
+              <!-- Infos lot -->
+              <div class="grid grid-cols-2 gap-3 px-6 py-3 border-b border-outline-variant/10 shrink-0">
+                <div>
+                  <p class="text-[10px] uppercase tracking-wider text-on-surface-variant">Référence</p>
+                  <p class="text-sm font-semibold text-on-surface font-mono">{{ selectedLot?.id }}</p>
                 </div>
-                <div class="rounded-3xl bg-surface-container-low p-4">
-                  <p class="font-label text-[11px] uppercase text-on-surface-variant mb-2">Contrat</p>
-                  <p class="font-semibold text-on-surface">{{ selectedLot?.contrat }}</p>
+                <div>
+                  <p class="text-[10px] uppercase tracking-wider text-on-surface-variant">Contrat</p>
+                  <p class="text-sm font-semibold text-on-surface">{{ selectedLot?.contrat }}</p>
                 </div>
               </div>
-
-              <div class="flex justify-end gap-3">
-                <button (click)="closeLotPopup()" class="h-11 px-5 rounded-[12px] bg-surface-container text-on-surface font-semibold">Fermer</button>
+              <!-- Liste des documents (scrollable) -->
+              <div class="flex-1 overflow-y-auto px-6 py-4 space-y-2">
+                <div *ngFor="let docType of DOC_TYPES" class="rounded-[14px] bg-surface-container-low p-4">
+                  <div class="flex items-center justify-between mb-2">
+                    <p class="text-sm font-medium text-on-surface">{{ docType.label }}</p>
+                    <span class="text-[10px] px-2.5 py-0.5 rounded-full font-medium"
+                          [class]="getDocValue(docType.key) ? 'bg-green-50 text-green-700' : 'bg-surface-container text-on-surface-variant'">
+                      {{ getDocValue(docType.key) ? 'Présent' : 'Absent' }}
+                    </span>
+                  </div>
+                  <!-- Mode affichage -->
+                  <div *ngIf="editingDocField !== docType.key" class="flex items-center gap-2">
+                    <a *ngIf="getDocValue(docType.key)" [href]="getDocValue(docType.key)" target="_blank" rel="noopener noreferrer"
+                       class="text-xs text-[#039CD3] underline truncate flex-1 min-w-0">{{ getDocValue(docType.key) }}</a>
+                    <span *ngIf="!getDocValue(docType.key)" class="text-xs text-on-surface-variant flex-1">Aucun document renseigné</span>
+                    <button (click)="startEditDoc(docType.key, getDocValue(docType.key))"
+                            class="text-xs text-[#039CD3] hover:underline shrink-0 whitespace-nowrap">
+                      {{ getDocValue(docType.key) ? 'Modifier' : 'Ajouter' }}
+                    </button>
+                  </div>
+                  <!-- Mode édition -->
+                  <div *ngIf="editingDocField === docType.key" class="space-y-2">
+                    <div class="flex items-center gap-2">
+                      <input type="url" [(ngModel)]="editingDocValue" [name]="'doc_' + docType.key"
+                             placeholder="https://..."
+                             class="flex-1 min-w-0 text-xs bg-white border border-outline-variant/30 rounded-[8px] px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#76d3c8]" />
+                      <button (click)="saveDocField(docType.key)" [disabled]="isSavingDoc"
+                              class="text-xs bg-[#76d3c8] text-white px-4 py-2 rounded-[8px] font-medium shrink-0 disabled:opacity-50">
+                        {{ isSavingDoc ? '...' : 'OK' }}
+                      </button>
+                      <button (click)="cancelEditDoc()" class="text-xs text-on-surface-variant px-2 py-2 hover:text-on-surface shrink-0">✕</button>
+                    </div>
+                    <p *ngIf="docSaveError && editingDocField === docType.key" class="text-xs text-red-600">{{ docSaveError }}</p>
+                  </div>
+                </div>
+              </div>
+              <!-- Pied -->
+              <div class="px-6 py-4 border-t border-outline-variant/20 flex justify-end shrink-0">
+                <button (click)="closeLotPopup()" class="h-10 px-5 rounded-[12px] bg-surface-container text-on-surface font-semibold text-sm">Fermer</button>
               </div>
             </div>
           </div>
@@ -601,68 +638,43 @@
             <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-6">
               <div>
                 <h2 class="text-xl font-bold text-[#1a2e44] font-headline">Analyse (SCT)</h2>
-                <p class="text-sm text-on-surface-variant mt-1">Synthèse des évaluations techniques et financières des offres reçues pour ce marché.</p>
+                <p class="text-sm text-on-surface-variant mt-1">Résultats de la sous-commission technique par lot.</p>
               </div>
               <button type="button" (click)="toggleAnalyseDrawer()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-[10px] bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white font-medium shadow-sm hover:shadow-[0_6px_16px_rgba(118,211,200,0.3)] transition-all">
                 <span class="material-symbols-outlined text-[18px]">analytics</span>
-                Enregistrer l'Analyse SCT
+                Enregistrer une analyse
               </button>
             </div>
-            <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
-              <div class="xl:col-span-8 space-y-6">
-                <div class="bg-surface-container-lowest rounded-[24px] p-8 shadow-[0_4px_20px_rgba(26,46,68,0.04)] relative overflow-hidden">
-                  <div class="absolute top-0 right-0 w-64 h-64 bg-[#76d3c8]/5 rounded-full blur-3xl -mr-20 -mt-20"></div>
-                  <div class="relative z-10 flex flex-col gap-6">
-                    <div class="flex items-center gap-3">
-                      <span class="bg-[#1a2e44] text-white px-3 py-1 rounded-md font-headline font-bold text-sm tracking-widest">Lot 1</span>
-                      <span class="text-sm text-on-surface-variant">Rapport d'analyse SCT</span>
-                    </div>
-                    <div>
-                      <h3 class="font-headline text-2xl font-extrabold text-[#1a2e44]">Gros Œuvre & Structure</h3>
-                      <p class="text-sm text-on-surface-variant mt-2">Analyse technique et financière des offres pour le premier lot.</p>
-                    </div>
-                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
-                        <div class="bg-surface p-4 rounded-[16px]">
-                          <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-2">Attributaire prévisionnel</p>
-                          <p class="text-sm font-semibold text-[#1a2e44]">SOGEA SATOM</p>
-                        </div>
-                        <div class="bg-surface p-4 rounded-[16px]">
-                          <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-2">Réception SCT</p>
-                          <p class="text-sm font-semibold text-[#1a2e44]">12 Nov 2023</p>
-                        </div>
-                        <div class="bg-surface p-4 rounded-[16px]">
-                          <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-2">Présentation CA</p>
-                          <p class="text-sm font-semibold text-[#1a2e44]">20 Nov 2023</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+
+            <p *ngIf="analyses.length === 0" class="text-sm text-on-surface-variant italic">Aucune analyse SCT enregistrée pour ce marché.</p>
+
+            <div *ngFor="let analyse of analyses" class="bg-surface-container-lowest rounded-[24px] p-6 shadow-[0_4px_20px_rgba(26,46,68,0.04)]">
+              <div class="flex items-center gap-3 mb-4">
+                <span class="bg-[#1a2e44] text-white px-3 py-1 rounded-md font-headline font-bold text-sm tracking-widest">
+                  {{ getLotNom(analyse.numbLot) }}
+                </span>
+                <span class="text-sm text-on-surface-variant">Rapport d'analyse SCT</span>
+                <button type="button" (click)="newAnalyseLot = analyse.numbLot; toggleAnalyseDrawer()" class="ml-auto text-xs text-[#76d3c8] hover:underline">Modifier</button>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="bg-surface p-4 rounded-[16px]">
+                  <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-2">Attributaire prévisionnel</p>
+                  <p class="text-sm font-semibold text-[#1a2e44]">
+                    {{ analyse.idAttributairePrev ? getFournisseurNom(analyse.idAttributairePrev) : '—' }}
+                  </p>
+                </div>
+                <div class="bg-surface p-4 rounded-[16px]">
+                  <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-2">Réception SCT</p>
+                  <p class="text-sm font-semibold text-[#1a2e44]">{{ (analyse.DateEffecReception | date:'dd/MM/yyyy') || '—' }}</p>
+                </div>
+                <div class="bg-surface p-4 rounded-[16px]">
+                  <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-2">Présentation CA</p>
+                  <p class="text-sm font-semibold text-[#1a2e44]">{{ (analyse.DatePresentationRapport | date:'dd/MM/yyyy') || '—' }}</p>
                 </div>
               </div>
-              <div class="xl:col-span-4 space-y-6">
-                <div class="bg-surface-container-lowest rounded-[24px] p-6 border border-outline-variant/10">
-                  <div class="flex justify-between items-center mb-4">
-                    <h4 class="font-headline font-bold text-[#1a2e44]">Documents joints</h4>
-                    <button class="text-xs font-bold text-[#76d3c8] hover:underline">Ajouter</button>
-                  </div>
-                  <ul class="space-y-3">
-                    <li class="flex items-center gap-3 p-3 hover:bg-surface-container-low rounded-lg transition-colors cursor-pointer group">
-                      <span class="material-symbols-outlined text-error">picture_as_pdf</span>
-                      <div class="flex-1">
-                        <p class="text-sm font-semibold text-on-surface group-hover:text-[#1a2e44]">Rapport_SCT_Lot1.pdf</p>
-                        <p class="text-xs text-on-surface-variant">2.4 MB • 12 Nov</p>
-                      </div>
-                    </li>
-                    <li class="flex items-center gap-3 p-3 hover:bg-surface-container-low rounded-lg transition-colors cursor-pointer group">
-                      <span class="material-symbols-outlined text-tertiary-container">description</span>
-                      <div class="flex-1">
-                        <p class="text-sm font-semibold text-on-surface group-hover:text-[#1a2e44]">Grille_Evaluation.xlsx</p>
-                        <p class="text-xs text-on-surface-variant">845 KB • 10 Nov</p>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
+              <div *ngIf="analyse.Observation" class="mt-4 bg-surface p-4 rounded-[16px]">
+                <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-2">Observations</p>
+                <p class="text-sm text-on-surface">{{ analyse.Observation }}</p>
               </div>
             </div>
           </div>
@@ -1008,72 +1020,47 @@
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-on-surface" for="lotAnalyse">Lot concerné</label>
                 <div class="relative">
-                  <select id="lotAnalyse" class="w-full appearance-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
-                    <option disabled selected value="">Sélectionner un lot...</option>
-                    <option value="lot1">Lot 1 - Matériel Informatique</option>
-                    <option value="lot2">Lot 2 - Mobilier de Bureau</option>
-                    <option value="lot3">Lot 3 - Fournitures</option>
+                  <select id="lotAnalyse" name="lotAnalyse" [(ngModel)]="newAnalyseLot" (change)="onAnalyseLotChange()" required style="background-image:none" class="w-full appearance-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
+                    <option disabled value="">Sélectionner un lot...</option>
+                    <option *ngFor="let lot of lots" [value]="lot.id">{{ lot.nomLot }}</option>
                   </select>
                   <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant">expand_more</span>
                 </div>
               </div>
               <div class="grid grid-cols-2 gap-4">
                 <div class="space-y-2">
-                  <label class="block text-sm font-medium text-on-surface" for="receptionSCT">Réception</label>
-                  <input id="receptionSCT" type="date" class="w-full bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors" />
+                  <label class="block text-sm font-medium text-on-surface" for="receptionSCT">Date de réception SCT</label>
+                  <input id="receptionSCT" name="receptionSCT" [(ngModel)]="newAnalyseDateReception" type="date" class="w-full bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors" />
                 </div>
                 <div class="space-y-2">
-                  <label class="block text-sm font-medium text-on-surface" for="presentationCA">Présentation</label>
-                  <input id="presentationCA" type="date" class="w-full bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors" />
+                  <label class="block text-sm font-medium text-on-surface" for="presentationCA">Date présentation CA</label>
+                  <input id="presentationCA" name="presentationCA" [(ngModel)]="newAnalyseDatePresentation" type="date" class="w-full bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors" />
                 </div>
               </div>
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-on-surface" for="attributaireSCT">Attributaire prévisionnel</label>
                 <div class="relative">
-                  <select id="attributaireSCT" class="w-full appearance-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
-                    <option disabled selected value="">Sélectionner un fournisseur...</option>
-                    <option value="f1">TechCorp SA</option>
-                    <option value="f2">Bureau Equipement Plus</option>
-                    <option value="f3">Global Motors</option>
+                  <select id="attributaireSCT" name="attributaireSCT" [(ngModel)]="newAnalyseIdAttributaire" style="background-image:none" [disabled]="!newAnalyseLot || analyseConsultedFournisseurs.length === 0" class="w-full appearance-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors disabled:opacity-50">
+                    <option [value]="0" disabled>{{ !newAnalyseLot ? 'Sélectionner un lot d\'abord...' : (analyseConsultedFournisseurs.length === 0 ? 'Aucun fournisseur consulté pour ce lot' : 'Sélectionner un fournisseur...') }}</option>
+                    <option *ngFor="let f of analyseConsultedFournisseurs" [value]="f.idFournisseur">{{ f.RaisonSocial }}</option>
                   </select>
-                  <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant">expand_more</span>
+                  <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
                 </div>
               </div>
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-on-surface" for="observationsSCT">Observations de la SCT</label>
-                <textarea id="observationsSCT" rows="5" class="w-full bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors resize-none" placeholder="Saisir les remarques, réserves ou justifications..."></textarea>
+                <textarea id="observationsSCT" name="observationsSCT" [(ngModel)]="newAnalyseObservation" rows="4" class="w-full bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors resize-none" placeholder="Remarques, réserves ou justifications..."></textarea>
               </div>
-              <div class="bg-surface-container-lowest p-5 rounded-[16px] space-y-4 border border-outline-variant/10">
-                <h3 class="text-sm font-bold text-[#1a2e44]">Classement des offres</h3>
-                <div class="space-y-3">
-                  <div class="bg-white rounded-[10px] p-3 flex items-center justify-between shadow-[0_4px_12px_rgba(26,46,68,0.05)]">
-                    <div>
-                      <p class="text-sm font-semibold text-on-surface">Bureau Equipement Plus</p>
-                      <p class="text-xs text-on-surface-variant">12 450 000 FCFA • 30 jours</p>
-                    </div>
-                    <div class="w-20">
-                      <input type="number" value="1" min="1" max="10" class="w-full bg-surface-container-highest border-0 rounded-[10px] text-center text-sm text-on-surface px-3 py-2 focus:ring-0" />
-                    </div>
-                  </div>
-                  <div class="bg-white rounded-[10px] p-3 flex items-center justify-between shadow-[0_4px_12px_rgba(26,46,68,0.05)]">
-                    <div>
-                      <p class="text-sm font-semibold text-on-surface">Global Office Solutions</p>
-                      <p class="text-xs text-on-surface-variant">13 100 000 FCFA • 45 jours</p>
-                    </div>
-                    <div class="w-20">
-                      <input type="number" value="2" min="1" max="10" class="w-full bg-surface-container-highest border-0 rounded-[10px] text-center text-sm text-on-surface px-3 py-2 focus:ring-0" />
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <p *ngIf="analyseErrorMessage" class="text-sm text-error">{{ analyseErrorMessage }}</p>
             </form>
           </div>
           <footer class="pt-6 flex items-center justify-end gap-4 mt-auto">
             <button type="button" class="w-full bg-transparent hover:bg-surface-container-high text-on-secondary-container font-body font-semibold text-sm py-3 px-6 rounded-[10px] transition-all duration-200" (click)="toggleAnalyseDrawer()">
               Annuler
             </button>
-            <button type="button" class="w-full bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white font-body font-semibold text-sm py-3 px-6 rounded-[10px] shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-200" (click)="toggleAnalyseDrawer()">
-              Valider le Rapport d'Analyse
+            <button type="button" [disabled]="!newAnalyseLot || isSavingAnalyse" (click)="saveAnalyse()" class="w-full bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white font-body font-semibold text-sm py-3 px-6 rounded-[10px] shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-60">
+              <span *ngIf="isSavingAnalyse" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+              {{ isSavingAnalyse ? 'Enregistrement...' : (getAnalyseForLot(newAnalyseLot) ? 'Mettre à jour' : 'Valider le Rapport') }}
             </button>
           </footer>
         </aside>

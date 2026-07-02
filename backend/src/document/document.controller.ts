@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put } from '@nestjs/common';
 import { DocumentService } from './document.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
 
@@ -19,6 +19,11 @@ export class DocumentController {
   @Get(':numbLot')
   findOne(@Param('numbLot') numbLot: string) {
     return this.documentService.findOne(numbLot);
+  }
+
+  @Put(':numbLot')
+  upsert(@Param('numbLot') numbLot: string, @Body() updateDocumentDto: Partial<CreateDocumentDto>) {
+    return this.documentService.upsert(numbLot, updateDocumentDto);
   }
 
   @Patch(':numbLot')
