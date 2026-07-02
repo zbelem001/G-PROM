@@ -312,6 +312,8 @@
                   <p class="text-sm font-semibold text-on-surface">{{ selectedLot?.contrat }}</p>
                 </div>
               </div>
+              <!-- Erreur upload -->
+              <p *ngIf="docSaveError && !uploadingDocField" class="px-6 pt-3 text-xs text-red-600">{{ docSaveError }}</p>
               <!-- Liste des documents (scrollable) -->
               <div class="flex-1 overflow-y-auto px-6 py-4 space-y-2">
                 <div *ngFor="let docType of DOC_TYPES" class="rounded-[14px] bg-surface-container-low p-4">
@@ -322,29 +324,33 @@
                       {{ getDocValue(docType.key) ? 'Présent' : 'Absent' }}
                     </span>
                   </div>
-                  <!-- Mode affichage -->
-                  <div *ngIf="editingDocField !== docType.key" class="flex items-center gap-2">
+                  <!-- Ligne principale : lien + bouton upload -->
+                  <div class="flex items-center gap-2">
+                    <!-- Lien si document présent -->
                     <a *ngIf="getDocValue(docType.key)" [href]="getDocValue(docType.key)" target="_blank" rel="noopener noreferrer"
-                       class="text-xs text-[#039CD3] underline truncate flex-1 min-w-0">{{ getDocValue(docType.key) }}</a>
-                    <span *ngIf="!getDocValue(docType.key)" class="text-xs text-on-surface-variant flex-1">Aucun document renseigné</span>
-                    <button (click)="startEditDoc(docType.key, getDocValue(docType.key))"
-                            class="text-xs text-[#039CD3] hover:underline shrink-0 whitespace-nowrap">
-                      {{ getDocValue(docType.key) ? 'Modifier' : 'Ajouter' }}
-                    </button>
-                  </div>
-                  <!-- Mode édition -->
-                  <div *ngIf="editingDocField === docType.key" class="space-y-2">
-                    <div class="flex items-center gap-2">
-                      <input type="url" [(ngModel)]="editingDocValue" [name]="'doc_' + docType.key"
-                             placeholder="https://..."
-                             class="flex-1 min-w-0 text-xs bg-white border border-outline-variant/30 rounded-[8px] px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#76d3c8]" />
-                      <button (click)="saveDocField(docType.key)" [disabled]="isSavingDoc"
-                              class="text-xs bg-[#76d3c8] text-white px-4 py-2 rounded-[8px] font-medium shrink-0 disabled:opacity-50">
-                        {{ isSavingDoc ? '...' : 'OK' }}
-                      </button>
-                      <button (click)="cancelEditDoc()" class="text-xs text-on-surface-variant px-2 py-2 hover:text-on-surface shrink-0">✕</button>
-                    </div>
-                    <p *ngIf="docSaveError && editingDocField === docType.key" class="text-xs text-red-600">{{ docSaveError }}</p>
+                       class="text-xs text-[#039CD3] underline truncate flex-1 min-w-0 flex items-center gap-1">
+                      <span class="material-symbols-outlined text-[14px] shrink-0">open_in_new</span>
+                      <span class="truncate">Ouvrir le document</span>
+                    </a>
+                    <span *ngIf="!getDocValue(docType.key)" class="text-xs text-on-surface-variant flex-1">Aucun document</span>
+                    <!-- Bouton upload (label clique sur l'input caché) -->
+                    <label *ngIf="uploadingDocField !== docType.key" [for]="'file_' + docType.key"
+                           class="cursor-pointer text-xs font-medium text-white bg-[#76d3c8] hover:bg-[#43a399] px-3 py-1.5 rounded-[8px] transition-colors shrink-0 whitespace-nowrap select-none"
+                           [class.opacity-50]="!!uploadingDocField && uploadingDocField !== docType.key"
+                           [class.pointer-events-none]="!!uploadingDocField && uploadingDocField !== docType.key">
+                      {{ getDocValue(docType.key) ? 'Remplacer' : 'Uploader' }}
+                    </label>
+                    <!-- Spinner pendant upload -->
+                    <span *ngIf="uploadingDocField === docType.key" class="text-xs text-[#43a399] flex items-center gap-1 shrink-0">
+                      <span class="w-3 h-3 border-2 border-[#43a399]/30 border-t-[#43a399] rounded-full animate-spin inline-block"></span>
+                      Envoi...
+                    </span>
+                    <!-- Input fichier caché -->
+                    <input [id]="'file_' + docType.key" type="file"
+                           accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg"
+                           class="hidden"
+                           (change)="onFileSelected($event, docType.key)"
+                           [disabled]="!!uploadingDocField" />
                   </div>
                 </div>
               </div>

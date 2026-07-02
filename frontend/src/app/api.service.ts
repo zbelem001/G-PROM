@@ -332,6 +332,19 @@ export async function upsertDocument(numbLot: string, doc: Partial<Document>): P
   return normalizeDocumentResponse(response);
 }
 
+export async function uploadFile(file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append('file', file);
+  const url = `${API_BASE_URL}/upload`;
+  const response = await fetch(url, { method: 'POST', body: formData });
+  if (!response.ok) {
+    const msg = await response.text();
+    throw new Error(`Upload échoué : ${msg}`);
+  }
+  const data = await response.json();
+  return data.url as string;
+}
+
 export interface Analyse {
   numbLot: string;
   DateEffecReception?: string;

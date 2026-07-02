@@ -25,6 +25,7 @@ import {
   Analyse,
   getDocuments,
   upsertDocument,
+  uploadFile,
   Document as ApiDocument,
   ConsultationApi,
   Fournisseur,
@@ -164,6 +165,7 @@ export class DetailsMarchesComponent implements OnInit {
   editingDocField = '';
   editingDocValue = '';
   isSavingDoc = false;
+  uploadingDocField = '';
   docSaveError = '';
   readonly DOC_TYPES = DOC_TYPES;
 
@@ -696,6 +698,32 @@ export class DetailsMarchesComponent implements OnInit {
       this.docSaveError = error?.message || 'Erreur lors de la sauvegarde.';
     } finally {
       this.isSavingDoc = false;
+      this.cd.detectChanges();
+    }
+  }
+
+  async onFileSelected(event: Event, field: string) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file || !this.selectedLot || this.uploadingDocField) return;
+
+    this.uploadingDocField = field;
+    this.docSaveError = '';
+
+    try {
+      const url = await uploadFile(file);
+      const updated = await upsertDocument(this.selectedLot.id, {
+        [field]: url,
+      } as Partial<ApiDocument>);
+      this.selectedLotDocument = updated;
+      const idx = this.documents.findIndex((d) => d.numbLot === this.selectedLot!.id);
+      if (idx >= 0) this.documents[idx] = updated;
+      else this.documents.push(updated);
+    } catch (error: any) {
+      this.docSaveError = error?.message || 'Erreur lors du téléversement.';
+    } finally {
+      this.uploadingDocField = '';
+      input.value = '';
       this.cd.detectChanges();
     }
   }

@@ -12,6 +12,7 @@ import { AttributaireModule } from './attributaire/attributaire.module';
 import { AvenantModule } from './avenant/avenant.module';
 import { DocumentModule } from './document/document.module';
 import { UtilisateurModule } from './utilisateur/utilisateur.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { UtilisateurModule } from './utilisateur/utilisateur.module';
     AvenantModule,
     DocumentModule,
     UtilisateurModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],
