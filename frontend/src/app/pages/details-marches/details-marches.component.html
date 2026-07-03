@@ -720,55 +720,50 @@
                 Nouvelle attribution
               </button>
             </div>
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-              <div class="lg:col-span-12 bg-surface-container-lowest rounded-[24px] p-8 shadow-[0_4px_20px_rgba(26,46,68,0.04)] relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-on-primary-container to-surface-container-lowest opacity-80"></div>
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
-                  <div class="flex items-center gap-5">
-                    <h2 class="text-3xl font-headline font-extrabold text-[#1a2e44]">LOT 1</h2>
-                    <span class="px-3 py-1 text-xs font-semibold rounded-[6px] bg-[#76d3c8]/15 text-[#43a399] flex items-center gap-1.5">
-                      <span class="w-1.5 h-1.5 rounded-full bg-on-primary-container"></span>
-                      En cours
-                    </span>
-                  </div>
+
+            <p *ngIf="attributaires.length === 0" class="text-sm text-on-surface-variant italic">Aucune attribution enregistrée pour ce marché.</p>
+
+            <div *ngFor="let attr of attributaires" class="bg-surface-container-lowest rounded-[24px] p-6 shadow-[0_4px_20px_rgba(26,46,68,0.04)]">
+              <div class="flex items-center gap-3 mb-5">
+                <span class="bg-[#1a2e44] text-white px-3 py-1 rounded-md font-headline font-bold text-sm tracking-widest">
+                  {{ getSoumissionLabel(attr.idSoumissionAttribuee) }}
+                </span>
+                <span class="text-[10px] px-2.5 py-0.5 rounded-full font-medium ml-auto"
+                      [class]="attr.Statut === 'Terminé' ? 'bg-green-50 text-green-700' :
+                               attr.Statut === 'Suspendu' || attr.Statut === 'Résilié' ? 'bg-red-50 text-red-700' :
+                               'bg-[#76d3c8]/15 text-[#43a399]'">
+                  {{ attr.Statut || 'En cours' }}
+                </span>
+                <button type="button" (click)="toggleAttributionDrawer(attr.idSoumissionAttribuee)" class="text-xs text-[#76d3c8] hover:underline shrink-0">Modifier</button>
+              </div>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                <div class="bg-surface p-4 rounded-[16px]">
+                  <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-1">Réf. soumission</p>
+                  <p class="text-sm font-mono font-semibold text-[#1a2e44]">{{ attr.idSoumissionAttribuee }}</p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div class="grid grid-cols-1 gap-4">
-                    <div class="bg-white rounded-[20px] p-5 border border-surface-container-highest shadow-[0_4px_16px_rgba(26,46,68,0.06)]">
-                      <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-2">Montant contractuel</p>
-                      <p class="text-3xl font-bold text-[#1a2e44]">145 000 000 FCFA</p>
-                    </div>
-                    <div class="bg-white rounded-[20px] p-5 border border-surface-container-highest shadow-[0_4px_16px_rgba(26,46,68,0.06)]">
-                      <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-2">Fournisseur</p>
-                      <p class="text-sm font-semibold text-[#1a2e44]">Entreprise Générale de Bâtiment (EGB)</p>
-                    </div>
-                    <div class="bg-white rounded-[20px] p-5 border border-surface-container-highest shadow-[0_4px_16px_rgba(26,46,68,0.06)]">
-                      <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-2">Réf. soumission</p>
-                      <p class="text-sm font-semibold text-[#1a2e44]">SUB-2023-089A</p>
-                    </div>
-                  </div>
-                  <div class="grid grid-cols-1 gap-4">
-                    <div class="bg-white rounded-[20px] p-5 border border-surface-container-highest shadow-[0_4px_16px_rgba(26,46,68,0.06)]">
-                      <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-2">Délai d'exécution</p>
-                      <p class="text-sm font-semibold text-[#1a2e44]">6 Mois</p>
-                    </div>
-                    <div class="bg-white rounded-[20px] p-5 border border-surface-container-highest shadow-[0_4px_16px_rgba(26,46,68,0.06)]">
-                      <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-2">Date de démarrage</p>
-                      <p class="text-sm font-semibold text-[#1a2e44]">15 Octobre 2023</p>
-                    </div>
-                    <div class="bg-white rounded-[20px] p-5 border border-surface-container-highest shadow-[0_4px_16px_rgba(26,46,68,0.06)]">
-                      <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-2">Date fin prévue</p>
-                      <p class="text-sm font-semibold text-[#1a2e44]">15 Avril 2024</p>
-                    </div>
-                  </div>
+                <div class="bg-surface p-4 rounded-[16px]">
+                  <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-1">Montant effectif</p>
+                  <p class="text-sm font-semibold text-[#1a2e44]">
+                    {{ attr.MontantEffec ? (attr.MontantEffec | number) + ' ' + (market?.Devise || 'XOF') : '—' }}
+                  </p>
+                </div>
+                <div class="bg-surface p-4 rounded-[16px]">
+                  <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-1">Délai effectif</p>
+                  <p class="text-sm font-semibold text-[#1a2e44]">{{ attr.DelaiExecutionEffec ? attr.DelaiExecutionEffec + ' j' : '—' }}</p>
+                </div>
+                <div class="bg-surface p-4 rounded-[16px]">
+                  <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-1">Date démarrage</p>
+                  <p class="text-sm font-semibold text-[#1a2e44]">{{ (attr.DateDemarage | date:'dd/MM/yyyy') || '—' }}</p>
+                </div>
+                <div class="bg-surface p-4 rounded-[16px]">
+                  <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-1">Date fin prévue</p>
+                  <p class="text-sm font-semibold text-[#1a2e44]">{{ (attr.DatePrevFin | date:'dd/MM/yyyy') || '—' }}</p>
                 </div>
               </div>
-            </div>
-            <div class="mt-6 flex items-center justify-center py-8">
-              <button class="text-[#1a2e44] hover:text-[#076d87] font-medium text-sm flex items-center gap-2 transition-colors">
-                <span class="material-symbols-outlined">add</span>
-                Voir les autres lots (2)
-              </button>
+              <div *ngIf="attr.Observation" class="mt-4 bg-surface p-4 rounded-[16px]">
+                <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-1">Observations</p>
+                <p class="text-sm text-on-surface">{{ attr.Observation }}</p>
+              </div>
             </div>
           </div>
         </ng-container>
@@ -1055,28 +1050,30 @@
         <aside class="relative right-0 top-0 h-full w-full max-w-[500px] bg-white shadow-[-20px_0_40px_rgba(26,46,68,0.15)] flex flex-col p-8 gap-8 overflow-y-auto">
           <header class="flex justify-between items-start mb-8">
             <div>
-              <h2 class="text-[22px] font-headline font-bold text-on-surface tracking-tight">Enregistrer l'Attribution</h2>
-              <p class="text-sm text-on-surface-variant mt-1">Contractualisation — Lot sélectionné</p>
+              <h2 class="text-[22px] font-headline font-bold text-on-surface tracking-tight">
+                {{ newAttributionId ? 'Modifier l\'attribution' : 'Nouvelle attribution' }}
+              </h2>
+              <p class="text-sm text-on-surface-variant mt-1">Contractualisation du marché</p>
             </div>
             <button type="button" aria-label="Fermer" class="text-outline hover:text-on-surface transition-colors p-1" (click)="toggleAttributionDrawer()">
               <span class="material-symbols-outlined">close</span>
             </button>
           </header>
           <div class="flex-1 overflow-y-auto">
-            <div class="bg-surface-container-low rounded-[10px] p-4 mb-6">
-              <span class="material-symbols-outlined text-primary-container">info</span>
-              <p class="text-sm text-primary-container leading-relaxed mt-2">
-                L'attribution sera initialisée avec le statut <span class="font-semibold text-on-surface">"En cours"</span>. Veuillez remplir les détails ci-dessous.
-              </p>
-            </div>
+            <div *ngIf="attributionErrorMessage" class="bg-red-50 text-red-700 rounded-[10px] p-4 mb-6 text-sm">{{ attributionErrorMessage }}</div>
             <form class="space-y-6">
               <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface" for="idSoumissionAttribuee">Soumission Attribuée</label>
+                <label class="block text-sm font-medium text-on-surface" for="idSoumissionAttribuee">Soumission attribuée *</label>
                 <div class="relative">
-                  <select id="idSoumissionAttribuee" class="w-full appearance-none bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 focus:border-[#76d3c8]/40 transition-all shadow-sm">
-                    <option disabled selected value="">Sélectionner une soumission...</option>
-                    <option value="1">Soumission A - Entreprise X</option>
-                    <option value="2">Soumission B - Entreprise Y</option>
+                  <select id="idSoumissionAttribuee" name="idSoumissionAttribuee"
+                          [(ngModel)]="newAttributionId"
+                          [disabled]="!!newAttributionId"
+                          style="background-image:none"
+                          class="w-full appearance-none bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 focus:border-[#76d3c8]/40 transition-all shadow-sm disabled:opacity-50">
+                    <option value="">Sélectionner une soumission...</option>
+                    <option *ngFor="let sub of submissions" [value]="sub.id">
+                      {{ sub.id }} — {{ sub.fournisseur.nom }}
+                    </option>
                   </select>
                   <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-on-surface-variant">
                     <span class="material-symbols-outlined text-lg">expand_more</span>
@@ -1085,28 +1082,36 @@
               </div>
               <div class="grid grid-cols-2 gap-4">
                 <div class="flex flex-col gap-1.5">
-                  <label class="text-xs font-semibold text-on-surface-variant ml-1" for="MontantEffec">Montant Effectif (FCFA)</label>
-                  <input id="MontantEffec" placeholder="Ex: 15000000" type="number" class="w-full bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 focus:border-[#76d3c8]/40 transition-all shadow-sm placeholder:text-outline-variant" />
+                  <label class="text-xs font-semibold text-on-surface-variant ml-1" for="MontantEffec">Montant effectif ({{ market?.Devise || 'XOF' }})</label>
+                  <input id="MontantEffec" name="MontantEffec" placeholder="Ex: 15000000" type="number"
+                         [(ngModel)]="newAttributionMontant"
+                         class="w-full bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 focus:border-[#76d3c8]/40 transition-all shadow-sm placeholder:text-outline-variant" />
                 </div>
                 <div class="flex flex-col gap-1.5">
-                  <label class="text-xs font-semibold text-on-surface-variant ml-1" for="DelaiExecutionEffec">Délai Exé. (Jours)</label>
-                  <input id="DelaiExecutionEffec" placeholder="Ex: 90" type="number" class="w-full bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 focus:border-[#76d3c8]/40 transition-all shadow-sm placeholder:text-outline-variant" />
+                  <label class="text-xs font-semibold text-on-surface-variant ml-1" for="DelaiExecutionEffec">Délai effectif (jours)</label>
+                  <input id="DelaiExecutionEffec" name="DelaiExecutionEffec" placeholder="Ex: 90" type="number"
+                         [(ngModel)]="newAttributionDelai"
+                         class="w-full bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 focus:border-[#76d3c8]/40 transition-all shadow-sm placeholder:text-outline-variant" />
                 </div>
               </div>
               <div class="grid grid-cols-2 gap-4">
                 <div class="flex flex-col gap-1.5">
-                  <label class="text-xs font-semibold text-on-surface-variant ml-1" for="DateDemarage">Date de Démarrage</label>
+                  <label class="text-xs font-semibold text-on-surface-variant ml-1" for="DateDemarage">Date de démarrage</label>
                   <div class="relative">
-                    <input id="DateDemarage" type="date" class="w-full bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 focus:border-[#76d3c8]/40 transition-all shadow-sm" />
+                    <input id="DateDemarage" name="DateDemarage" type="date"
+                           [(ngModel)]="newAttributionDateDemarage"
+                           class="w-full bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 focus:border-[#76d3c8]/40 transition-all shadow-sm" />
                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-on-surface-variant">
                       <span class="material-symbols-outlined text-lg">calendar_month</span>
                     </div>
                   </div>
                 </div>
                 <div class="flex flex-col gap-1.5">
-                  <label class="text-xs font-semibold text-on-surface-variant ml-1" for="DatePrevFin">Date Prévue Fin</label>
+                  <label class="text-xs font-semibold text-on-surface-variant ml-1" for="DatePrevFin">Date fin prévue</label>
                   <div class="relative">
-                    <input id="DatePrevFin" type="date" class="w-full bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 focus:border-[#76d3c8]/40 transition-all shadow-sm" />
+                    <input id="DatePrevFin" name="DatePrevFin" type="date"
+                           [(ngModel)]="newAttributionDatePrevFin"
+                           class="w-full bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 focus:border-[#76d3c8]/40 transition-all shadow-sm" />
                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-on-surface-variant">
                       <span class="material-symbols-outlined text-lg">event</span>
                     </div>
@@ -1114,8 +1119,25 @@
                 </div>
               </div>
               <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-semibold text-on-surface-variant ml-1" for="Observation">Observation</label>
-                <textarea id="Observation" rows="4" placeholder="Ajouter des notes ou observations..." class="w-full bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 resize-none focus:bg-surface-container-lowest focus:ring-0 focus:border-[#76d3c8]/40 transition-all shadow-sm placeholder:text-outline-variant"></textarea>
+                <label class="text-xs font-semibold text-on-surface-variant ml-1" for="AttributionStatut">Statut</label>
+                <div class="relative">
+                  <select id="AttributionStatut" name="AttributionStatut"
+                          [(ngModel)]="newAttributionStatut"
+                          style="background-image:none"
+                          class="w-full appearance-none bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 focus:border-[#76d3c8]/40 transition-all shadow-sm">
+                    <option *ngFor="let s of ATTRIBUTION_STATUTS" [value]="s">{{ s }}</option>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-on-surface-variant">
+                    <span class="material-symbols-outlined text-lg">expand_more</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <label class="text-xs font-semibold text-on-surface-variant ml-1" for="AttributionObservation">Observation</label>
+                <textarea id="AttributionObservation" name="AttributionObservation" rows="4"
+                          [(ngModel)]="newAttributionObservation"
+                          placeholder="Ajouter des notes ou observations..."
+                          class="w-full bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 resize-none focus:bg-surface-container-lowest focus:ring-0 focus:border-[#76d3c8]/40 transition-all shadow-sm placeholder:text-outline-variant"></textarea>
               </div>
             </form>
           </div>
@@ -1123,8 +1145,11 @@
             <button type="button" class="w-full bg-transparent hover:bg-surface-container-high text-on-secondary-container font-body font-semibold text-sm py-3 px-6 rounded-[10px] transition-all duration-200" (click)="toggleAttributionDrawer()">
               Annuler
             </button>
-            <button type="button" class="w-full bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white font-body font-semibold text-sm py-3 px-6 rounded-[10px] shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-200" (click)="toggleAttributionDrawer()">
-              Enregistrer l'Attribution
+            <button type="button"
+                    [disabled]="isSavingAttribution || !newAttributionId"
+                    (click)="saveAttribution()"
+                    class="w-full bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white font-body font-semibold text-sm py-3 px-6 rounded-[10px] shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-200 disabled:opacity-50">
+              {{ isSavingAttribution ? 'Enregistrement...' : 'Enregistrer l\'attribution' }}
             </button>
           </footer>
         </aside>

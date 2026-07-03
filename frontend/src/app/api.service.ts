@@ -332,6 +332,53 @@ export async function upsertDocument(numbLot: string, doc: Partial<Document>): P
   return normalizeDocumentResponse(response);
 }
 
+export interface Attributaire {
+  idSoumissionAttribuee: string;
+  MontantEffec?: number;
+  DelaiExecutionEffec?: number;
+  DateDemarage?: string;
+  DatePrevFin?: string;
+  Observation?: string;
+  Statut?: string;
+}
+
+function normalizeAttributaireResponse(raw: any): Attributaire {
+  return {
+    idSoumissionAttribuee: raw.idSoumissionAttribuee ?? raw.idsoumissionattribuee ?? '',
+    MontantEffec: raw.MontantEffec ?? raw.montanteffec ?? undefined,
+    DelaiExecutionEffec: raw.DelaiExecutionEffec ?? raw.delaiexecutioneffec ?? undefined,
+    DateDemarage: raw.DateDemarage ?? raw.datedemarage ?? undefined,
+    DatePrevFin: raw.DatePrevFin ?? raw.dateprevfin ?? undefined,
+    Observation: raw.Observation ?? raw.observation ?? undefined,
+    Statut: raw.Statut ?? raw.statut ?? undefined,
+  };
+}
+
+export async function getAttributaires(): Promise<Attributaire[]> {
+  const data = await request<any[]>('/attributaires');
+  return data.map(normalizeAttributaireResponse);
+}
+
+export async function createAttributaire(attr: Attributaire): Promise<Attributaire> {
+  const response = await request<any>('/attributaires', {
+    method: 'POST',
+    body: JSON.stringify(attr),
+  });
+  return normalizeAttributaireResponse(response);
+}
+
+export async function updateAttributaire(idSoumission: string, attr: Partial<Attributaire>): Promise<Attributaire> {
+  const response = await request<any>(`/attributaires/${encodeURIComponent(idSoumission)}`, {
+    method: 'PATCH',
+    body: JSON.stringify(attr),
+  });
+  return normalizeAttributaireResponse(response);
+}
+
+export async function deleteAttributaire(idSoumission: string): Promise<void> {
+  await request(`/attributaires/${encodeURIComponent(idSoumission)}`, { method: 'DELETE' });
+}
+
 export async function uploadFile(file: File): Promise<string> {
   const formData = new FormData();
   formData.append('file', file);

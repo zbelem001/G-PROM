@@ -27,6 +27,10 @@ import {
   upsertDocument,
   uploadFile,
   Document as ApiDocument,
+  getAttributaires,
+  createAttributaire,
+  updateAttributaire,
+  Attributaire,
   ConsultationApi,
   Fournisseur,
 } from '../../api.service';
@@ -173,6 +177,17 @@ export class DetailsMarchesComponent implements OnInit {
   showSoumissionDrawer = false;
   showAnalyseDrawer = false;
   showAttributionDrawer = false;
+  attributaires: Attributaire[] = [];
+  newAttributionId = '';
+  newAttributionMontant: number = 0;
+  newAttributionDelai: number = 0;
+  newAttributionDateDemarage = '';
+  newAttributionDatePrevFin = '';
+  newAttributionObservation = '';
+  newAttributionStatut = 'En cours';
+  isSavingAttribution = false;
+  attributionErrorMessage = '';
+  readonly ATTRIBUTION_STATUTS = ['En cours', 'Terminé', 'Suspendu', 'Résilié'];
   showAvenantDrawer = false;
   showStatusDrawer = false;
   showLotModal = false;
@@ -628,8 +643,67 @@ export class DetailsMarchesComponent implements OnInit {
     }
   }
 
-  toggleAttributionDrawer() {
+  toggleAttributionDrawer(preselectedId?: string) {
     this.showAttributionDrawer = !this.showAttributionDrawer;
+    this.attributionErrorMessage = '';
+    this.isSavingAttribution = false;
+    if (this.showAttributionDrawer) {
+      const existing = preselectedId ? this.getAttributaireForSoumission(preselectedId) : undefined;
+      this.newAttributionId = preselectedId ?? '';
+      this.newAttributionMontant = existing?.MontantEffec ?? 0;
+      this.newAttributionDelai = existing?.DelaiExecutionEffec ?? 0;
+      this.newAttributionDateDemarage = existing?.DateDemarage ?? '';
+      this.newAttributionDatePrevFin = existing?.DatePrevFin ?? '';
+      this.newAttributionObservation = existing?.Observation ?? '';
+      this.newAttributionStatut = existing?.Statut ?? 'En cours';
+    } else {
+      this.newAttributionId = '';
+    }
+  }
+
+  getAttributaireForSoumission(idSoumission: string): Attributaire | undefined {
+    return this.attributaires.find((a) => a.idSoumissionAttribuee === idSoumission);
+  }
+
+  getSoumissionLabel(idSoumission: string): string {
+    const s = this.submissions.find((sub) => sub.id === idSoumission);
+    return s ? `${s.lot} — ${s.fournisseur.nom}` : idSoumission;
+  }
+
+  async saveAttribution() {
+    if (this.isSavingAttribution || !this.newAttributionId) return;
+    this.isSavingAttribution = true;
+    this.attributionErrorMessage = '';
+
+    const payload: Attributaire = {
+      idSoumissionAttribuee: this.newAttributionId,
+      MontantEffec: this.newAttributionMontant || undefined,
+      DelaiExecutionEffec: this.newAttributionDelai || undefined,
+      DateDemarage: this.newAttributionDateDemarage || undefined,
+      DatePrevFin: this.newAttributionDatePrevFin || undefined,
+      Observation: this.newAttributionObservation || undefined,
+      Statut: this.newAttributionStatut || undefined,
+    };
+
+    try {
+      const existing = this.getAttributaireForSoumission(this.newAttributionId);
+      if (existing) {
+        const { idSoumissionAttribuee, ...update } = payload;
+        const updated = await updateAttributaire(this.newAttributionId, update);
+        const idx = this.attributaires.findIndex((a) => a.idSoumissionAttribuee === this.newAttributionId);
+        if (idx >= 0) this.attributaires[idx] = updated;
+      } else {
+        const created = await createAttributaire(payload);
+        this.attributaires.push(created);
+      }
+      this.showAttributionDrawer = false;
+    } catch (error: any) {
+      this.attributionErrorMessage = error?.message || 'Impossible d\'enregistrer l\'attribution.';
+      console.error('[DetailsMarches] saveAttribution failed', error);
+    } finally {
+      this.isSavingAttribution = false;
+      this.cd.detectChanges();
+    }
   }
 
   toggleAvenantDrawer() {
@@ -770,13 +844,14 @@ export class DetailsMarchesComponent implements OnInit {
     }
 
     try {
-      const [lots, submissions, fournisseurs, consultations, allAnalyses, allDocuments] = await Promise.all([
+      const [lots, submissions, fournisseurs, consultations, allAnalyses, allDocuments, allAttributaires] = await Promise.all([
         getLots(),
         getSoumissions(),
         getFournisseurs(),
         getConsultations(),
         getAnalyses(),
         getDocuments(),
+        getAttributaires(),
       ]);
 
       this.allLots = lots;
@@ -786,6 +861,12 @@ export class DetailsMarchesComponent implements OnInit {
       const filteredLotIds = new Set(filteredLots.map((l) => l.numbLot));
       this.analyses = allAnalyses.filter((a) => filteredLotIds.has(a.numbLot));
       this.documents = allDocuments.filter((d) => filteredLotIds.has(d.numbLot));
+      const marketSubmissionIds = new Set(
+        submissions
+          .filter((s) => filteredLots.some((l) => String(l.numbLot) === String(s.numbLot)))
+          .map((s) => s.idSoumission)
+      );
+      this.attributaires = allAttributaires.filter((a) => marketSubmissionIds.has(a.idSoumissionAttribuee));
       this.lots = filteredLots.map((rawLot) => ({
         id: rawLot.numbLot,
         nomLot: rawLot.nomLot,
