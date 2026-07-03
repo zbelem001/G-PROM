@@ -405,7 +405,9 @@ function normalizeAnalyseResponse(raw: any): Analyse {
     numbLot: raw.numbLot ?? raw.numblot ?? '',
     DateEffecReception: raw.DateEffecReception ?? raw.dateeffecreception ?? undefined,
     Observation: raw.Observation ?? raw.observation ?? undefined,
-    idAttributairePrev: raw.idAttributairePrev ?? raw.idattributaireprev ?? undefined,
+    idAttributairePrev: (raw.idAttributairePrev ?? raw.idattributaireprev) != null
+      ? Number(raw.idAttributairePrev ?? raw.idattributaireprev)
+      : undefined,
     DatePresentationRapport: raw.DatePresentationRapport ?? raw.datepresentationrapport ?? undefined,
   };
 }

@@ -561,8 +561,9 @@ export class DetailsMarchesComponent implements OnInit {
     return this.lots.find((l) => l.id === lotId)?.nomLot ?? lotId;
   }
 
-  getFournisseurNom(id: number): string {
-    return this.availableFournisseurs.find((f) => f.idFournisseur === id)?.RaisonSocial ?? `#${id}`;
+  getFournisseurNom(id: number | string): string {
+    const numId = Number(id);
+    return this.availableFournisseurs.find((f) => f.idFournisseur === numId)?.RaisonSocial ?? `#${id}`;
   }
 
   async saveAnalyse() {
