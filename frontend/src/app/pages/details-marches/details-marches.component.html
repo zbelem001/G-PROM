@@ -80,17 +80,6 @@
         </button>
         <button
           type="button"
-          (click)="setActiveTab('Documents')"
-          [ngClass]="{
-            'bg-[#E42819] text-white border-transparent': activeTab === 'Documents',
-            'bg-white text-on-surface-variant border-surface-container-lowest hover:text-on-surface': activeTab !== 'Documents'
-          }"
-          class="font-medium text-sm rounded-[12px] px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
-        >
-          Documents
-        </button>
-        <button
-          type="button"
           (click)="setActiveTab('Attribution')"
           [ngClass]="{
             'bg-[#E42819] text-white border-transparent': activeTab === 'Attribution',
@@ -660,7 +649,7 @@
                   {{ getLotNom(analyse.numbLot) }}
                 </span>
                 <span class="text-sm text-on-surface-variant">Rapport d'analyse SCT</span>
-                <button type="button" (click)="newAnalyseLot = analyse.numbLot; toggleAnalyseDrawer()" class="ml-auto text-xs text-[#76d3c8] hover:underline">Modifier</button>
+                <button type="button" (click)="toggleAnalyseDrawer(analyse.numbLot)" class="ml-auto text-xs text-[#76d3c8] hover:underline">Modifier</button>
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div class="bg-surface p-4 rounded-[16px]">
@@ -682,72 +671,39 @@
                 <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-2">Observations</p>
                 <p class="text-sm text-on-surface">{{ analyse.Observation }}</p>
               </div>
-            </div>
-          </div>
-        </ng-container>
-        <ng-container *ngIf="activeTab === 'Documents'">
-          <div class="bg-surface-container-low rounded-[24px] p-6 md:p-8 flex flex-col gap-6 relative">
-            <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-6">
-              <div>
-                <h2 class="text-xl font-bold text-[#1a2e44] font-headline">Documents du marché</h2>
-                <p class="text-sm text-on-surface-variant mt-1">Chaque lot peut contenir plusieurs documents liés au marché.</p>
-              </div>
-              <button type="button" (click)="toggleDocumentDrawer()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-[10px] bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white font-medium shadow-sm hover:shadow-[0_6px_16px_rgba(118,211,200,0.3)] transition-all">
-                <span class="material-symbols-outlined text-[18px]">upload_file</span>
-                Ajouter un document
-              </button>
-            </div>
-            <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
-              <div class="xl:col-span-12 space-y-6">
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div class="bg-white rounded-[20px] p-5 shadow-[0_4px_16px_rgba(26,46,68,0.06)] border border-surface-container-highest">
-                    <p class="text-xs text-on-surface-variant uppercase tracking-wider font-semibold mb-2">Total documents</p>
-                    <p class="text-3xl font-bold text-[#1a2e44]">6</p>
-                  </div>
-                  <div class="bg-white rounded-[20px] p-5 shadow-[0_4px_16px_rgba(26,46,68,0.06)] border border-surface-container-highest">
-                    <p class="text-xs text-on-surface-variant uppercase tracking-wider font-semibold mb-2">Lots avec documents</p>
-                    <p class="text-3xl font-bold text-[#1a2e44]">3</p>
-                  </div>
-                  <div class="bg-white rounded-[20px] p-5 shadow-[0_4px_16px_rgba(26,46,68,0.06)] border border-surface-container-highest">
-                    <p class="text-xs text-on-surface-variant uppercase tracking-wider font-semibold mb-2">Dernier ajouté</p>
-                    <p class="text-lg font-semibold text-[#1a2e44]">Plan_Aménagement.pdf</p>
-                    <p class="text-xs text-on-surface-variant mt-1">15 Nov 2023</p>
-                  </div>
+              <!-- Rapport d'analyse SCT -->
+              <div class="mt-3 bg-surface p-4 rounded-[16px]">
+                <div class="flex items-center justify-between mb-2">
+                  <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant">Rapport d'analyse SCT</p>
+                  <span class="text-[10px] px-2.5 py-0.5 rounded-full font-medium"
+                        [class]="getAnalyseDocUrl(analyse.numbLot) ? 'bg-green-50 text-green-700' : 'bg-surface-container text-on-surface-variant'">
+                    {{ getAnalyseDocUrl(analyse.numbLot) ? 'Présent' : 'Absent' }}
+                  </span>
                 </div>
-                <div class="bg-surface-container-lowest rounded-[24px] p-6 shadow-[0_4px_20px_rgba(26,46,68,0.04)]">
-                  <div class="flex flex-wrap gap-3 mb-6">
-                    <button class="px-4 py-2 rounded-full bg-[#76d3c8] text-[#1a2e44] text-sm font-medium">Tous les lots</button>
-                    <button class="px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface text-sm font-medium hover:bg-surface-container-high transition-colors">Lot 1</button>
-                    <button class="px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface text-sm font-medium hover:bg-surface-container-high transition-colors">Lot 2</button>
-                    <button class="px-4 py-2 rounded-full bg-surface-container-lowest text-on-surface text-sm font-medium hover:bg-surface-container-high transition-colors">Lot 3</button>
-                  </div>
-                  <div class="overflow-x-auto">
-                    <table class="w-full min-w-[760px] text-left border-collapse">
-                      <thead>
-                        <tr class="bg-surface-container/50 border-b border-surface-container-high text-xs uppercase tracking-wider font-semibold text-on-surface-variant">
-                          <th class="px-6 py-4">Lot</th>
-                          <th class="px-6 py-4">Document</th>
-                          <th class="px-6 py-4">Type</th>
-                          <th class="px-6 py-4">Taille</th>
-                          <th class="px-6 py-4">Date</th>
-                          <th class="px-6 py-4 text-right">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody class="text-sm divide-y divide-surface-container-high/50">
-                        <tr *ngFor="let doc of marketDocuments" class="hover:bg-surface-bright transition-colors">
-                          <td class="px-6 py-4">{{ doc.lot }}</td>
-                          <td class="px-6 py-4 font-medium text-[#1a2e44]">{{ doc.nom }}</td>
-                          <td class="px-6 py-4">{{ doc.type }}</td>
-                          <td class="px-6 py-4">{{ doc.taille }}</td>
-                          <td class="px-6 py-4">{{ doc.date }}</td>
-                          <td class="px-6 py-4 text-right">
-                            <button type="button" (click)="openDocument(doc.url)" class="px-3 py-2 rounded-[10px] bg-surface-container-lowest text-on-surface-variant text-xs font-semibold hover:bg-surface-container-high transition-colors" [disabled]="!doc.url">Voir</button>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                <div class="flex items-center gap-2">
+                  <a *ngIf="getAnalyseDocUrl(analyse.numbLot)" [href]="getAnalyseDocUrl(analyse.numbLot)" target="_blank" rel="noopener noreferrer"
+                     class="text-xs text-[#039CD3] underline truncate flex-1 min-w-0 flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px] shrink-0">open_in_new</span>
+                    Ouvrir le rapport
+                  </a>
+                  <span *ngIf="!getAnalyseDocUrl(analyse.numbLot)" class="text-xs text-on-surface-variant flex-1">Aucun rapport téléversé</span>
+                  <label *ngIf="uploadingAnalyseDocLot !== analyse.numbLot" [for]="'analyseDoc_' + analyse.numbLot"
+                         class="cursor-pointer text-xs font-medium text-white bg-[#76d3c8] hover:bg-[#43a399] px-3 py-1.5 rounded-[8px] transition-colors shrink-0 whitespace-nowrap select-none"
+                         [class.opacity-50]="!!uploadingAnalyseDocLot && uploadingAnalyseDocLot !== analyse.numbLot"
+                         [class.pointer-events-none]="!!uploadingAnalyseDocLot && uploadingAnalyseDocLot !== analyse.numbLot">
+                    {{ getAnalyseDocUrl(analyse.numbLot) ? 'Remplacer' : 'Uploader' }}
+                  </label>
+                  <span *ngIf="uploadingAnalyseDocLot === analyse.numbLot" class="text-xs text-[#43a399] flex items-center gap-1 shrink-0">
+                    <span class="w-3 h-3 border-2 border-[#43a399]/30 border-t-[#43a399] rounded-full animate-spin inline-block"></span>
+                    Envoi...
+                  </span>
+                  <input [id]="'analyseDoc_' + analyse.numbLot" type="file"
+                         accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg"
+                         class="hidden"
+                         (change)="onAnalyseDocFileSelected($event, analyse.numbLot)"
+                         [disabled]="!!uploadingAnalyseDocLot" />
                 </div>
+                <p *ngIf="analyseDocError && !uploadingAnalyseDocLot" class="text-xs text-red-600 mt-1">{{ analyseDocError }}</p>
               </div>
             </div>
           </div>
@@ -1057,6 +1013,29 @@
                 <label class="block text-sm font-medium text-on-surface" for="observationsSCT">Observations de la SCT</label>
                 <textarea id="observationsSCT" name="observationsSCT" [(ngModel)]="newAnalyseObservation" rows="4" class="w-full bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors resize-none" placeholder="Remarques, réserves ou justifications..."></textarea>
               </div>
+              <!-- Rapport d'analyse SCT — optionnel -->
+              <div class="space-y-2">
+                <label class="block text-sm font-medium text-on-surface">
+                  Rapport d'analyse SCT
+                  <span class="text-xs font-normal text-on-surface-variant ml-1">(optionnel)</span>
+                </label>
+                <div class="flex items-center gap-3 bg-surface-container-highest rounded-[10px] px-4 py-3">
+                  <label for="analyseDocFile" class="cursor-pointer flex items-center gap-1.5 text-xs font-medium text-white bg-[#76d3c8] hover:bg-[#43a399] px-3 py-1.5 rounded-[8px] transition-colors shrink-0">
+                    <span class="material-symbols-outlined text-[15px]">upload_file</span>
+                    Choisir
+                  </label>
+                  <span class="text-xs truncate min-w-0"
+                        [class]="pendingAnalyseDocName ? 'text-on-surface font-medium' : 'text-on-surface-variant'">
+                    {{ pendingAnalyseDocName || (newAnalyseLot && getAnalyseDocUrl(newAnalyseLot) ? 'Rapport existant — remplacer ?' : 'Aucun fichier sélectionné') }}
+                  </span>
+                  <button *ngIf="pendingAnalyseDocName" type="button" (click)="pendingAnalyseDoc = null; pendingAnalyseDocName = ''"
+                          class="ml-auto text-on-surface-variant hover:text-on-surface shrink-0 text-xs">✕</button>
+                  <input id="analyseDocFile" type="file"
+                         accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg"
+                         class="hidden"
+                         (change)="onPendingAnalyseDocSelected($event)" />
+                </div>
+              </div>
               <p *ngIf="analyseErrorMessage" class="text-sm text-error">{{ analyseErrorMessage }}</p>
             </form>
           </div>
@@ -1250,105 +1229,6 @@
           <footer class="pt-6 flex items-center justify-end gap-4 mt-auto">
             <button type="button" class="w-full bg-transparent hover:bg-surface-container-high text-on-secondary-container font-body font-semibold text-sm py-3 px-6 rounded-[10px] transition-all duration-200" (click)="toggleStatusDrawer()">Annuler</button>
             <button type="button" class="w-full bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white font-body font-semibold text-sm py-3 px-6 rounded-[10px] shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-200" (click)="toggleStatusDrawer()">Enregistrer</button>
-          </footer>
-        </aside>
-      </div>
-      <div *ngIf="showDocumentDrawer" class="fixed inset-0 z-50 flex justify-end">
-        <div class="absolute inset-0 bg-surface/40 backdrop-blur-sm" (click)="toggleDocumentDrawer()"></div>
-        <aside class="relative right-0 top-0 h-full w-full max-w-[500px] bg-white shadow-[-20px_0_40px_rgba(26,46,68,0.15)] flex flex-col p-8 gap-8 overflow-y-auto">
-          <header class="flex justify-between items-start mb-8">
-            <div>
-              <h2 class="text-[22px] font-headline font-bold text-on-surface tracking-tight">Ajouter un document</h2>
-              <p class="text-sm text-on-surface-variant mt-1">Associez un document à un lot du marché.</p>
-            </div>
-            <button type="button" aria-label="Fermer" class="text-outline hover:text-on-surface transition-colors p-1" (click)="toggleDocumentDrawer()">
-              <span class="material-symbols-outlined">close</span>
-            </button>
-          </header>
-          <div class="flex-1 overflow-y-auto">
-            <form class="space-y-6">
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface" for="docLot">Lot concerné</label>
-                <div class="relative">
-                  <select id="docLot" class="w-full appearance-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
-                    <option disabled selected value="">Sélectionner un lot...</option>
-                    <option value="lot1">Lot 1 - Matériel Informatique</option>
-                    <option value="lot2">Lot 2 - Mobilier de Bureau</option>
-                    <option value="lot3">Lot 3 - Fournitures</option>
-                  </select>
-                  <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant">expand_more</span>
-                </div>
-              </div>
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface" for="docType">Type de document</label>
-                <input id="docType" type="text" placeholder="Ex: PDF, DOCX, XLSX" class="w-full bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors" />
-              </div>
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface" for="docName">Nom du document</label>
-                <input id="docName" type="text" placeholder="Ex: Cahier_Charges.pdf" class="w-full bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors" />
-              </div>
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface" for="docFile">Fichier</label>
-                <input id="docFile" type="file" class="w-full text-sm text-on-surface" />
-              </div>
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface" for="docDate">Date d'ajout</label>
-                <input id="docDate" type="date" class="w-full bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors" />
-              </div>
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface" for="docNotes">Notes</label>
-                <textarea id="docNotes" rows="4" class="w-full bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors resize-none" placeholder="Ajouter un commentaire sur le document..."></textarea>
-              </div>
-              <div class="space-y-4 pt-4 border-t border-outline-variant/15">
-                <p class="text-sm font-semibold text-on-surface mb-2">Validation de disponibilité des documents</p>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <label class="flex items-center gap-2 text-sm text-on-surface">
-                    <input type="checkbox" [(ngModel)]="documentFlags.PV_ouverture" name="PV_ouverture" class="h-4 w-4 rounded border-slate-300 text-[#039CD3]" />
-                    PV ouverture
-                  </label>
-                  <label class="flex items-center gap-2 text-sm text-on-surface">
-                    <input type="checkbox" [(ngModel)]="documentFlags.RapportAnalyse" name="RapportAnalyse" class="h-4 w-4 rounded border-slate-300 text-[#039CD3]" />
-                    Rapport d'analyse
-                  </label>
-                  <label class="flex items-center gap-2 text-sm text-on-surface">
-                    <input type="checkbox" [(ngModel)]="documentFlags.PV_attribution" name="PV_attribution" class="h-4 w-4 rounded border-slate-300 text-[#039CD3]" />
-                    PV attribution
-                  </label>
-                  <label class="flex items-center gap-2 text-sm text-on-surface">
-                    <input type="checkbox" [(ngModel)]="documentFlags.Notification" name="Notification" class="h-4 w-4 rounded border-slate-300 text-[#039CD3]" />
-                    Notification
-                  </label>
-                  <label class="flex items-center gap-2 text-sm text-on-surface">
-                    <input type="checkbox" [(ngModel)]="documentFlags.Contrat" name="Contrat" class="h-4 w-4 rounded border-slate-300 text-[#039CD3]" />
-                    Contrat
-                  </label>
-                  <label class="flex items-center gap-2 text-sm text-on-surface">
-                    <input type="checkbox" [(ngModel)]="documentFlags.FED" name="FED" class="h-4 w-4 rounded border-slate-300 text-[#039CD3]" />
-                    FED
-                  </label>
-                  <label class="flex items-center gap-2 text-sm text-on-surface">
-                    <input type="checkbox" [(ngModel)]="documentFlags.BonCommande" name="BonCommande" class="h-4 w-4 rounded border-slate-300 text-[#039CD3]" />
-                    Bon de commande
-                  </label>
-                  <label class="flex items-center gap-2 text-sm text-on-surface">
-                    <input type="checkbox" [(ngModel)]="documentFlags.Avenant" name="Avenant" class="h-4 w-4 rounded border-slate-300 text-[#039CD3]" />
-                    Avenant
-                  </label>
-                  <label class="flex items-center gap-2 text-sm text-on-surface">
-                    <input type="checkbox" [(ngModel)]="documentFlags.OrdreService" name="OrdreService" class="h-4 w-4 rounded border-slate-300 text-[#039CD3]" />
-                    Ordre de service
-                  </label>
-                  <label class="flex items-center gap-2 text-sm text-on-surface">
-                    <input type="checkbox" [(ngModel)]="documentFlags.PV_reception_tech" name="PV_reception_tech" class="h-4 w-4 rounded border-slate-300 text-[#039CD3]" />
-                    PV réception technique
-                  </label>
-                </div>
-              </div>
-            </form>
-          </div>
-          <footer class="pt-6 flex items-center justify-end gap-4 mt-auto">
-            <button type="button" class="w-full bg-transparent hover:bg-surface-container-high text-on-secondary-container font-body font-semibold text-sm py-3 px-6 rounded-[10px] transition-all duration-200" (click)="toggleDocumentDrawer()">Annuler</button>
-            <button type="button" class="w-full bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white font-body font-semibold text-sm py-3 px-6 rounded-[10px] shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-200" (click)="toggleDocumentDrawer()">Ajouter le document</button>
           </footer>
         </aside>
       </div>

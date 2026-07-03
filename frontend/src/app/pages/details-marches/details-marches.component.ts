@@ -35,27 +35,12 @@ const SCT_MEMBER_SLOTS = 4;
 
 const DOC_TYPES: { key: keyof ApiDocument; label: string }[] = [
   { key: 'PV_ouverture', label: "PV d'ouverture des offres" },
-  { key: 'RapportAnalyse', label: "Rapport d'analyse SCT" },
-  { key: 'PV_attribution', label: "PV d'attribution" },
-  { key: 'Notification', label: "Notification d'attribution" },
   { key: 'Contrat', label: 'Contrat' },
   { key: 'FED', label: "Fichier d'Engagement des Dépenses (FED)" },
   { key: 'BonCommande', label: 'Bon de commande' },
-  { key: 'Avenant', label: 'Avenant' },
   { key: 'OrdreService', label: "Ordre de service" },
   { key: 'PV_reception_tech', label: 'PV de réception technique' },
 ];
-
-interface LotDocument {
-  id: string;
-  nom: string;
-  type: string;
-  date: string;
-  statut: string;
-  taille?: string;
-  url?: string;
-  lot?: string;
-}
 
 interface MarketLot {
   id: string;
@@ -167,6 +152,10 @@ export class DetailsMarchesComponent implements OnInit {
   isSavingDoc = false;
   uploadingDocField = '';
   docSaveError = '';
+  uploadingAnalyseDocLot = '';
+  analyseDocError = '';
+  pendingAnalyseDoc: File | null = null;
+  pendingAnalyseDocName = '';
   readonly DOC_TYPES = DOC_TYPES;
 
   // Analyse Form State
@@ -183,7 +172,6 @@ export class DetailsMarchesComponent implements OnInit {
   fournisseurs: Fournisseur[] = [];
   showSoumissionDrawer = false;
   showAnalyseDrawer = false;
-  showDocumentDrawer = false;
   showAttributionDrawer = false;
   showAvenantDrawer = false;
   showStatusDrawer = false;
@@ -200,18 +188,6 @@ export class DetailsMarchesComponent implements OnInit {
   isSavingSctMember = false;
   sctMemberErrorMessage = '';
 
-  documentFlags = {
-    PV_ouverture: false,
-    RapportAnalyse: false,
-    PV_attribution: false,
-    Notification: false,
-    Contrat: false,
-    FED: false,
-    BonCommande: false,
-    Avenant: false,
-    OrdreService: false,
-    PV_reception_tech: false,
-  };
 
   consultations: Consultation[] = [
     {
@@ -287,44 +263,6 @@ export class DetailsMarchesComponent implements OnInit {
     },
   ];
 
-  marketDocuments: LotDocument[] = [
-    {
-      id: 'market-doc-1',
-      nom: 'Rapport_SCT_Lot1.pdf',
-      type: 'PDF',
-      date: '12 Nov 2023',
-      taille: '2.4 MB',
-      statut: 'À jour',
-      url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-    },
-    {
-      id: 'market-doc-2',
-      nom: 'CCTP_Lot1.docx',
-      type: 'DOCX',
-      date: '10 Nov 2023',
-      taille: '1.2 MB',
-      statut: 'Validé',
-      url: 'https://file-examples.com/wp-content/uploads/2017/02/file-sample_100kB.doc',
-    },
-    {
-      id: 'market-doc-3',
-      nom: 'Plan_Aménagement.pdf',
-      type: 'PDF',
-      date: '15 Nov 2023',
-      taille: '3.1 MB',
-      statut: 'À jour',
-      url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-    },
-    {
-      id: 'market-doc-4',
-      nom: 'Devis_Mobilier.xlsx',
-      type: 'XLSX',
-      date: '18 Nov 2023',
-      taille: '850 KB',
-      statut: 'En attente',
-      url: 'https://file-examples.com/wp-content/uploads/2017/02/file_example_XLS_10.xls',
-    },
-  ];
 
   setActiveTab(tab: string) {
     this.activeTab = tab;
@@ -557,16 +495,22 @@ export class DetailsMarchesComponent implements OnInit {
     }
   }
 
-  toggleAnalyseDrawer() {
+  toggleAnalyseDrawer(preselectedLotId?: string) {
     this.showAnalyseDrawer = !this.showAnalyseDrawer;
     this.analyseErrorMessage = '';
     this.isSavingAnalyse = false;
     if (this.showAnalyseDrawer) {
-      this.newAnalyseLot = this.lots[0]?.id || '';
-      this.newAnalyseDateReception = '';
-      this.newAnalyseDatePresentation = '';
-      this.newAnalyseIdAttributaire = 0;
-      this.newAnalyseObservation = '';
+      const lotId = preselectedLotId ?? '';
+      const existing = lotId ? this.getAnalyseForLot(lotId) : undefined;
+      this.newAnalyseLot = lotId;
+      this.newAnalyseDateReception = existing?.DateEffecReception ?? '';
+      this.newAnalyseDatePresentation = existing?.DatePresentationRapport ?? '';
+      this.newAnalyseIdAttributaire = existing?.idAttributairePrev ?? 0;
+      this.newAnalyseObservation = existing?.Observation ?? '';
+    } else {
+      this.newAnalyseLot = '';
+      this.pendingAnalyseDoc = null;
+      this.pendingAnalyseDocName = '';
     }
   }
 
@@ -581,7 +525,11 @@ export class DetailsMarchesComponent implements OnInit {
   }
 
   onAnalyseLotChange() {
-    this.newAnalyseIdAttributaire = 0;
+    const existing = this.getAnalyseForLot(this.newAnalyseLot);
+    this.newAnalyseDateReception = existing?.DateEffecReception ?? '';
+    this.newAnalyseDatePresentation = existing?.DatePresentationRapport ?? '';
+    this.newAnalyseIdAttributaire = existing?.idAttributairePrev ?? 0;
+    this.newAnalyseObservation = existing?.Observation ?? '';
   }
 
   getAnalyseForLot(lotId: string): Analyse | undefined {
@@ -611,13 +559,25 @@ export class DetailsMarchesComponent implements OnInit {
     };
 
     try {
-      const existing = this.getAnalyseForLot(this.newAnalyseLot);
+      const lotId = this.newAnalyseLot;
+      const existing = this.getAnalyseForLot(lotId);
       if (existing) {
         const { numbLot, ...update } = payload;
-        await updateAnalyse(this.newAnalyseLot, update);
+        await updateAnalyse(lotId, update);
       } else {
         await createAnalyse(payload);
       }
+
+      if (this.pendingAnalyseDoc) {
+        const url = await uploadFile(this.pendingAnalyseDoc);
+        const updated = await upsertDocument(lotId, { RapportAnalyse: url });
+        const idx = this.documents.findIndex((d) => d.numbLot === lotId);
+        if (idx >= 0) this.documents[idx] = updated;
+        else this.documents.push(updated);
+        this.pendingAnalyseDoc = null;
+        this.pendingAnalyseDocName = '';
+      }
+
       if (this.market) {
         await this.loadMarcheDetails(this.market.numbMarche);
       }
@@ -631,8 +591,41 @@ export class DetailsMarchesComponent implements OnInit {
     }
   }
 
-  toggleDocumentDrawer() {
-    this.showDocumentDrawer = !this.showDocumentDrawer;
+  onPendingAnalyseDocSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (file) {
+      this.pendingAnalyseDoc = file;
+      this.pendingAnalyseDocName = file.name;
+    }
+  }
+
+  getAnalyseDocUrl(numbLot: string): string | undefined {
+    const doc = this.documents.find((d) => d.numbLot === numbLot);
+    return doc?.RapportAnalyse || undefined;
+  }
+
+  async onAnalyseDocFileSelected(event: Event, numbLot: string) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file || this.uploadingAnalyseDocLot) return;
+
+    this.uploadingAnalyseDocLot = numbLot;
+    this.analyseDocError = '';
+
+    try {
+      const url = await uploadFile(file);
+      const updated = await upsertDocument(numbLot, { RapportAnalyse: url });
+      const idx = this.documents.findIndex((d) => d.numbLot === numbLot);
+      if (idx >= 0) this.documents[idx] = updated;
+      else this.documents.push(updated);
+    } catch (error: any) {
+      this.analyseDocError = error?.message || 'Erreur lors du téléversement.';
+    } finally {
+      this.uploadingAnalyseDocLot = '';
+      input.value = '';
+      this.cd.detectChanges();
+    }
   }
 
   toggleAttributionDrawer() {
@@ -965,13 +958,6 @@ export class DetailsMarchesComponent implements OnInit {
       this.isSavingSctMember = false;
       this.cd.detectChanges();
     }
-  }
-
-  openDocument(url?: string) {
-    if (!url) {
-      return;
-    }
-    window.open(url, '_blank', 'noopener,noreferrer');
   }
 
   setLotFilter(filter: string) {
