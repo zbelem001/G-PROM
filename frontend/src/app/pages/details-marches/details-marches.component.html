@@ -1270,6 +1270,9 @@
             </button>
           </header>
           <div class="flex-1 overflow-y-auto">
+            <div *ngIf="soumissionErrorMessage" class="bg-red-50 text-red-700 rounded-[10px] p-4 mb-4 text-sm">
+              {{ soumissionErrorMessage }}
+            </div>
             <div class="bg-[#f0fdfb] rounded-[10px] p-4 mb-6">
               <span class="material-symbols-outlined text-primary-container">info</span>
               <p class="text-sm text-primary-container leading-relaxed mt-2">

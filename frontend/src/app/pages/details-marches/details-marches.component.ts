@@ -238,7 +238,7 @@ export class DetailsMarchesComponent implements OnInit {
         id: 'prov-2',
         nom: 'Innova Systems',
         domaine: 'Équipement Informatique',
-        adresse: '15 Rue de l’Innovation',
+        adresse: "15 Rue de l'Innovation",
         ville: 'Bobo-Dioulasso',
         pays: 'Burkina Faso',
         email: 'info@innovasystems.bf',
@@ -345,7 +345,7 @@ export class DetailsMarchesComponent implements OnInit {
       }
       this.toggleAddLot();
     } catch (error: any) {
-      this.lotErrorMessage = error?.message || 'Impossible d’ajouter le lot.';
+      this.lotErrorMessage = error?.message || "Impossible d'ajouter le lot.";
       console.error('[DetailsMarches] createLot failed', error);
     } finally {
       this.isSavingLot = false;
@@ -409,7 +409,7 @@ export class DetailsMarchesComponent implements OnInit {
       this.consultationErrorMessage = '';
       
     } catch (error: any) {
-      this.consultationErrorMessage = error?.message || 'Erreur lors de l’enregistrement de la consultation.';
+      this.consultationErrorMessage = error?.message || "Erreur lors de l'enregistrement de la consultation.";
       console.error('[DetailsMarches] addConsultation failed', error);
     } finally {
       this.isSavingConsultation = false;
@@ -479,14 +479,20 @@ export class DetailsMarchesComponent implements OnInit {
         Observation: this.newSoumissionObservation,
       });
 
-      if (this.market) {
-        await this.loadMarcheDetails(this.market.numbMarche);
-      }
+      // Fermer immédiatement après le succès de l'enregistrement
+      this.isSavingSoumission = false;
       this.showSoumissionDrawer = false;
+      this.cd.detectChanges();
+
+      // Recharger les données en arrière-plan
+      if (this.market) {
+        this.loadMarcheDetails(this.market.numbMarche).catch((e) =>
+          console.error('[DetailsMarches] reload after addSoumission failed', e)
+        );
+      }
     } catch (error: any) {
-      this.soumissionErrorMessage = error?.message || 'Erreur lors de l’enregistrement de la soumission.';
+      this.soumissionErrorMessage = error?.message || 'Erreur lors de l enregistrement de la soumission.';
       console.error('[DetailsMarches] addSoumission failed', error);
-    } finally {
       this.isSavingSoumission = false;
       this.cd.detectChanges();
     }
@@ -1033,7 +1039,7 @@ export class DetailsMarchesComponent implements OnInit {
       this.newSctMemberName = '';
       this.showAddSctMember = false;
     } catch (error: any) {
-      this.sctMemberErrorMessage = error?.message || 'Impossible d’ajouter le membre.';
+      this.sctMemberErrorMessage = error?.message || "Impossible d'ajouter le membre.";
       console.error('[DetailsMarches] addSctMember failed', error);
     } finally {
       this.isSavingSctMember = false;
