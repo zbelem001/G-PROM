@@ -160,6 +160,18 @@ export async function createLot(lot: Partial<Lot>): Promise<Lot[]> {
   return rows.map(normalizeLotResponse);
 }
 
+export async function updateLot(numbLot: string, lot: Partial<Lot>): Promise<Lot> {
+  const response = await request<any>(`/lots/${encodeURIComponent(numbLot)}`, {
+    method: 'PATCH',
+    body: JSON.stringify(lot),
+  });
+  return normalizeLotResponse(response);
+}
+
+export async function deleteLot(numbLot: string): Promise<void> {
+  await request(`/lots/${encodeURIComponent(numbLot)}`, { method: 'DELETE' });
+}
+
 function normalizeSoumissionResponse(raw: any): Soumission {
   return {
     idSoumission: raw.idSoumission ?? raw.idsoumission ?? raw.id_soumission ?? '',

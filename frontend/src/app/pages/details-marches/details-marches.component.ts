@@ -6,6 +6,8 @@ import { HeaderComponent } from '../../components/header/header.component';
 import { MenuComponent } from '../../components/menu/menu.component';
 import {
   createLot,
+  updateLot,
+  deleteLot,
   getLots,
   getFournisseurs,
   getMarcheDetails,
@@ -126,6 +128,7 @@ export class DetailsMarchesComponent implements OnInit {
   averageSubmissionAmount = 0;
   latestSubmission: { lot: string; supplier: string; date: string } | null = null;
   showAddLot = false;
+  editingLot: MarketLot | null = null;
   newLotNumero = '';
   newLotNumbMarche = '';
   newLotDescription = '';
@@ -303,15 +306,26 @@ export class DetailsMarchesComponent implements OnInit {
     return `Lot ${String(nextNumber).padStart(2, '0')}`;
   }
 
-  toggleAddLot() {
+  toggleAddLot(lot?: MarketLot) {
     this.showAddLot = !this.showAddLot;
     this.isSavingLot = false;
     this.lotErrorMessage = '';
     if (this.showAddLot) {
-      this.newLotNumero = this.nextLotNumero;
-      this.newLotNumbMarche = this.market?.numbMarche ?? '';
-      this.newLotDescription = '';
-      this.newLotContract = '';
+      if (lot) {
+        this.editingLot = lot;
+        this.newLotNumero = lot.nomLot;
+        this.newLotNumbMarche = this.market?.numbMarche ?? '';
+        this.newLotDescription = lot.description;
+        this.newLotContract = lot.contrat !== '—' ? lot.contrat : '';
+      } else {
+        this.editingLot = null;
+        this.newLotNumero = this.nextLotNumero;
+        this.newLotNumbMarche = this.market?.numbMarche ?? '';
+        this.newLotDescription = '';
+        this.newLotContract = '';
+      }
+    } else {
+      this.editingLot = null;
     }
   }
 
@@ -346,18 +360,46 @@ export class DetailsMarchesComponent implements OnInit {
 
     this.isSavingLot = true;
     try {
-      const createdLots = await createLot(lotPayload);
-      const createdLot = createdLots[0];
-      if (createdLot && this.market) {
-        await this.loadMarcheDetails(this.market.numbMarche);
+      if (this.editingLot) {
+        await updateLot(this.editingLot.id, {
+          nomLot: lotNumero,
+          Description: this.newLotDescription.trim(),
+          numbContrat: this.newLotContract.trim() || undefined,
+        });
+      } else {
+        await createLot(lotPayload);
       }
-      this.toggleAddLot();
+      this.editingLot = null;
+      this.showAddLot = false;
+      this.isSavingLot = false;
+      this.cd.detectChanges();
+      if (this.market) {
+        this.loadMarcheDetails(this.market.numbMarche).catch((e) =>
+          console.error('[DetailsMarches] reload after saveLot failed', e)
+        );
+      }
     } catch (error: any) {
       this.lotErrorMessage = error?.message || "Impossible d'ajouter le lot.";
-      console.error('[DetailsMarches] createLot failed', error);
+      console.error('[DetailsMarches] saveLot failed', error);
     } finally {
       this.isSavingLot = false;
       this.cd.detectChanges();
+    }
+  }
+
+  async removeLot(lot: MarketLot) {
+    if (!confirm(`Voulez-vous vraiment supprimer le lot "${lot.nomLot}" ? Cette action supprimera aussi toutes ses soumissions et consultations associées.`)) return;
+    try {
+      await deleteLot(lot.id);
+      this.lots = this.lots.filter((l) => l.id !== lot.id);
+      this.cd.detectChanges();
+      if (this.market) {
+        this.loadMarcheDetails(this.market.numbMarche).catch((e) =>
+          console.error('[DetailsMarches] reload after removeLot failed', e)
+        );
+      }
+    } catch (error: any) {
+      alert(error?.message || 'Impossible de supprimer le lot.');
     }
   }
 
