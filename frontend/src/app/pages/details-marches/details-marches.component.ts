@@ -344,7 +344,8 @@ export class DetailsMarchesComponent implements OnInit {
     const duplicate = this.allLots.some(
       (lot) =>
         String(lot.nomLot).trim().toLowerCase() === lotNumero.toLowerCase() &&
-        String(lot.numbMarche).trim() === currentMarche,
+        String(lot.numbMarche).trim() === currentMarche &&
+        lot.numbLot !== this.editingLot?.id,
     );
     if (duplicate) {
       this.lotErrorMessage = `Un lot nommé "${lotNumero}" existe déjà dans ce marché.`;
