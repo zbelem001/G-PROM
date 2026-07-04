@@ -15,8 +15,10 @@ import {
   Soumission,
   getConsultations,
   createConsultation,
+  updateConsultation,
   deleteConsultation,
   createSoumission,
+  updateSoumission,
   deleteSoumission,
   updateMarche,
   getAnalyses,
@@ -81,12 +83,16 @@ interface Provider {
 
 interface Submission {
   id: string;
+  lotId: string;
   lot: string;
   fournisseur: Provider;
   dateDepot: string;
   heureDepot: string;
   montant: string;
+  montantRaw: number;
+  devise: string;
   delai: string;
+  delaiRaw: number;
   exemplaires: number;
   observation: string;
   statut: string;
@@ -128,13 +134,15 @@ export class DetailsMarchesComponent implements OnInit {
   isSavingLot = false;
   selectedLotFilter: string = 'Tous';
   showConsultationDrawer = false;
+  editingConsultation: Consultation | null = null;
   newConsultationLot = '';
   newConsultationFournisseurId = 0;
   newConsultationDate = '';
   isSavingConsultation = false;
   consultationErrorMessage = '';
-  
+
   // Soumission Form State
+  editingSoumissionId = '';
   newSoumissionId = '';
   newSoumissionLot = '';
   newSoumissionIdFournisseur: number = 0;
@@ -353,14 +361,24 @@ export class DetailsMarchesComponent implements OnInit {
     }
   }
 
-  toggleConsultationDrawer() {
+  toggleConsultationDrawer(consultation?: Consultation) {
     this.showConsultationDrawer = !this.showConsultationDrawer;
     this.consultationErrorMessage = '';
     this.isSavingConsultation = false;
     if (this.showConsultationDrawer) {
-      this.newConsultationLot = '';
-      this.newConsultationFournisseurId = 0;
-      this.newConsultationDate = new Date().toISOString().split('T')[0];
+      if (consultation) {
+        this.editingConsultation = consultation;
+        this.newConsultationLot = consultation.lotId;
+        this.newConsultationFournisseurId = Number(consultation.fournisseur.id);
+        this.newConsultationDate = consultation.date !== '—' ? consultation.date : new Date().toISOString().split('T')[0];
+      } else {
+        this.editingConsultation = null;
+        this.newConsultationLot = '';
+        this.newConsultationFournisseurId = 0;
+        this.newConsultationDate = new Date().toISOString().split('T')[0];
+      }
+    } else {
+      this.editingConsultation = null;
     }
   }
 
@@ -391,27 +409,33 @@ export class DetailsMarchesComponent implements OnInit {
     this.consultationErrorMessage = '';
 
     try {
-      const response = await createConsultation({
-        numbLot: this.newConsultationLot,
-        idFournisseur: fournisseurId,
-        DateConsultation: this.newConsultationDate,
-      });
+      if (this.editingConsultation) {
+        await updateConsultation(
+          this.editingConsultation.lotId,
+          Number(this.editingConsultation.fournisseur.id),
+          { DateConsultation: this.newConsultationDate }
+        );
+      } else {
+        await createConsultation({
+          numbLot: this.newConsultationLot,
+          idFournisseur: fournisseurId,
+          DateConsultation: this.newConsultationDate,
+        });
+      }
 
-      console.log('[DetailsMarches] Consultation created successfully:', response);
+      this.isSavingConsultation = false;
+      this.showConsultationDrawer = false;
+      this.editingConsultation = null;
+      this.cd.detectChanges();
 
       if (this.market) {
-        await this.loadMarcheDetails(this.market.numbMarche);
+        this.loadMarcheDetails(this.market.numbMarche).catch((e) =>
+          console.error('[DetailsMarches] reload after saveConsultation failed', e)
+        );
       }
-      
-      // Fermer le tiroir et réinitialiser les champs
-      this.showConsultationDrawer = false;
-      this.newConsultationFournisseurId = 0;
-      this.consultationErrorMessage = '';
-      
     } catch (error: any) {
       this.consultationErrorMessage = error?.message || "Erreur lors de l'enregistrement de la consultation.";
       console.error('[DetailsMarches] addConsultation failed', error);
-    } finally {
       this.isSavingConsultation = false;
       this.cd.detectChanges();
     }
@@ -435,21 +459,38 @@ export class DetailsMarchesComponent implements OnInit {
     }
   }
 
-  toggleSoumissionDrawer() {
+  toggleSoumissionDrawer(submission?: Submission) {
     this.showSoumissionDrawer = !this.showSoumissionDrawer;
     this.isSavingSoumission = false;
     this.soumissionErrorMessage = '';
     if (this.showSoumissionDrawer) {
-      this.newSoumissionId = `SM-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
-      this.newSoumissionLot = '';
-      this.newSoumissionIdFournisseur = 0;
-      this.newSoumissionDate = new Date().toISOString().split('T')[0];
-      this.newSoumissionHeure = new Date().toTimeString().split(' ')[0].substring(0, 5);
-      this.newSoumissionMontant = 0;
-      this.newSoumissionDevise = this.market?.Devise || 'XOF';
-      this.newSoumissionDelai = 0;
-      this.newSoumissionExemplaires = 3;
-      this.newSoumissionObservation = '';
+      if (submission) {
+        this.editingSoumissionId = submission.id;
+        this.newSoumissionId = submission.id;
+        this.newSoumissionLot = submission.lotId;
+        this.newSoumissionIdFournisseur = Number(submission.fournisseur.id);
+        this.newSoumissionDate = submission.dateDepot || new Date().toISOString().split('T')[0];
+        this.newSoumissionHeure = submission.heureDepot || '';
+        this.newSoumissionMontant = submission.montantRaw;
+        this.newSoumissionDevise = submission.devise;
+        this.newSoumissionDelai = submission.delaiRaw;
+        this.newSoumissionExemplaires = submission.exemplaires;
+        this.newSoumissionObservation = submission.observation !== '—' ? submission.observation : '';
+      } else {
+        this.editingSoumissionId = '';
+        this.newSoumissionId = `SM-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+        this.newSoumissionLot = '';
+        this.newSoumissionIdFournisseur = 0;
+        this.newSoumissionDate = new Date().toISOString().split('T')[0];
+        this.newSoumissionHeure = new Date().toTimeString().split(' ')[0].substring(0, 5);
+        this.newSoumissionMontant = 0;
+        this.newSoumissionDevise = this.market?.Devise || 'XOF';
+        this.newSoumissionDelai = 0;
+        this.newSoumissionExemplaires = 3;
+        this.newSoumissionObservation = '';
+      }
+    } else {
+      this.editingSoumissionId = '';
     }
   }
 
@@ -466,21 +507,35 @@ export class DetailsMarchesComponent implements OnInit {
     this.soumissionErrorMessage = '';
 
     try {
-      await createSoumission({
-        idSoumission: this.newSoumissionId,
-        numbLot: this.newSoumissionLot,
-        idFournisseur: fournisseurId,
-        DateDepot: this.newSoumissionDate,
-        Heure: this.newSoumissionHeure,
-        MontantPrev: this.newSoumissionMontant,
-        Devise: this.newSoumissionDevise as 'XOF' | 'EUR' | 'USD',
-        DelaiExecutionPrev: this.newSoumissionDelai,
-        nbExemplaire: this.newSoumissionExemplaires,
-        Observation: this.newSoumissionObservation,
-      });
+      if (this.editingSoumissionId) {
+        await updateSoumission(this.editingSoumissionId, {
+          numbLot: this.newSoumissionLot,
+          idFournisseur: fournisseurId,
+          DateDepot: this.newSoumissionDate,
+          Heure: this.newSoumissionHeure,
+          MontantPrev: this.newSoumissionMontant,
+          Devise: this.newSoumissionDevise as 'XOF' | 'EUR' | 'USD',
+          DelaiExecutionPrev: this.newSoumissionDelai,
+          nbExemplaire: this.newSoumissionExemplaires,
+          Observation: this.newSoumissionObservation,
+        });
+      } else {
+        await createSoumission({
+          idSoumission: this.newSoumissionId,
+          numbLot: this.newSoumissionLot,
+          idFournisseur: fournisseurId,
+          DateDepot: this.newSoumissionDate,
+          Heure: this.newSoumissionHeure,
+          MontantPrev: this.newSoumissionMontant,
+          Devise: this.newSoumissionDevise as 'XOF' | 'EUR' | 'USD',
+          DelaiExecutionPrev: this.newSoumissionDelai,
+          nbExemplaire: this.newSoumissionExemplaires,
+          Observation: this.newSoumissionObservation,
+        });
+      }
 
-      // Fermer immédiatement après le succès de l'enregistrement
       this.isSavingSoumission = false;
+      this.editingSoumissionId = '';
       this.showSoumissionDrawer = false;
       this.cd.detectChanges();
 
@@ -559,6 +614,11 @@ export class DetailsMarchesComponent implements OnInit {
 
   getLotNom(lotId: string): string {
     return this.lots.find((l) => l.id === lotId)?.nomLot ?? lotId;
+  }
+
+  get montantHeaderLabel(): string {
+    const devises = [...new Set(this.submissions.map((s) => s.devise).filter(Boolean))];
+    return devises.length ? `Montant (${devises.join(' / ')})` : 'Montant';
   }
 
   getFournisseurNom(id: number | string): string {
@@ -711,6 +771,16 @@ export class DetailsMarchesComponent implements OnInit {
       this.isSavingAttribution = false;
       this.cd.detectChanges();
     }
+  }
+
+  editAvenant(id: string) {
+    this.toggleAvenantDrawer();
+  }
+
+  removeAvenant(id: string) {
+    if (!confirm(`Voulez-vous vraiment supprimer l'avenant ${id} ?`)) return;
+    // TODO: intégrer API avenant
+    console.warn('[Avenant] suppression non encore intégrée:', id);
   }
 
   toggleAvenantDrawer() {
@@ -919,6 +989,7 @@ export class DetailsMarchesComponent implements OnInit {
           const matchedLot = filteredLots.find((lot) => String(lot.numbLot) === String(submission.numbLot));
           return {
             id: submission.idSoumission,
+            lotId: submission.numbLot,
             lot: matchedLot?.nomLot ?? submission.numbLot,
             fournisseur: {
               id: fournisseur?.idFournisseur.toString() ?? String(submission.idFournisseur),
@@ -939,8 +1010,11 @@ export class DetailsMarchesComponent implements OnInit {
             },
             dateDepot: submission.DateDepot ?? '',
             heureDepot: submission.Heure ?? '',
+            devise: submission.Devise || this.market?.Devise || 'XOF',
             montant: submission.MontantPrev ? `${submission.MontantPrev.toLocaleString()} ${submission.Devise || this.market?.Devise || 'XOF'}` : '—',
+            montantRaw: submission.MontantPrev ?? 0,
             delai: submission.DelaiExecutionPrev?.toString() ?? '—',
+            delaiRaw: submission.DelaiExecutionPrev ?? 0,
             exemplaires: submission.nbExemplaire ?? 0,
             observation: submission.Observation ?? '—',
             statut: (submission as any).Statut ?? '—',

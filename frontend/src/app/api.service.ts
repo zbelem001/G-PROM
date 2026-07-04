@@ -264,6 +264,14 @@ export async function createFournisseur(fournisseur: Partial<Fournisseur>): Prom
   });
 }
 
+export async function updateSoumission(idSoumission: string, data: Partial<Soumission>): Promise<Soumission> {
+  const response = await request<any>(`/soumissions/${encodeURIComponent(idSoumission)}`, {
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  });
+  return normalizeSoumissionResponse(response);
+}
+
 export async function deleteSoumission(idSoumission: string): Promise<void> {
   await request(`/soumissions/${idSoumission}`, {
     method: 'DELETE',
@@ -291,6 +299,17 @@ export async function createConsultation(consultation: Partial<ConsultationApi>)
 
   const response = await request<any>('/consultations', {
     method: 'POST',
+    body: JSON.stringify(payload),
+  });
+  const row = Array.isArray(response) ? response[0] : response;
+  return normalizeConsultationResponse(row);
+}
+
+export async function updateConsultation(numbLot: string, idFournisseur: number, data: Partial<ConsultationApi>): Promise<ConsultationApi> {
+  const payload: any = {};
+  if (data.DateConsultation) payload.dateconsultation = data.DateConsultation;
+  const response = await request<any>(`/consultations/${encodeURIComponent(numbLot)}/${idFournisseur}`, {
+    method: 'PATCH',
     body: JSON.stringify(payload),
   });
   const row = Array.isArray(response) ? response[0] : response;

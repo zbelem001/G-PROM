@@ -472,9 +472,12 @@
                     <td class="px-6 py-4 text-on-surface-variant">{{ consultation.fournisseur.domaine }}</td>
                     <td class="px-6 py-4 text-on-surface-variant">{{ consultation.date }}</td>
                     <td class="px-6 py-4 text-right">
-                      <div class="flex items-center justify-end gap-2">
+                      <div class="flex items-center justify-end gap-1">
                         <button type="button" (click)="openProviderPopup(consultation)" class="text-slate-400 hover:text-[#76d3c8] transition-colors p-1 opacity-0 group-hover:opacity-100" title="Voir détails">
                           <span class="material-symbols-outlined text-[20px]">visibility</span>
+                        </button>
+                        <button type="button" (click)="toggleConsultationDrawer(consultation)" class="text-slate-400 hover:text-[#43a399] transition-colors p-1 opacity-0 group-hover:opacity-100" title="Modifier">
+                          <span class="material-symbols-outlined text-[20px]">edit</span>
                         </button>
                         <button type="button" (click)="removeConsultation(consultation)" class="text-slate-400 hover:text-error transition-colors p-1 opacity-0 group-hover:opacity-100" title="Supprimer">
                           <span class="material-symbols-outlined text-[20px]">delete</span>
@@ -529,9 +532,8 @@
                     <th class="px-6 py-4">N° Soumission</th>
                     <th class="px-6 py-4">Lot</th>
                     <th class="px-6 py-4">Fournisseur</th>
-                    <th class="px-6 py-4 text-right">Montant</th>
+                    <th class="px-6 py-4 text-right">{{ montantHeaderLabel }}</th>
                     <th class="px-6 py-4 text-center">Délai</th>
-                    <th class="px-6 py-4 text-center">Exemp.</th>
                     <th class="px-6 py-4 text-right">Actions</th>
                   </tr>
                 </thead>
@@ -542,11 +544,13 @@
                     <td class="px-6 py-4">{{ submission.fournisseur.nom }}</td>
                     <td class="px-6 py-4 text-right font-headline font-semibold text-[#1a2e44]">{{ submission.montant }}</td>
                     <td class="px-6 py-4 text-center">{{ submission.delai }}</td>
-                    <td class="px-6 py-4 text-center text-on-surface-variant">{{ submission.exemplaires }}</td>
                     <td class="px-6 py-4 text-right">
-                      <div class="flex items-center justify-end gap-2">
+                      <div class="flex items-center justify-end gap-1">
                         <button type="button" (click)="openSubmissionPopup(submission)" class="text-slate-400 hover:text-[#76d3c8] transition-colors p-1 opacity-0 group-hover:opacity-100" title="Voir détails">
                           <span class="material-symbols-outlined text-[20px]">visibility</span>
+                        </button>
+                        <button type="button" (click)="toggleSoumissionDrawer(submission)" class="text-slate-400 hover:text-[#43a399] transition-colors p-1 opacity-0 group-hover:opacity-100" title="Modifier">
+                          <span class="material-symbols-outlined text-[20px]">edit</span>
                         </button>
                         <button type="button" (click)="removeSoumission(submission)" class="text-slate-400 hover:text-error transition-colors p-1 opacity-0 group-hover:opacity-100" title="Supprimer">
                           <span class="material-symbols-outlined text-[20px]">delete</span>
@@ -808,31 +812,27 @@
                     </tr>
                   </thead>
                   <tbody class="text-sm divide-y divide-surface-container-high/50">
-                    <tr class="hover:bg-surface-bright transition-colors">
-                      <td class="px-6 py-4 font-medium text-[#1a2e44]">AVN-2023-001</td>
-                      <td class="px-6 py-4">4 500 000 FCFA</td>
-                      <td class="px-6 py-4">15 Nov 2023</td>
-                      <td class="px-6 py-4">Approuvé</td>
+                    <tr *ngFor="let avn of [
+                        {id:'AVN-2023-001', montant:'4 500 000 FCFA', date:'15 Nov 2023', statut:'Approuvé'},
+                        {id:'AVN-2023-002', montant:'6 000 000 FCFA', date:'05 Déc 2023', statut:'En révision'},
+                        {id:'AVN-2023-004', montant:'8 000 000 FCFA', date:'12 Avr 2024',  statut:'En cours'}
+                      ]" class="hover:bg-surface-bright transition-colors group">
+                      <td class="px-6 py-4 font-medium text-[#1a2e44]">{{ avn.id }}</td>
+                      <td class="px-6 py-4">{{ avn.montant }}</td>
+                      <td class="px-6 py-4">{{ avn.date }}</td>
+                      <td class="px-6 py-4">{{ avn.statut }}</td>
                       <td class="px-6 py-4 text-right">
-                        <button type="button" (click)="toggleAvenantDrawer()" class="px-3 py-2 rounded-[10px] bg-surface-container-lowest text-on-surface-variant text-xs font-semibold hover:bg-surface-container-high transition-colors">Voir</button>
-                      </td>
-                    </tr>
-                    <tr class="hover:bg-surface-bright transition-colors">
-                      <td class="px-6 py-4 font-medium text-[#1a2e44]">AVN-2023-002</td>
-                      <td class="px-6 py-4">6 000 000 FCFA</td>
-                      <td class="px-6 py-4">05 Déc 2023</td>
-                      <td class="px-6 py-4">En révision</td>
-                      <td class="px-6 py-4 text-right">
-                        <button type="button" (click)="toggleAvenantDrawer()" class="px-3 py-2 rounded-[10px] bg-surface-container-lowest text-on-surface-variant text-xs font-semibold hover:bg-surface-container-high transition-colors">Voir</button>
-                      </td>
-                    </tr>
-                    <tr class="hover:bg-surface-bright transition-colors">
-                      <td class="px-6 py-4 font-medium text-[#1a2e44]">AVN-2023-004</td>
-                      <td class="px-6 py-4">8 000 000 FCFA</td>
-                      <td class="px-6 py-4">12 Avr 2024</td>
-                      <td class="px-6 py-4">En cours</td>
-                      <td class="px-6 py-4 text-right">
-                        <button type="button" (click)="toggleAvenantDrawer()" class="px-3 py-2 rounded-[10px] bg-surface-container-lowest text-on-surface-variant text-xs font-semibold hover:bg-surface-container-high transition-colors">Voir</button>
+                        <div class="flex items-center justify-end gap-1">
+                          <button type="button" (click)="toggleAvenantDrawer()" class="text-slate-400 hover:text-[#76d3c8] transition-colors p-1 opacity-0 group-hover:opacity-100" title="Voir détails">
+                            <span class="material-symbols-outlined text-[20px]">visibility</span>
+                          </button>
+                          <button type="button" (click)="editAvenant(avn.id)" class="text-slate-400 hover:text-[#43a399] transition-colors p-1 opacity-0 group-hover:opacity-100" title="Modifier">
+                            <span class="material-symbols-outlined text-[20px]">edit</span>
+                          </button>
+                          <button type="button" (click)="removeAvenant(avn.id)" class="text-slate-400 hover:text-error transition-colors p-1 opacity-0 group-hover:opacity-100" title="Supprimer">
+                            <span class="material-symbols-outlined text-[20px]">delete</span>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   </tbody>
@@ -897,8 +897,12 @@
         <aside class="relative right-0 top-0 h-full w-full max-w-[450px] bg-white shadow-[-20px_0_40px_rgba(26,46,68,0.15)] flex flex-col p-8 gap-8 overflow-y-auto">
           <header class="flex justify-between items-start mb-8">
             <div>
-              <h2 class="text-[22px] font-headline font-bold text-on-surface tracking-tight">Consulter un Fournisseur</h2>
-              <p class="text-sm text-on-surface-variant mt-1">Enregistrer une invitation à soumissionner</p>
+              <h2 class="text-[22px] font-headline font-bold text-on-surface tracking-tight">
+                {{ editingConsultation ? 'Modifier la consultation' : 'Consulter un fournisseur' }}
+              </h2>
+              <p class="text-sm text-on-surface-variant mt-1">
+                {{ editingConsultation ? 'Modifier la date de consultation' : 'Enregistrer une invitation à soumissionner' }}
+              </p>
             </div>
             <button type="button" aria-label="Fermer" class="text-outline hover:text-on-surface transition-colors p-1" (click)="toggleConsultationDrawer()">
               <span class="material-symbols-outlined">close</span>
@@ -915,28 +919,38 @@
               </p>
             </div>
             <form class="space-y-6">
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface" for="numbLot">Nom du lot <span class="text-error">*</span></label>
-                <div class="relative">
-                  <select id="numbLot" name="numbLot" [(ngModel)]="newConsultationLot" required style="background-image:none" class="w-full appearance-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
-                    <option disabled value="">Sélectionner un lot...</option>
-                    <option *ngFor="let lot of lots" [value]="lot.id">{{ lot.nomLot }} - {{ lot.description }}</option>
-                  </select>
-                  <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant">expand_more</span>
+              <ng-container *ngIf="editingConsultation; else newConsultationFields">
+                <div class="space-y-2">
+                  <p class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Lot</p>
+                  <p class="text-sm font-medium text-on-surface bg-surface-container-highest rounded-[10px] px-4 py-3">{{ editingConsultation.lot }}</p>
                 </div>
-              </div>
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface" for="idFournisseur">Fournisseur <span class="text-error">*</span></label>
-                <div class="relative">
-                  <select id="idFournisseur" name="idFournisseur" [(ngModel)]="newConsultationFournisseurId" required style="background-image:none" class="w-full appearance-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
-                    <option [value]="0" disabled>Sélectionner un fournisseur...</option>
-                    <option *ngFor="let f of availableFournisseurs" [value]="f.idFournisseur">
-                      {{ f.RaisonSocial }}
-                    </option>
-                  </select>
-                  <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+                <div class="space-y-2">
+                  <p class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Fournisseur</p>
+                  <p class="text-sm font-medium text-on-surface bg-surface-container-highest rounded-[10px] px-4 py-3">{{ editingConsultation.fournisseur.nom }}</p>
                 </div>
-              </div>
+              </ng-container>
+              <ng-template #newConsultationFields>
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-on-surface" for="numbLot">Lot <span class="text-error">*</span></label>
+                  <div class="relative">
+                    <select id="numbLot" name="numbLot" [(ngModel)]="newConsultationLot" required style="background-image:none" class="w-full appearance-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
+                      <option disabled value="">Sélectionner un lot...</option>
+                      <option *ngFor="let lot of lots" [value]="lot.id">{{ lot.nomLot }} - {{ lot.description }}</option>
+                    </select>
+                    <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant">expand_more</span>
+                  </div>
+                </div>
+                <div class="space-y-2">
+                  <label class="block text-sm font-medium text-on-surface" for="idFournisseur">Fournisseur <span class="text-error">*</span></label>
+                  <div class="relative">
+                    <select id="idFournisseur" name="idFournisseur" [(ngModel)]="newConsultationFournisseurId" required style="background-image:none" class="w-full appearance-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
+                      <option [value]="0" disabled>Sélectionner un fournisseur...</option>
+                      <option *ngFor="let f of availableFournisseurs" [value]="f.idFournisseur">{{ f.RaisonSocial }}</option>
+                    </select>
+                    <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+                  </div>
+                </div>
+              </ng-template>
               <div class="space-y-2">
                 <label class="block text-sm font-medium text-on-surface" for="DateConsultation">Date de Consultation</label>
                 <div class="relative">
@@ -1262,8 +1276,12 @@
         <aside class="relative right-0 top-0 h-full w-full max-w-[500px] bg-white shadow-[-20px_0_40px_rgba(26,46,68,0.15)] flex flex-col p-8 gap-8 overflow-y-auto">
           <header class="flex justify-between items-start mb-8">
             <div>
-              <h2 class="text-[22px] font-headline font-bold text-on-surface tracking-tight">Enregistrer une Soumission</h2>
-              <p class="text-sm text-on-surface-variant mt-1">Ajouter une offre déposée pour le marché</p>
+              <h2 class="text-[22px] font-headline font-bold text-on-surface tracking-tight">
+                {{ editingSoumissionId ? 'Modifier la soumission' : 'Enregistrer une soumission' }}
+              </h2>
+              <p class="text-sm text-on-surface-variant mt-1">
+                {{ editingSoumissionId ? editingSoumissionId : 'Ajouter une offre déposée pour le marché' }}
+              </p>
             </div>
             <button type="button" aria-label="Fermer" class="text-outline hover:text-on-surface transition-colors p-1" (click)="toggleSoumissionDrawer()">
               <span class="material-symbols-outlined">close</span>
