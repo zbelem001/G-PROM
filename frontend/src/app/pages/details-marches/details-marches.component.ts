@@ -491,14 +491,18 @@ export class DetailsMarchesComponent implements OnInit {
 
     try {
       await deleteConsultation(consultation.lot, Number(consultation.fournisseur.id));
+      this.consultations = this.consultations.filter(
+        (c) => !(c.lot === consultation.lot && c.fournisseur.id === consultation.fournisseur.id)
+      );
+      this.cd.detectChanges();
       if (this.market) {
-        await this.loadMarcheDetails(this.market.numbMarche);
+        this.loadMarcheDetails(this.market.numbMarche).catch((e) =>
+          console.error('[DetailsMarches] reload after deleteConsultation failed', e)
+        );
       }
     } catch (error: any) {
       console.error('[DetailsMarches] deleteConsultation failed', error);
       alert('Impossible de supprimer la consultation.');
-    } finally {
-      this.cd.detectChanges();
     }
   }
 
@@ -603,14 +607,16 @@ export class DetailsMarchesComponent implements OnInit {
 
     try {
       await deleteSoumission(submission.id);
+      this.submissions = this.submissions.filter((s: Submission) => s.id !== submission.id);
+      this.cd.detectChanges();
       if (this.market) {
-        await this.loadMarcheDetails(this.market.numbMarche);
+        this.loadMarcheDetails(this.market.numbMarche).catch((e) =>
+          console.error('[DetailsMarches] reload after deleteSoumission failed', e)
+        );
       }
     } catch (error: any) {
       console.error('[DetailsMarches] deleteSoumission failed', error);
       alert('Impossible de supprimer la soumission.');
-    } finally {
-      this.cd.detectChanges();
     }
   }
 
@@ -664,6 +670,21 @@ export class DetailsMarchesComponent implements OnInit {
     return devises.length ? `Montant (${devises.join(' / ')})` : 'Montant';
   }
 
+  get averagesByDevise(): { montant: number; devise: string }[] {
+    const groups = new Map<string, number[]>();
+    for (const s of this.submissions) {
+      if (s.montantRaw > 0) {
+        const d = s.devise || this.market?.Devise || 'XOF';
+        if (!groups.has(d)) groups.set(d, []);
+        groups.get(d)!.push(s.montantRaw);
+      }
+    }
+    return [...groups.entries()].map(([devise, amounts]) => ({
+      montant: Math.round(amounts.reduce((a, b) => a + b, 0) / amounts.length),
+      devise,
+    }));
+  }
+
   getFournisseurNom(id: number | string): string {
     const numId = Number(id);
     return this.availableFournisseurs.find((f) => f.idFournisseur === numId)?.RaisonSocial ?? `#${id}`;
@@ -703,14 +724,17 @@ export class DetailsMarchesComponent implements OnInit {
         this.pendingAnalyseDocName = '';
       }
 
-      if (this.market) {
-        await this.loadMarcheDetails(this.market.numbMarche);
-      }
+      this.isSavingAnalyse = false;
       this.showAnalyseDrawer = false;
+      this.cd.detectChanges();
+      if (this.market) {
+        this.loadMarcheDetails(this.market.numbMarche).catch((e) =>
+          console.error('[DetailsMarches] reload after saveAnalyse failed', e)
+        );
+      }
     } catch (error: any) {
-      this.analyseErrorMessage = error?.message || 'Impossible d\'enregistrer l\'analyse.';
+      this.analyseErrorMessage = error?.message || "Impossible d'enregistrer l'analyse.";
       console.error('[DetailsMarches] saveAnalyse failed', error);
-    } finally {
       this.isSavingAnalyse = false;
       this.cd.detectChanges();
     }
@@ -806,11 +830,12 @@ export class DetailsMarchesComponent implements OnInit {
         const created = await createAttributaire(payload);
         this.attributaires.push(created);
       }
+      this.isSavingAttribution = false;
       this.showAttributionDrawer = false;
+      this.cd.detectChanges();
     } catch (error: any) {
-      this.attributionErrorMessage = error?.message || 'Impossible d\'enregistrer l\'attribution.';
+      this.attributionErrorMessage = error?.message || "Impossible d'enregistrer l'attribution.";
       console.error('[DetailsMarches] saveAttribution failed', error);
-    } finally {
       this.isSavingAttribution = false;
       this.cd.detectChanges();
     }

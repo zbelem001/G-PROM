@@ -517,10 +517,17 @@
               </div>
               <div class="bg-surface-container-lowest rounded-[16px] p-5 shadow-[0_2px_12px_rgba(26,46,68,0.04)]">
                 <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-3">Montant moyen</p>
-                <p class="text-3xl font-bold text-[#1a2e44]">
-                  {{ averageSubmissionAmount > 1000000 ? (averageSubmissionAmount / 1000000 | number:'1.0-1') + 'M' : (averageSubmissionAmount | number) }}
-                  <span class="text-sm font-normal text-on-surface-variant ml-1">{{ market?.Devise || 'XOF' }}</span>
-                </p>
+                <ng-container *ngIf="averagesByDevise.length > 0; else noAvg">
+                  <div *ngFor="let avg of averagesByDevise; let isFirst = first" class="flex items-baseline gap-1 leading-none" [class.mt-1]="!isFirst">
+                    <span class="text-3xl font-bold text-[#1a2e44]">
+                      {{ avg.montant > 1000000 ? (avg.montant / 1000000 | number:'1.0-1') + 'M' : (avg.montant | number) }}
+                    </span>
+                    <span class="text-sm font-normal text-on-surface-variant">{{ avg.devise }}</span>
+                  </div>
+                </ng-container>
+                <ng-template #noAvg>
+                  <p class="text-3xl font-bold text-[#1a2e44]">—</p>
+                </ng-template>
               </div>
               <div class="bg-surface-container-lowest rounded-[16px] p-5 shadow-[0_2px_12px_rgba(26,46,68,0.04)]">
                 <p class="text-xs uppercase tracking-wider font-medium text-on-surface-variant mb-3">Soumission la plus récente</p>

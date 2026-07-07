@@ -154,8 +154,38 @@
   ],
   "utilisateurs": [],
   "consultations": [],
-  "soumissions": [],
-  "analyses": [],
+  "soumissions": [
+    {
+      "idSoumission": "SM-2026-8873",
+      "numbLot": "Lot 01",
+      "idFournisseur": 4,
+      "DateDepot": "2026-07-03",
+      "Heure": "00:57",
+      "Observation": "bien",
+      "DelaiExecutionPrev": 90,
+      "MontantPrev": 2500000,
+      "nbExemplaire": 3
+    },
+    {
+      "idSoumission": "SM-2026-5793",
+      "numbLot": "L-0P24",
+      "idFournisseur": 4,
+      "DateDepot": "2026-07-03",
+      "Heure": "01:11",
+      "Observation": "bien",
+      "DelaiExecutionPrev": 50,
+      "MontantPrev": 1500000,
+      "nbExemplaire": 3
+    }
+  ],
+  "analyses": [
+    {
+      "numbLot": "Lot 01",
+      "DateEffecReception": "2026-07-03",
+      "idAttributairePrev": "4",
+      "DatePresentationRapport": "2026-07-04"
+    }
+  ],
   "attributaires": [],
   "avenants": [],
   "documents": []
