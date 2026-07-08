@@ -13,7 +13,6 @@ import type {
   Avenant,
   Consultation,
   Document,
-  Fournisseur,
   Lot,
   Marche,
   Soumission,
@@ -35,31 +34,7 @@ export class AppController {
 
   // Lots routes are handled by LotModule/LotController using Supabase.
 
-  // Fournisseurs
-  @Get('fournisseurs')
-  async getFournisseurs(): Promise<Fournisseur[]> {
-    return this.appService.getFournisseurs();
-  }
-
-  @Get('fournisseurs/:idFournisseur')
-  async getFournisseur(@Param('idFournisseur') idFournisseur: string): Promise<Fournisseur> {
-    return this.appService.getFournisseur(Number(idFournisseur));
-  }
-
-  @Post('fournisseurs')
-  async createFournisseur(@Body() fournisseur: Partial<Fournisseur>): Promise<Fournisseur> {
-    return this.appService.createFournisseur(fournisseur);
-  }
-
-  @Put('fournisseurs/:idFournisseur')
-  async updateFournisseur(@Param('idFournisseur') idFournisseur: string, @Body() changes: Partial<Fournisseur>): Promise<Fournisseur> {
-    return this.appService.updateFournisseur(Number(idFournisseur), changes);
-  }
-
-  @Delete('fournisseurs/:idFournisseur')
-  deleteFournisseur(@Param('idFournisseur') idFournisseur: string): void {
-    return this.appService.deleteFournisseur(Number(idFournisseur));
-  }
+  // Fournisseurs — gérés par FournisseurController (Supabase).
 
   // Utilisateurs
   @Get('utilisateurs')

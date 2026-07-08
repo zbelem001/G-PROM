@@ -199,8 +199,36 @@ export async function deleteLot(numbLot: string): Promise<void> {
   });
 }
 
+function normalizeFournisseur(raw: any): Fournisseur {
+  return {
+    idFournisseur: raw.idFournisseur ?? raw.idfournisseur ?? 0,
+    RaisonSocial: raw.RaisonSocial ?? raw.raisonsocial ?? '',
+    FormeJuridique: raw.FormeJuridique ?? raw.formejuridique ?? '',
+    AdresseGeo: raw.AdresseGeo ?? raw.adressegeo ?? '',
+    AdressePost: raw.AdressePost ?? raw.adressepost ?? '',
+    Ville: raw.Ville ?? raw.ville ?? '',
+    Pays: raw.Pays ?? raw.pays ?? '',
+    Telephone1: raw.Telephone1 ?? raw.telephone1 ?? '',
+    Telephone2: raw.Telephone2 ?? raw.telephone2,
+    Email: raw.Email ?? raw.email ?? '',
+    SiteWeb: raw.SiteWeb ?? raw.siteweb,
+    DomaineActivite: raw.DomaineActivite ?? raw.domaineactivite ?? '',
+    DisposeIFU: raw.DisposeIFU ?? raw.disposeifu ?? false,
+    numIFU: raw.numIFU ?? raw.numifu,
+    DisposeRCCM: raw.DisposeRCCM ?? raw.disposerccm ?? false,
+    numRCCM: raw.numRCCM ?? raw.numrccm,
+    NomPrenomRepr: raw.NomPrenomRepr ?? raw.nomprenomrepr ?? '',
+    FonctionRepr: raw.FonctionRepr ?? raw.fonctionrepr,
+    Telephone1Repr: raw.Telephone1Repr ?? raw.telephone1repr ?? '',
+    EmailRepr: raw.EmailRepr ?? raw.emailrepr ?? '',
+    Statut: raw.Statut ?? raw.statut,
+    dateAjout: raw.dateAjout ?? raw.dateajout,
+  };
+}
+
 export async function getFournisseurs(): Promise<Fournisseur[]> {
-  return request<Fournisseur[]>('/fournisseurs');
+  const data = await request<any[]>('/fournisseurs');
+  return data.map(normalizeFournisseur);
 }
 
 export async function getFournisseur(idFournisseur: number): Promise<Fournisseur> {
@@ -208,10 +236,11 @@ export async function getFournisseur(idFournisseur: number): Promise<Fournisseur
 }
 
 export async function createFournisseur(fournisseur: Partial<Fournisseur>): Promise<Fournisseur> {
-  return request<Fournisseur>('/fournisseurs', {
+  const raw = await request<any>('/fournisseurs', {
     method: 'POST',
     body: JSON.stringify(fournisseur),
   });
+  return normalizeFournisseur(raw);
 }
 
 export async function updateFournisseur(idFournisseur: number, changes: Partial<Fournisseur>): Promise<Fournisseur> {

@@ -9,11 +9,13 @@ export class FournisseurService {
   async create(createFournisseurDto: CreateFournisseurDto) {
     const { data, error } = await this.supabaseService.client
       .from('Fournisseur')
-      .insert([createFournisseurDto]);
+      .insert([createFournisseurDto])
+      .select()
+      .single();
     if (error) {
       throw new Error(error.message);
     }
-    return data;
+    return this.normalizeFournisseur(data);
   }
 
   async findAll() {
@@ -21,7 +23,7 @@ export class FournisseurService {
     if (error) {
       throw new Error(error.message);
     }
-    return data;
+    return (data ?? []).map((row: any) => this.normalizeFournisseur(row));
   }
 
   async findOne(idFournisseur: number) {
