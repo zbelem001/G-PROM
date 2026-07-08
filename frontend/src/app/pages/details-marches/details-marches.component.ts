@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../../components/header/header.component';
@@ -120,7 +120,7 @@ interface Consultation {
   styleUrls: ['./details-marches.component.css'],
 })
 export class DetailsMarchesComponent implements OnInit {
-  constructor(private route: ActivatedRoute, private cd: ChangeDetectorRef) {}
+  constructor(private route: ActivatedRoute, private router: Router, private cd: ChangeDetectorRef) {}
   activeTab = 'Informations générales';
   loadingMarket = false;
   errorMessage = '';
@@ -306,6 +306,12 @@ export class DetailsMarchesComponent implements OnInit {
 
   setActiveTab(tab: string) {
     this.activeTab = tab;
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { tab },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
   }
 
   get nextLotNumero(): string {
@@ -1054,13 +1060,15 @@ export class DetailsMarchesComponent implements OnInit {
   }
 
   ngOnInit() {
+    let loadedId: string | null = null;
     this.route.queryParamMap.subscribe((params) => {
       const id = params.get('id');
       const tab = params.get('tab');
       if (tab) {
         this.activeTab = tab;
       }
-      if (id) {
+      if (id && id !== loadedId) {
+        loadedId = id;
         this.loadMarcheDetails(id);
       }
       this.cd.detectChanges();

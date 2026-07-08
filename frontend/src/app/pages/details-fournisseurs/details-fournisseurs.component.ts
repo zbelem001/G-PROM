@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
 import { MenuComponent } from '../../components/menu/menu.component';
@@ -52,10 +52,15 @@ export class DetailsFournisseursComponent implements OnInit {
   offres: OffreCandidature[] = [];
   legalDocuments: LegalDocument[] = [];
 
-  constructor(private cd: ChangeDetectorRef, private route: ActivatedRoute) {}
+  constructor(private cd: ChangeDetectorRef, private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit() {
-    const idParam = this.route.snapshot.queryParamMap.get('id');
+    const snapshot = this.route.snapshot.queryParamMap;
+    const idParam = snapshot.get('id');
+    const tabParam = snapshot.get('tab');
+    if (tabParam) {
+      this.activeTab = tabParam;
+    }
     this.loadFournisseur(idParam);
   }
 
@@ -181,5 +186,11 @@ export class DetailsFournisseursComponent implements OnInit {
 
   setActiveTab(tab: string) {
     this.activeTab = tab;
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { tab },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
   }
 }
