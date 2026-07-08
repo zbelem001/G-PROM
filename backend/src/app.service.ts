@@ -857,10 +857,29 @@ export class AppService {
   }
 
   updateDocument(numbLot: string, changes: Partial<Document>): Document {
-    const document = this.getDocument(numbLot);
-    Object.assign(document, changes);
+    const existing = this.documents.find((item) => item.numbLot === numbLot);
+    if (existing) {
+      Object.assign(existing, changes);
+      this.saveData();
+      return existing;
+    }
+    // Document doesn't exist yet — create it
+    const newDocument: Document = {
+      numbLot,
+      PV_ouverture: changes.PV_ouverture ?? undefined,
+      RapportAnalyse: changes.RapportAnalyse ?? undefined,
+      PV_attribution: changes.PV_attribution ?? undefined,
+      Notification: changes.Notification ?? undefined,
+      Contrat: changes.Contrat ?? undefined,
+      FED: changes.FED ?? undefined,
+      BonCommande: changes.BonCommande ?? undefined,
+      Avenant: changes.Avenant ?? undefined,
+      OrdreService: changes.OrdreService ?? undefined,
+      PV_reception_tech: changes.PV_reception_tech ?? undefined,
+    };
+    this.documents.push(newDocument);
     this.saveData();
-    return document;
+    return newDocument;
   }
 
   deleteDocument(numbLot: string): void {
