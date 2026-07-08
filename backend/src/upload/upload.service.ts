@@ -14,7 +14,7 @@ export class UploadService {
   uploadFile(file: Express.Multer.File): Promise<string> {
     return new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
-        { folder: 'gprom/documents', resource_type: 'auto' },
+        { folder: 'gprom/documents', resource_type: 'raw' },
         (error, result: UploadApiResponse | undefined) => {
           if (error) {
             reject(new InternalServerErrorException(error.message));

@@ -208,6 +208,25 @@
       "Statut": "En cours"
     }
   ],
-  "avenants": [],
-  "documents": []
+  "avenants": [
+    {
+      "idAvenant": 1,
+      "idSoumissionAttribuee": "SM-2026-8873",
+      "numbAvenant": 1,
+      "MontantAvenant": 50000000,
+      "DateProrogation": "2026-10-23"
+    },
+    {
+      "idAvenant": 2,
+      "idSoumissionAttribuee": "SM-2026-8873",
+      "numbAvenant": 1,
+      "MontantAvenant": 500000
+    }
+  ],
+  "documents": [
+    {
+      "numbLot": "Lot 01",
+      "RapportAnalyse": "https://res.cloudinary.com/dcx5upsxl/raw/upload/v1783506998/gprom/documents/jco1kdkxg3blfpxy9skm"
+    }
+  ]
 }

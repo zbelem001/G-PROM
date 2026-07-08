@@ -111,6 +111,7 @@ export interface Avenant {
   numbAvenant: number;
   MontantAvenant?: number;
   DateProrogation?: string;
+  Devise?: 'XOF' | 'EUR' | 'USD';
 }
 
 export interface Document {
@@ -796,6 +797,7 @@ export class AppService {
       numbAvenant: avenant.numbAvenant,
       MontantAvenant: avenant.MontantAvenant,
       DateProrogation: avenant.DateProrogation,
+      Devise: avenant.Devise,
     };
     this.avenants.push(newAvenant);
     this.saveData();

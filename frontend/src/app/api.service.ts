@@ -471,6 +471,7 @@ export interface ApiAvenant {
   numbAvenant: number;
   MontantAvenant?: number;
   DateProrogation?: string;
+  Devise?: 'XOF' | 'EUR' | 'USD';
 }
 
 function normalizeAvenantResponse(raw: any): ApiAvenant {
@@ -480,6 +481,7 @@ function normalizeAvenantResponse(raw: any): ApiAvenant {
     numbAvenant: Number(raw.numbAvenant ?? raw.numbavenant ?? 0),
     MontantAvenant: raw.MontantAvenant ?? raw.montantavenant ?? undefined,
     DateProrogation: raw.DateProrogation ?? raw.dateprorogation ?? undefined,
+    Devise: raw.Devise ?? raw.devise ?? undefined,
   };
 }
 

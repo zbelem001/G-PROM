@@ -324,11 +324,12 @@
                   <!-- Ligne principale : lien + bouton upload -->
                   <div class="flex items-center gap-2">
                     <!-- Lien si document présent -->
-                    <a *ngIf="getDocValue(docType.key)" [href]="getDocValue(docType.key)" target="_blank" rel="noopener noreferrer"
-                       class="text-xs text-[#039CD3] underline truncate flex-1 min-w-0 flex items-center gap-1">
+                    <button *ngIf="getDocValue(docType.key)" type="button"
+                       (click)="openDocument(getDocValue(docType.key))"
+                       class="text-xs text-[#039CD3] underline truncate flex-1 min-w-0 flex items-center gap-1 hover:text-[#0277a8] transition-colors">
                       <span class="material-symbols-outlined text-[14px] shrink-0">open_in_new</span>
                       <span class="truncate">Ouvrir le document</span>
-                    </a>
+                    </button>
                     <span *ngIf="!getDocValue(docType.key)" class="text-xs text-on-surface-variant flex-1">Aucun document</span>
                     <!-- Bouton upload (label clique sur l'input caché) -->
                     <label *ngIf="uploadingDocField !== docType.key" [for]="'file_' + docType.key"
@@ -700,11 +701,12 @@
                   </span>
                 </div>
                 <div class="flex items-center gap-2">
-                  <a *ngIf="getAnalyseDocUrl(analyse.numbLot)" [href]="getAnalyseDocUrl(analyse.numbLot)" target="_blank" rel="noopener noreferrer"
-                     class="text-xs text-[#039CD3] underline truncate flex-1 min-w-0 flex items-center gap-1">
+                  <button *ngIf="getAnalyseDocUrl(analyse.numbLot)" type="button"
+                     (click)="openDocument(getAnalyseDocUrl(analyse.numbLot))"
+                     class="text-xs text-[#039CD3] underline truncate flex-1 min-w-0 flex items-center gap-1 hover:text-[#0277a8] transition-colors">
                     <span class="material-symbols-outlined text-[14px] shrink-0">open_in_new</span>
                     Ouvrir le rapport
-                  </a>
+                  </button>
                   <span *ngIf="!getAnalyseDocUrl(analyse.numbLot)" class="text-xs text-on-surface-variant flex-1">Aucun rapport téléversé</span>
                   <label *ngIf="uploadingAnalyseDocLot !== analyse.numbLot" [for]="'analyseDoc_' + analyse.numbLot"
                          class="cursor-pointer text-xs font-medium text-white bg-[#76d3c8] hover:bg-[#43a399] px-3 py-1.5 rounded-[8px] transition-colors shrink-0 whitespace-nowrap select-none"
@@ -837,7 +839,7 @@
                       <td class="px-6 py-4 font-medium text-[#1a2e44]">Avenant n°{{ avn.numbAvenant }}</td>
                       <td class="px-6 py-4 text-on-surface-variant">{{ getSoumissionLabel(avn.idSoumissionAttribuee) }}</td>
                       <td class="px-6 py-4 text-right font-headline font-semibold text-[#1a2e44]">
-                        {{ avn.MontantAvenant ? (avn.MontantAvenant | number) + ' ' + (market?.Devise || 'XOF') : '—' }}
+                        {{ avn.MontantAvenant ? (avn.MontantAvenant | number) + ' ' + (avn.Devise || market?.Devise || 'XOF') : '—' }}
                       </td>
                       <td class="px-6 py-4">{{ avn.DateProrogation ? (avn.DateProrogation | date:'dd MMM yyyy') : '—' }}</td>
                       <td class="px-6 py-4 text-right">
@@ -1235,8 +1237,15 @@
                   <input id="avenantNumero" name="avenantNumero" [(ngModel)]="newAvenantNumb" placeholder="Ex: 1" type="number" min="1" class="w-full bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 transition-all shadow-sm" />
                 </div>
                 <div class="flex flex-col gap-1.5">
-                  <label class="text-xs font-semibold text-on-surface-variant ml-1" for="avenantMontant">Montant ({{ market?.Devise || 'XOF' }})</label>
-                  <input id="avenantMontant" name="avenantMontant" [(ngModel)]="newAvenantMontant" placeholder="Ex: 5000000" type="number" class="w-full bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 transition-all shadow-sm" />
+                  <label class="text-xs font-semibold text-on-surface-variant ml-1" for="avenantMontant">Montant</label>
+                  <div class="flex rounded-[10px] overflow-hidden border border-outline-variant/15 bg-surface-container-highest shadow-sm">
+                    <input id="avenantMontant" name="avenantMontant" [(ngModel)]="newAvenantMontant" placeholder="0" type="number" class="flex-1 bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0" />
+                    <select name="avenantDevise" [(ngModel)]="newAvenantDevise" style="background-image:none" class="border-none border-l border-outline-variant/20 bg-surface-container-high text-xs font-semibold text-on-surface-variant px-2 py-3 focus:ring-0 appearance-none cursor-pointer">
+                      <option value="XOF">XOF</option>
+                      <option value="EUR">EUR</option>
+                      <option value="USD">USD</option>
+                    </select>
+                  </div>
                 </div>
               </div>
               <div class="flex flex-col gap-1.5">

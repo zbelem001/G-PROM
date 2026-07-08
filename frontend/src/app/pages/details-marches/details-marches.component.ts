@@ -212,6 +212,7 @@ export class DetailsMarchesComponent implements OnInit {
   newAvenantSoumissionId = '';
   newAvenantNumb = 1;
   newAvenantMontant = 0;
+  newAvenantDevise = 'XOF';
   newAvenantDateProrogation = '';
   showStatusDrawer = false;
   showLotModal = false;
@@ -780,6 +781,16 @@ export class DetailsMarchesComponent implements OnInit {
     return doc?.RapportAnalyse || undefined;
   }
 
+  openDocument(url: string | undefined): void {
+    if (!url) return;
+    // Normalise Cloudinary image URLs to raw for proper file serving
+    const rawUrl = url.replace('/image/upload/', '/raw/upload/');
+    if (typeof window !== 'undefined') {
+      window.open(rawUrl, '_blank', 'noopener,noreferrer');
+    }
+  }
+
+
   async onAnalyseDocFileSelected(event: Event, numbLot: string) {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
@@ -877,12 +888,14 @@ export class DetailsMarchesComponent implements OnInit {
         this.newAvenantSoumissionId = avenant.idSoumissionAttribuee;
         this.newAvenantNumb = avenant.numbAvenant;
         this.newAvenantMontant = avenant.MontantAvenant ?? 0;
+        this.newAvenantDevise = avenant.Devise ?? this.market?.Devise ?? 'XOF';
         this.newAvenantDateProrogation = avenant.DateProrogation ?? '';
       } else {
         this.editingAvenant = null;
         this.newAvenantSoumissionId = this.attributaires[0]?.idSoumissionAttribuee ?? '';
         this.newAvenantNumb = (this.avenants.length > 0 ? Math.max(...this.avenants.map((a) => a.numbAvenant)) + 1 : 1);
         this.newAvenantMontant = 0;
+        this.newAvenantDevise = this.market?.Devise ?? 'XOF';
         this.newAvenantDateProrogation = '';
       }
     } else {
@@ -900,6 +913,7 @@ export class DetailsMarchesComponent implements OnInit {
           MontantAvenant: this.newAvenantMontant || undefined,
           DateProrogation: this.newAvenantDateProrogation || undefined,
           numbAvenant: this.newAvenantNumb,
+          Devise: this.newAvenantDevise as 'XOF' | 'EUR' | 'USD' || undefined,
         });
         const idx = this.avenants.findIndex((a) => a.idAvenant === this.editingAvenant!.idAvenant);
         if (idx >= 0) this.avenants[idx] = updated;
@@ -909,15 +923,15 @@ export class DetailsMarchesComponent implements OnInit {
           numbAvenant: this.newAvenantNumb,
           MontantAvenant: this.newAvenantMontant || undefined,
           DateProrogation: this.newAvenantDateProrogation || undefined,
+          Devise: this.newAvenantDevise as 'XOF' | 'EUR' | 'USD' || undefined,
         });
         this.avenants.push(created);
       }
-      this.isSavingAvenant = false;
       this.showAvenantDrawer = false;
       this.editingAvenant = null;
-      this.cd.detectChanges();
     } catch (error: any) {
       this.avenantErrorMessage = error?.message || "Impossible d'enregistrer l'avenant.";
+    } finally {
       this.isSavingAvenant = false;
       this.cd.detectChanges();
     }
@@ -957,7 +971,7 @@ export class DetailsMarchesComponent implements OnInit {
   getDocValue(field: string): string | undefined {
     if (!this.selectedLotDocument) return undefined;
     const val = (this.selectedLotDocument as any)[field];
-    return val || undefined;
+    return typeof val === 'string' && val.startsWith('http') ? val : undefined;
   }
 
   startEditDoc(field: string, currentValue?: string) {
