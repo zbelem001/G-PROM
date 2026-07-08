@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -120,7 +120,7 @@ interface Consultation {
   styleUrls: ['./details-marches.component.css'],
 })
 export class DetailsMarchesComponent implements OnInit {
-  constructor(private route: ActivatedRoute, private router: Router, private cd: ChangeDetectorRef) {}
+  constructor(private route: ActivatedRoute, private router: Router, private cd: ChangeDetectorRef, private ngZone: NgZone) {}
   activeTab = 'Informations générales';
   loadingMarket = false;
   errorMessage = '';
@@ -130,7 +130,6 @@ export class DetailsMarchesComponent implements OnInit {
   submissions: Submission[] = [];
   lotCount = 0;
   submissionCount = 0;
-  averageSubmissionAmount = 0;
   latestSubmission: { lot: string; supplier: string; date: string } | null = null;
   showAddLot = false;
   editingLot: MarketLot | null = null;
@@ -229,79 +228,7 @@ export class DetailsMarchesComponent implements OnInit {
   sctMemberErrorMessage = '';
 
 
-  consultations: Consultation[] = [
-    {
-      lotId: '',
-      lot: 'Lot 1',
-      date: '12 Oct 2023',
-      fournisseur: {
-        id: 'prov-1',
-        nom: 'Tech Solutions S.A.',
-        domaine: 'Équipement Informatique',
-        adresse: '01 Avenue de la Technologie',
-        ville: 'Ouagadougou',
-        pays: 'Burkina Faso',
-        email: 'contact@techsolutions.bf',
-        telephone1: '+226 25 00 00 01',
-        telephone2: '+226 25 00 00 02',
-        contact: 'A. Traoré',
-        fonction: 'Directeur des achats',
-        ifu: '123456789',
-        rccm: 'BF-OUA-2023-B-12345',
-        statut: 'Actif',
-        documents: [
-          { id: 'doc-p1', nom: 'Offre_TechSolutions.pdf', type: 'Offre', date: '12 Oct 2023', statut: 'Soumis' },
-          { id: 'doc-p2', nom: 'RCCM_TechSolutions.pdf', type: 'Document légal', date: '11 Oct 2023', statut: 'Validé' },
-        ],
-      },
-    },
-    {
-      lotId: '',
-      lot: 'Lot 1',
-      date: '12 Oct 2023',
-      fournisseur: {
-        id: 'prov-2',
-        nom: 'Innova Systems',
-        domaine: 'Équipement Informatique',
-        adresse: "15 Rue de l'Innovation",
-        ville: 'Bobo-Dioulasso',
-        pays: 'Burkina Faso',
-        email: 'info@innovasystems.bf',
-        telephone1: '+226 25 00 01 23',
-        contact: 'M. Ouédraogo',
-        fonction: 'Chef de projet',
-        ifu: '987654321',
-        rccm: 'BF-BOB-2023-B-54321',
-        statut: 'Actif',
-        documents: [
-          { id: 'doc-p3', nom: 'Fiche_Technique_Innova.pdf', type: 'Fiche technique', date: '10 Oct 2023', statut: 'Validé' },
-        ],
-      },
-    },
-    {
-      lotId: '',
-      lot: 'Lot 2',
-      date: '14 Oct 2023',
-      fournisseur: {
-        id: 'prov-3',
-        nom: 'Bureau Plus',
-        domaine: 'Aménagement Espace',
-        adresse: '22 Boulevard du Bureau',
-        ville: 'Ouagadougou',
-        pays: 'Burkina Faso',
-        email: 'contact@bureauplus.bf',
-        telephone1: '+226 25 00 02 34',
-        contact: 'N. Kaboré',
-        fonction: 'Responsable commercial',
-        ifu: '456789123',
-        rccm: 'BF-OUA-2023-B-98765',
-        statut: 'Actif',
-        documents: [
-          { id: 'doc-p4', nom: 'Catalogue_BureauPlus.pdf', type: 'Catalogue', date: '09 Oct 2023', statut: 'Validé' },
-        ],
-      },
-    },
-  ];
+  consultations: Consultation[] = [];
 
 
   setActiveTab(tab: string) {
@@ -458,8 +385,8 @@ export class DetailsMarchesComponent implements OnInit {
     }
 
     // Vérifier si cette consultation existe déjà localement pour éviter l'erreur 500
-    const exists = this.consultations.some(c => 
-      c.lot === this.newConsultationLot && 
+    const exists = this.consultations.some(c =>
+      c.lotId === this.newConsultationLot &&
       Number(c.fournisseur.id) === fournisseurId
     );
 
@@ -867,20 +794,26 @@ export class DetailsMarchesComponent implements OnInit {
       if (existing) {
         const { idSoumissionAttribuee, ...update } = payload;
         const updated = await updateAttributaire(this.newAttributionId, update);
-        const idx = this.attributaires.findIndex((a) => a.idSoumissionAttribuee === this.newAttributionId);
-        if (idx >= 0) this.attributaires[idx] = updated;
+        this.ngZone.run(() => {
+          const idx = this.attributaires.findIndex((a) => a.idSoumissionAttribuee === this.newAttributionId);
+          if (idx >= 0) this.attributaires[idx] = updated;
+          this.isSavingAttribution = false;
+          this.showAttributionDrawer = false;
+        });
       } else {
         const created = await createAttributaire(payload);
-        this.attributaires.push(created);
+        this.ngZone.run(() => {
+          this.attributaires.unshift(created);
+          this.isSavingAttribution = false;
+          this.showAttributionDrawer = false;
+        });
       }
-      this.isSavingAttribution = false;
-      this.showAttributionDrawer = false;
-      this.cd.detectChanges();
     } catch (error: any) {
-      this.attributionErrorMessage = error?.message || "Impossible d'enregistrer l'attribution.";
-      console.error('[DetailsMarches] saveAttribution failed', error);
-      this.isSavingAttribution = false;
-      this.cd.detectChanges();
+      this.ngZone.run(() => {
+        this.attributionErrorMessage = error?.message || "Impossible d'enregistrer l'attribution.";
+        console.error('[DetailsMarches] saveAttribution failed', error);
+        this.isSavingAttribution = false;
+      });
     }
   }
 
@@ -921,8 +854,13 @@ export class DetailsMarchesComponent implements OnInit {
           numbAvenant: this.newAvenantNumb,
           Devise: this.newAvenantDevise as 'XOF' | 'EUR' | 'USD' || undefined,
         });
-        const idx = this.avenants.findIndex((a) => a.idAvenant === this.editingAvenant!.idAvenant);
-        if (idx >= 0) this.avenants[idx] = updated;
+        this.ngZone.run(() => {
+          const idx = this.avenants.findIndex((a) => a.idAvenant === this.editingAvenant!.idAvenant);
+          if (idx >= 0) this.avenants[idx] = updated;
+          this.showAvenantDrawer = false;
+          this.editingAvenant = null;
+          this.isSavingAvenant = false;
+        });
       } else {
         const created = await createAvenant({
           idSoumissionAttribuee: this.newAvenantSoumissionId,
@@ -931,15 +869,19 @@ export class DetailsMarchesComponent implements OnInit {
           DateProrogation: this.newAvenantDateProrogation || undefined,
           Devise: this.newAvenantDevise as 'XOF' | 'EUR' | 'USD' || undefined,
         });
-        this.avenants.push(created);
+        this.ngZone.run(() => {
+          this.avenants.push(created);
+          this.avenants.sort((a, b) => b.numbAvenant - a.numbAvenant);
+          this.showAvenantDrawer = false;
+          this.editingAvenant = null;
+          this.isSavingAvenant = false;
+        });
       }
-      this.showAvenantDrawer = false;
-      this.editingAvenant = null;
     } catch (error: any) {
-      this.avenantErrorMessage = error?.message || "Impossible d'enregistrer l'avenant.";
-    } finally {
-      this.isSavingAvenant = false;
-      this.cd.detectChanges();
+      this.ngZone.run(() => {
+        this.avenantErrorMessage = error?.message || "Impossible d'enregistrer l'avenant.";
+        this.isSavingAvenant = false;
+      });
     }
   }
 
@@ -947,8 +889,9 @@ export class DetailsMarchesComponent implements OnInit {
     if (!confirm(`Voulez-vous vraiment supprimer cet avenant ?`)) return;
     try {
       await deleteAvenant(idAvenant);
-      this.avenants = this.avenants.filter((a) => a.idAvenant !== idAvenant);
-      this.cd.detectChanges();
+      this.ngZone.run(() => {
+        this.avenants = this.avenants.filter((a) => a.idAvenant !== idAvenant);
+      });
     } catch (error: any) {
       alert(error?.message || "Impossible de supprimer l'avenant.");
     }
@@ -1106,24 +1049,33 @@ export class DetailsMarchesComponent implements OnInit {
       this.fournisseurs = fournisseurs;
       const filteredLots = lots.filter((lot) => String(lot.numbMarche) === String(numbMarche));
       const filteredLotIds = new Set(filteredLots.map((l) => l.numbLot));
-      this.analyses = allAnalyses.filter((a) => filteredLotIds.has(a.numbLot));
+      this.analyses = allAnalyses.filter((a) => filteredLotIds.has(a.numbLot)).reverse();
       this.documents = allDocuments.filter((d) => filteredLotIds.has(d.numbLot));
       const marketSubmissionIds = new Set(
         submissions
           .filter((s) => filteredLots.some((l) => String(l.numbLot) === String(s.numbLot)))
           .map((s) => s.idSoumission)
       );
-      this.attributaires = allAttributaires.filter((a) => marketSubmissionIds.has(a.idSoumissionAttribuee));
-      this.avenants = allAvenants.filter((av) => marketSubmissionIds.has(av.idSoumissionAttribuee));
-      this.lots = filteredLots.map((rawLot) => ({
-        id: rawLot.numbLot,
-        nomLot: rawLot.nomLot,
-        description: rawLot.Description || '',
-        contrat: rawLot.numbContrat ?? '—',
-      }));
+      this.attributaires = allAttributaires.filter((a) => marketSubmissionIds.has(a.idSoumissionAttribuee)).reverse();
+      this.avenants = allAvenants
+        .filter((av) => marketSubmissionIds.has(av.idSoumissionAttribuee))
+        .sort((a, b) => b.numbAvenant - a.numbAvenant);
+      this.lots = filteredLots
+        .map((rawLot) => ({
+          id: rawLot.numbLot,
+          nomLot: rawLot.nomLot,
+          description: rawLot.Description || '',
+          contrat: rawLot.numbContrat ?? '—',
+        }))
+        .sort((a, b) => {
+          const na = Number(/(\d+)/.exec(a.nomLot)?.[1] ?? 0);
+          const nb = Number(/(\d+)/.exec(b.nomLot)?.[1] ?? 0);
+          return nb - na;
+        });
 
       this.consultations = consultations
         .filter((c) => filteredLots.some((lot) => lot.numbLot === c.numbLot))
+        .sort((a, b) => new Date(b.DateConsultation ?? 0).getTime() - new Date(a.DateConsultation ?? 0).getTime())
         .map((c) => {
           const f = fournisseurs.find((fourn) => fourn.idFournisseur === c.idFournisseur);
           const matchedLot = filteredLots.find((lot) => lot.numbLot === c.numbLot);
@@ -1155,6 +1107,7 @@ export class DetailsMarchesComponent implements OnInit {
           (submission) =>
             filteredLots.some((lot) => String(lot.numbLot) === String(submission.numbLot))
         )
+        .sort((a, b) => new Date(b.DateDepot ?? 0).getTime() - new Date(a.DateDepot ?? 0).getTime())
         .map((submission) => {
           const fournisseur = fournisseurs.find((f) => f.idFournisseur === submission.idFournisseur);
           const matchedLot = filteredLots.find((lot) => String(lot.numbLot) === String(submission.numbLot));
@@ -1195,36 +1148,15 @@ export class DetailsMarchesComponent implements OnInit {
       this.lotCount = this.lots.length;
       this.submissionCount = this.submissions.length;
 
-      // Calcul des statistiques pour les soumissions
       if (this.submissions.length > 0) {
-        const amounts = this.submissions
-          .map(s => {
-            const raw = s.montant.replace(/[^0-9]/g, '');
-            return raw ? Number(raw) : 0;
-          })
-          .filter(a => a > 0);
-        
-        if (amounts.length > 0) {
-          const total = amounts.reduce((acc, val) => acc + val, 0);
-          this.averageSubmissionAmount = Math.round(total / amounts.length);
-        } else {
-          this.averageSubmissionAmount = 0;
-        }
-
-        // Trouver la soumission la plus récente par date
-        const sorted = [...this.submissions].sort((a, b) => {
-          return new Date(b.dateDepot).getTime() - new Date(a.dateDepot).getTime();
-        });
+        const sorted = [...this.submissions].sort((a, b) =>
+          new Date(b.dateDepot).getTime() - new Date(a.dateDepot).getTime()
+        );
         const latest = sorted[0];
-        if (latest) {
-          this.latestSubmission = {
-            lot: latest.lot,
-            supplier: latest.fournisseur.nom,
-            date: latest.dateDepot
-          };
-        }
+        this.latestSubmission = latest
+          ? { lot: latest.lot, supplier: latest.fournisseur.nom, date: latest.dateDepot }
+          : null;
       } else {
-        this.averageSubmissionAmount = 0;
         this.latestSubmission = null;
       }
 

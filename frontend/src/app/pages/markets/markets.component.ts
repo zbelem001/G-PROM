@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -54,7 +54,7 @@ export class MarketsComponent implements OnInit {
   pageSize = 10;
   currentPage = 1;
 
-  constructor(private cd: ChangeDetectorRef, private router: Router) {}
+  constructor(private cd: ChangeDetectorRef, private router: Router, private ngZone: NgZone) {}
 
   private getTodayDate(): string {
     return new Date().toISOString().slice(0, 10);
@@ -144,14 +144,17 @@ export class MarketsComponent implements OnInit {
     this.marches = [];
     try {
       const raw = await getMarches();
-      this.marches = raw.sort((a, b) =>
-        new Date(b.DateEnregistrement ?? 0).getTime() - new Date(a.DateEnregistrement ?? 0).getTime()
-      );
+      this.ngZone.run(() => {
+        this.marches = raw.sort((a, b) =>
+          new Date(b.DateEnregistrement ?? 0).getTime() - new Date(a.DateEnregistrement ?? 0).getTime()
+        );
+        this.loading = false;
+      });
     } catch (error: any) {
-      this.errorMessage = error?.message || 'Impossible de charger les marchés.';
-    } finally {
-      this.loading = false;
-      this.cd.detectChanges();
+      this.ngZone.run(() => {
+        this.errorMessage = error?.message || 'Impossible de charger les marchés.';
+        this.loading = false;
+      });
     }
   }
 
@@ -213,17 +216,20 @@ export class MarketsComponent implements OnInit {
     this.submitting = true;
     try {
       const added = await createMarche(this.newMarche);
-      if (Array.isArray(added) && added.length > 0) {
-        this.marches.unshift(added[0]);
-        this.currentPage = 1;
-      }
-      this.showAddMarket = false;
-      this.newMarche = this.defaultNewMarche();
+      this.ngZone.run(() => {
+        if (Array.isArray(added) && added.length > 0) {
+          this.marches.unshift(added[0]);
+          this.currentPage = 1;
+        }
+        this.showAddMarket = false;
+        this.newMarche = this.defaultNewMarche();
+        this.submitting = false;
+      });
     } catch (error: any) {
-      this.errorMessage = error.message || 'Impossible de créer le marché.';
-    } finally {
-      this.submitting = false;
-      this.cd.detectChanges();
+      this.ngZone.run(() => {
+        this.errorMessage = error.message || 'Impossible de créer le marché.';
+        this.submitting = false;
+      });
     }
   }
 
@@ -249,15 +255,18 @@ export class MarketsComponent implements OnInit {
     this.isUpdating = true;
     try {
       const updated = await updateMarche(this.editingMarche.numbMarche, this.editingMarche as Record<string, unknown>);
-      const idx = this.marches.findIndex((m) => m.numbMarche === updated.numbMarche);
-      if (idx !== -1) this.marches[idx] = updated;
-      this.showEditMarket = false;
-      this.editingMarche = {};
+      this.ngZone.run(() => {
+        const idx = this.marches.findIndex((m) => m.numbMarche === updated.numbMarche);
+        if (idx !== -1) this.marches[idx] = updated;
+        this.showEditMarket = false;
+        this.editingMarche = {};
+        this.isUpdating = false;
+      });
     } catch (error: any) {
-      this.errorMessage = error?.message || 'Impossible de modifier le marché.';
-    } finally {
-      this.isUpdating = false;
-      this.cd.detectChanges();
+      this.ngZone.run(() => {
+        this.errorMessage = error?.message || 'Impossible de modifier le marché.';
+        this.isUpdating = false;
+      });
     }
   }
 
@@ -278,17 +287,19 @@ export class MarketsComponent implements OnInit {
     if (!this.confirmDeleteMarcheId) return;
     const id = this.confirmDeleteMarcheId;
     this.isDeleting = true;
-    this.cd.detectChanges();
     try {
       await deleteMarche(id);
-      this.marches = this.marches.filter((m) => m.numbMarche !== id);
-      this.confirmDeleteMarcheId = null;
-      if (this.currentPage > this.totalPages) this.currentPage = this.totalPages;
+      this.ngZone.run(() => {
+        this.marches = this.marches.filter((m) => m.numbMarche !== id);
+        this.confirmDeleteMarcheId = null;
+        if (this.currentPage > this.totalPages) this.currentPage = this.totalPages;
+        this.isDeleting = false;
+      });
     } catch (error: any) {
-      this.errorMessage = error?.message || 'Impossible de supprimer le marché.';
-    } finally {
-      this.isDeleting = false;
-      this.cd.detectChanges();
+      this.ngZone.run(() => {
+        this.errorMessage = error?.message || 'Impossible de supprimer le marché.';
+        this.isDeleting = false;
+      });
     }
   }
 }
