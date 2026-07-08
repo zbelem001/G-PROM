@@ -256,6 +256,10 @@ export async function updateMarche(numbMarche: string, marche: Record<string, un
   return normalizeMarcheResponse(response);
 }
 
+export async function deleteMarche(numbMarche: string): Promise<void> {
+  await request(`/marches/${encodeURIComponent(numbMarche)}`, { method: 'DELETE' });
+}
+
 export async function getLots(): Promise<Lot[]> {
   const data = await request<any[]>('/lots');
   return data.map(normalizeLotResponse);

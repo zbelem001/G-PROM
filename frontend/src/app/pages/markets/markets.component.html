@@ -1,4 +1,4 @@
-<div class="bg-surface font-body text-on-surface min-h-screen flex overflow-hidden">
+<div class="bg-surface font-body text-on-surface min-h-screen flex overflow-hidden" (click)="closeDropdowns()">
   <app-menu></app-menu>
   <main class="flex-1 ml-[240px] flex flex-col h-screen overflow-y-auto bg-surface relative">
     <app-header></app-header>
@@ -16,24 +16,35 @@
       <div class="bg-surface-container-low rounded-[16px] p-2 mb-6 flex flex-col lg:flex-row gap-2">
         <div class="flex-1 relative min-w-[250px]">
           <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
-          <input class="w-full bg-transparent border-none rounded-[12px] pl-12 pr-4 py-3.5 text-sm focus:ring-1 focus:ring-outline-variant/20 focus:bg-surface-container-lowest transition-all placeholder:text-on-surface-variant/70 text-on-surface font-medium" placeholder="Rechercher par N°, Description..." type="text" />
+          <input [(ngModel)]="searchQuery" (ngModelChange)="onSearch()" class="w-full bg-transparent border-none rounded-[12px] pl-12 pr-4 py-3.5 text-sm focus:ring-1 focus:ring-outline-variant/20 focus:bg-surface-container-lowest transition-all placeholder:text-on-surface-variant/70 text-on-surface font-medium" placeholder="Rechercher par N°, Description..." type="text" />
         </div>
         <div class="hidden lg:block w-px bg-outline-variant/20 my-2"></div>
         <div class="flex flex-wrap lg:flex-nowrap gap-2 items-center px-2">
-          <button class="flex items-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-medium text-on-surface hover:bg-surface-container-highest transition-colors">
-            <span class="text-on-surface-variant">Statut:</span>
-            <span class="font-semibold">Tous</span>
-            <span class="material-symbols-outlined text-[18px] text-on-surface-variant">expand_more</span>
-          </button>
-          <button class="flex items-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-medium text-on-surface hover:bg-surface-container-highest transition-colors">
-            <span class="text-on-surface-variant">Financement:</span>
-            <span class="font-semibold">Tous</span>
-            <span class="material-symbols-outlined text-[18px] text-on-surface-variant">expand_more</span>
-          </button>
-          <button class="flex items-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-medium text-on-surface hover:bg-surface-container-highest transition-colors">
-            <span class="material-symbols-outlined text-[18px] text-on-surface-variant">calendar_today</span>
-            <span class="font-semibold">Date</span>
-          </button>
+          <!-- Filtre Statut -->
+          <div class="relative">
+            <button (click)="toggleStatutDropdown($event)" class="flex items-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-medium text-on-surface hover:bg-surface-container-highest transition-colors" [class.bg-surface-container-highest]="filterStatut">
+              <span class="text-on-surface-variant">Statut:</span>
+              <span class="font-semibold">{{ filterStatut || 'Tous' }}</span>
+              <span class="material-symbols-outlined text-[18px] text-on-surface-variant">{{ showStatutDropdown ? 'expand_less' : 'expand_more' }}</span>
+            </button>
+            <div *ngIf="showStatutDropdown" class="absolute top-full left-0 mt-1 z-20 bg-white rounded-[12px] shadow-[0_8px_24px_rgba(26,46,68,0.12)] border border-outline-variant/10 min-w-[160px] overflow-hidden">
+              <button (click)="setFilterStatut('')" class="w-full text-left px-4 py-2.5 text-sm hover:bg-surface-container-low transition-colors" [class.font-bold]="!filterStatut">Tous</button>
+              <button *ngFor="let s of uniqueStatuts" (click)="setFilterStatut(s)" class="w-full text-left px-4 py-2.5 text-sm hover:bg-surface-container-low transition-colors" [class.font-bold]="filterStatut === s">{{ s }}</button>
+            </div>
+          </div>
+          <!-- Filtre Financement -->
+          <div class="relative">
+            <button (click)="toggleFinancementDropdown($event)" class="flex items-center gap-2 px-4 py-2.5 rounded-[10px] text-sm font-medium text-on-surface hover:bg-surface-container-highest transition-colors" [class.bg-surface-container-highest]="filterFinancement">
+              <span class="text-on-surface-variant">Financement:</span>
+              <span class="font-semibold">{{ filterFinancement || 'Tous' }}</span>
+              <span class="material-symbols-outlined text-[18px] text-on-surface-variant">{{ showFinancementDropdown ? 'expand_less' : 'expand_more' }}</span>
+            </button>
+            <div *ngIf="showFinancementDropdown" class="absolute top-full left-0 mt-1 z-20 bg-white rounded-[12px] shadow-[0_8px_24px_rgba(26,46,68,0.12)] border border-outline-variant/10 min-w-[180px] overflow-hidden">
+              <button (click)="setFilterFinancement('')" class="w-full text-left px-4 py-2.5 text-sm hover:bg-surface-container-low transition-colors" [class.font-bold]="!filterFinancement">Tous</button>
+              <button *ngFor="let f of uniqueFinancements" (click)="setFilterFinancement(f)" class="w-full text-left px-4 py-2.5 text-sm hover:bg-surface-container-low transition-colors" [class.font-bold]="filterFinancement === f">{{ f }}</button>
+              <p *ngIf="uniqueFinancements.length === 0" class="px-4 py-2.5 text-sm text-on-surface-variant">Aucune donnée</p>
+            </div>
+          </div>
           <button class="ml-auto lg:ml-2 flex items-center justify-center w-10 h-10 rounded-[10px] text-secondary hover:bg-surface-container-high transition-colors bg-white shadow-sm border border-outline-variant/10">
             <span class="material-symbols-outlined text-[20px]">filter_list</span>
           </button>
@@ -64,7 +75,7 @@
               <tr *ngIf="!loading && !errorMessage && marches.length === 0">
                 <td colspan="8" class="px-6 py-8 text-center text-on-surface-variant">Aucun marché trouvé. Créez un nouveau marché pour commencer.</td>
               </tr>
-              <tr *ngFor="let marche of marches" [routerLink]="['/marches/details']" [queryParams]="{ tab: 'Informations générales', id: marche.numbMarche }" class="hover:bg-[#f0fdfb] transition-colors group cursor-pointer">
+              <tr *ngFor="let marche of paginatedMarches" [routerLink]="['/marches/details']" [queryParams]="{ tab: 'Informations générales', id: marche.numbMarche }" class="hover:bg-[#f0fdfb] transition-colors group cursor-pointer">
                 <td class="px-6 py-4 whitespace-nowrap font-headline font-bold text-secondary">{{ marche.numbMarche }}</td>
                 <td class="px-6 py-4 text-on-surface-variant leading-relaxed">{{ marche.Description }}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">
@@ -79,15 +90,18 @@
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="inline-flex items-center px-2.5 py-1 rounded-[6px] text-xs font-bold bg-[#76d3c8]/15 text-[#006a62]">{{ marche.Statut || 'En cours' }}</span>
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-[6px] text-xs font-bold" [ngClass]="getStatutClass(marche.Statut)">{{ marche.Statut || 'En cours' }}</span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">{{ marche.DateEnregistrement || '—' }}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-right">
-                  <button [routerLink]="['/marches/details']" [queryParams]="{ tab: 'Informations générales', id: marche.numbMarche }" class="p-1.5 text-outline hover:text-primary hover:bg-primary-fixed/20 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 mr-1">
+                  <button [routerLink]="['/marches/details']" [queryParams]="{ tab: 'Informations générales', id: marche.numbMarche }" (click)="$event.stopPropagation()" class="p-1.5 text-outline hover:text-primary hover:bg-primary-fixed/20 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 mr-1">
                     <span class="material-symbols-outlined text-[20px]">visibility</span>
                   </button>
-                  <button class="p-1.5 text-outline hover:text-secondary hover:bg-secondary-fixed/50 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+                  <button (click)="openEditMarche(marche, $event)" class="p-1.5 text-outline hover:text-secondary hover:bg-secondary-fixed/50 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 mr-1">
                     <span class="material-symbols-outlined text-[20px]">edit</span>
+                  </button>
+                  <button (click)="openDeleteConfirm(marche.numbMarche, $event)" class="p-1.5 text-outline hover:text-error hover:bg-error/10 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+                    <span class="material-symbols-outlined text-[20px]">delete</span>
                   </button>
                 </td>
               </tr>
@@ -95,23 +109,174 @@
           </table>
         </div>
         <div class="px-6 py-4 border-t border-surface-container-low flex items-center justify-between bg-surface-container-lowest">
-          <span class="text-sm text-on-surface-variant font-medium">Affichage de 1 à 4 sur 24 éléments</span>
-          <div class="flex items-center gap-1">
-            <button class="w-8 h-8 flex items-center justify-center rounded-md text-outline hover:bg-surface-container-low transition-colors disabled:opacity-50" disabled>
+          <span class="text-sm text-on-surface-variant font-medium">
+            <ng-container *ngIf="filteredMarches.length > 0">Affichage de {{ displayStart }} à {{ displayEnd }} sur {{ filteredMarches.length }} élément{{ filteredMarches.length > 1 ? 's' : '' }}</ng-container>
+            <ng-container *ngIf="filteredMarches.length === 0">Aucun résultat</ng-container>
+          </span>
+          <div class="flex items-center gap-1" *ngIf="totalPages > 1">
+            <button (click)="setPage(currentPage - 1)" [disabled]="currentPage === 1" class="w-8 h-8 flex items-center justify-center rounded-md text-outline hover:bg-surface-container-low transition-colors disabled:opacity-40">
               <span class="material-symbols-outlined text-[20px]">chevron_left</span>
             </button>
-            <button class="w-8 h-8 flex items-center justify-center rounded-md bg-[#76d3c8]/10 text-[#006a62] font-semibold text-sm">1</button>
-            <button class="w-8 h-8 flex items-center justify-center rounded-md text-on-surface-variant hover:bg-surface-container-low transition-colors font-medium text-sm">2</button>
-            <button class="w-8 h-8 flex items-center justify-center rounded-md text-on-surface-variant hover:bg-surface-container-low transition-colors font-medium text-sm">3</button>
-            <span class="text-outline mx-1">...</span>
-            <button class="w-8 h-8 flex items-center justify-center rounded-md text-on-surface-variant hover:bg-surface-container-low transition-colors font-medium text-sm">6</button>
-            <button class="w-8 h-8 flex items-center justify-center rounded-md text-outline hover:bg-surface-container-low transition-colors">
+            <ng-container *ngFor="let p of pageNumbers">
+              <span *ngIf="p === null" class="text-outline mx-1">…</span>
+              <button *ngIf="p !== null" (click)="setPage(p!)" class="w-8 h-8 flex items-center justify-center rounded-md text-sm font-medium transition-colors" [ngClass]="p === currentPage ? 'bg-[#76d3c8]/10 text-[#006a62] font-semibold' : 'text-on-surface-variant hover:bg-surface-container-low'">{{ p }}</button>
+            </ng-container>
+            <button (click)="setPage(currentPage + 1)" [disabled]="currentPage === totalPages" class="w-8 h-8 flex items-center justify-center rounded-md text-outline hover:bg-surface-container-low transition-colors disabled:opacity-40">
               <span class="material-symbols-outlined text-[20px]">chevron_right</span>
             </button>
           </div>
         </div>
       </div>
     </div>
+    <!-- Edit drawer -->
+    <div *ngIf="showEditMarket" class="fixed inset-0 z-40 bg-slate-950/20 backdrop-blur-sm" (click)="closeEditMarket()"></div>
+    <aside *ngIf="showEditMarket" class="fixed right-0 top-0 z-50 h-screen w-[480px] bg-white/95 shadow-[-10px_0_30px_rgba(26,46,68,0.15)] flex flex-col p-0 overflow-hidden rounded-l-[24px]">
+      <div class="p-8 pb-4">
+        <div class="flex justify-between items-center mb-6">
+          <button type="button" (click)="closeEditMarket()" class="w-10 h-10 rounded-full hover:bg-surface-container-high flex items-center justify-center transition-colors">
+            <span class="material-symbols-outlined text-secondary">close</span>
+          </button>
+          <span class="px-3 py-1 bg-surface-container-highest text-secondary-fixed-variant text-xs font-bold rounded-full">Modifier le Marché</span>
+        </div>
+        <h2 class="text-3xl font-black text-primary leading-tight">Modifier {{ editingMarche.numbMarche }}</h2>
+        <p class="text-secondary font-medium mt-2">Mettez à jour les informations du marché.</p>
+        <p *ngIf="errorMessage" class="mt-4 text-sm text-error">{{ errorMessage }}</p>
+      </div>
+      <form (submit)="submitEditMarket($event)" class="flex-1 overflow-y-auto px-8 pb-32 space-y-8">
+        <div class="space-y-5">
+          <div class="flex items-center gap-2 text-primary/60 border-b border-outline-variant/15 pb-2">
+            <span class="material-symbols-outlined text-sm">fingerprint</span>
+            <span class="text-xs font-bold uppercase tracking-widest">Identification du Marché</span>
+          </div>
+          <div class="space-y-2">
+            <label class="text-sm font-semibold text-secondary ml-1">Numéro de Marché</label>
+            <input [(ngModel)]="editingMarche.numbMarche" name="editNumbMarche" disabled class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] outline-none opacity-60 cursor-not-allowed" type="text" />
+          </div>
+          <div class="space-y-2">
+            <label class="text-sm font-semibold text-secondary ml-1">Description de l'objet <span class="text-error">*</span></label>
+            <textarea [(ngModel)]="editingMarche.Description" name="editDescription" class="w-full p-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none resize-none" rows="3" required></textarea>
+          </div>
+          <div class="space-y-2">
+            <label class="text-sm font-semibold text-secondary ml-1">Observation</label>
+            <textarea [(ngModel)]="editingMarche.Observation" name="editObservation" class="w-full p-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none resize-none" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-2">
+            <label class="text-sm font-semibold text-secondary ml-1">Nombre de Lots</label>
+            <input [(ngModel)]="editingMarche.NombreLot" name="editNombreLot" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" min="1" type="number" />
+          </div>
+          <div class="space-y-2">
+            <label class="text-sm font-semibold text-secondary ml-1">Mode de passation</label>
+            <select [(ngModel)]="editingMarche.ModePassation" name="editModePassation" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none appearance-none">
+              <option value="Appel d'Offres Ouvert">Appel d'Offres Ouvert</option>
+              <option value="Appel d'Offres Restreint">Appel d'Offres Restreint</option>
+              <option value="Gré à Gré">Gré à Gré</option>
+            </select>
+          </div>
+        </div>
+        <div class="space-y-5">
+          <div class="flex items-center gap-2 text-primary/60 border-b border-outline-variant/15 pb-2">
+            <span class="material-symbols-outlined text-sm">payments</span>
+            <span class="text-xs font-bold uppercase tracking-widest">Modalités de Financement</span>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-secondary ml-1">Source de financement</label>
+              <input [(ngModel)]="editingMarche.Financement" name="editFinancement" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" type="text" />
+            </div>
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-secondary ml-1">Budget estimatif</label>
+              <input [(ngModel)]="editingMarche.BudgetEstimatif" name="editBudget" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" min="0" type="number" />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-secondary ml-1">Devise</label>
+              <select [(ngModel)]="editingMarche.Devise" name="editDevise" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none appearance-none">
+                <option value="XOF">XOF</option>
+                <option value="EUR">EUR</option>
+                <option value="USD">USD</option>
+              </select>
+            </div>
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-secondary ml-1">Nature d'ouverture</label>
+              <input [(ngModel)]="editingMarche.NatureOuverture" name="editNatureOuverture" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" type="text" />
+            </div>
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-secondary ml-1">Date d'enregistrement</label>
+              <input [(ngModel)]="editingMarche.DateEnregistrement" name="editDateEnregistrement" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" type="date" />
+            </div>
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-secondary ml-1">Date prévisionnelle réception</label>
+              <input [(ngModel)]="editingMarche.DatePrevReception" name="editDatePrevReception" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" type="date" />
+            </div>
+          </div>
+          <div class="space-y-2">
+            <label class="text-sm font-semibold text-secondary ml-1">Statut</label>
+            <select [(ngModel)]="editingMarche.Statut" name="editStatut" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none appearance-none">
+              <option>À lancer</option>
+              <option>En cours</option>
+              <option>Clôturé</option>
+            </select>
+          </div>
+        </div>
+        <div class="space-y-5">
+          <div class="flex items-center gap-2 text-primary/60 border-b border-outline-variant/15 pb-2">
+            <span class="material-symbols-outlined text-sm">badge</span>
+            <span class="text-xs font-bold uppercase tracking-widest">Responsable</span>
+          </div>
+          <div class="space-y-4">
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-secondary ml-1">Demandeur du Marché</label>
+              <select [(ngModel)]="editingMarche.Demandeur" name="editDemandeur" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none appearance-none">
+                <option value="" disabled>Sélectionner un département</option>
+                <option *ngFor="let departement of departements" [value]="departement">{{ departement }}</option>
+              </select>
+            </div>
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-secondary ml-1">Responsable Suivi</label>
+              <input [(ngModel)]="editingMarche.ResponsableSuivi" name="editResponsableSuivi" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" type="text" />
+            </div>
+          </div>
+        </div>
+        <div class="absolute bottom-0 left-0 w-full p-8 bg-white/95 backdrop-blur-md border-t border-outline-variant/15 flex items-center gap-4">
+          <button type="button" (click)="closeEditMarket()" [disabled]="isUpdating" class="flex-1 h-14 rounded-[10px] border-2 border-[#1a2e44] text-[#1a2e44] font-bold hover:bg-surface-container-low transition-all disabled:opacity-60">
+            Annuler
+          </button>
+          <button type="submit" [disabled]="isUpdating" class="flex-[2] h-14 rounded-[10px] bg-gradient-to-br from-[#039CD3] to-[#0278a8] text-white font-bold shadow-[0_4px_14px_rgba(3,156,211,0.3)] hover:opacity-95 active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-3">
+            <span *ngIf="isUpdating" class="h-5 w-5 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
+            <span>{{ isUpdating ? 'Enregistrement...' : 'Enregistrer les modifications' }}</span>
+          </button>
+        </div>
+      </form>
+    </aside>
+
+    <!-- Delete confirmation modal -->
+    <div *ngIf="confirmDeleteMarcheId" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 backdrop-blur-sm">
+      <div class="bg-white rounded-[20px] shadow-[0_20px_60px_rgba(26,46,68,0.2)] p-8 w-[400px] flex flex-col gap-5">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-error/10 flex items-center justify-center">
+            <span class="material-symbols-outlined text-error">warning</span>
+          </div>
+          <h3 class="text-lg font-bold text-primary">Supprimer le marché</h3>
+        </div>
+        <p class="text-sm text-on-surface-variant leading-relaxed">
+          Êtes-vous sûr de vouloir supprimer le marché <span class="font-bold text-primary">{{ confirmDeleteMarcheId }}</span> ?
+          Cette action est irréversible.
+        </p>
+        <div class="flex gap-3 mt-2">
+          <button type="button" (click)="cancelDelete()" [disabled]="isDeleting" class="flex-1 h-11 rounded-[10px] border-2 border-outline-variant text-on-surface font-semibold hover:bg-surface-container-low transition-all disabled:opacity-60">
+            Annuler
+          </button>
+          <button type="button" (click)="confirmDelete()" [disabled]="isDeleting" class="flex-1 h-11 rounded-[10px] bg-error text-white font-bold shadow-[0_4px_14px_rgba(186,26,26,0.3)] hover:opacity-90 transition-all disabled:opacity-60 flex items-center justify-center gap-2">
+            <span *ngIf="isDeleting" class="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
+            {{ isDeleting ? 'Suppression...' : 'Supprimer' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div *ngIf="showAddMarket" class="fixed inset-0 z-40 bg-slate-950/20 backdrop-blur-sm"></div>
     <aside *ngIf="showAddMarket" class="fixed right-0 top-0 z-50 h-screen w-[480px] bg-white/95 shadow-[-10px_0_30px_rgba(26,46,68,0.15)] flex flex-col p-0 overflow-hidden rounded-l-[24px]">
       <div class="p-8 pb-4">
