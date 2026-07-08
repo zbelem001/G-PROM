@@ -504,9 +504,9 @@ export class DetailsMarchesComponent implements OnInit {
     }
 
     try {
-      await deleteConsultation(consultation.lot, Number(consultation.fournisseur.id));
+      await deleteConsultation(consultation.lotId, Number(consultation.fournisseur.id));
       this.consultations = this.consultations.filter(
-        (c) => !(c.lot === consultation.lot && c.fournisseur.id === consultation.fournisseur.id)
+        (c) => !(c.lotId === consultation.lotId && c.fournisseur.id === consultation.fournisseur.id)
       );
       this.cd.detectChanges();
       if (this.market) {

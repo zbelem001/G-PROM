@@ -256,7 +256,7 @@
                   </tr>
                 </thead>
                 <tbody class="text-sm divide-y divide-surface-container-high/50">
-                  <tr *ngFor="let lot of lots; let index = index" class="group hover:bg-[#76d3c8]/5 transition-colors duration-200">
+                  <tr *ngFor="let lot of lots; let index = index" (click)="openLotPopup(lot)" class="group hover:bg-[#76d3c8]/5 transition-colors duration-200 cursor-pointer">
                     <td class="py-4 px-6 font-medium text-[#1a2e44]">{{ index + 1 }}</td>
                     <td class="py-4 px-6">
                       <span class="inline-flex items-center px-2.5 py-1 rounded-[6px] bg-[#1a2e44]/10 text-[#1a2e44] font-semibold text-xs tracking-wide">{{ lot.nomLot }}</span>
@@ -268,10 +268,10 @@
                         <button type="button" (click)="openLotPopup(lot)" class="text-slate-400 hover:text-[#76d3c8] transition-colors p-1 opacity-0 group-hover:opacity-100" title="Voir documents">
                           <span class="material-symbols-outlined text-[20px]">visibility</span>
                         </button>
-                        <button type="button" (click)="toggleAddLot(lot)" class="text-slate-400 hover:text-[#43a399] transition-colors p-1 opacity-0 group-hover:opacity-100" title="Modifier">
+                        <button type="button" (click)="$event.stopPropagation(); toggleAddLot(lot)" class="text-slate-400 hover:text-[#43a399] transition-colors p-1 opacity-0 group-hover:opacity-100" title="Modifier">
                           <span class="material-symbols-outlined text-[20px]">edit</span>
                         </button>
-                        <button type="button" (click)="removeLot(lot)" class="text-slate-400 hover:text-error transition-colors p-1 opacity-0 group-hover:opacity-100" title="Supprimer">
+                        <button type="button" (click)="$event.stopPropagation(); removeLot(lot)" class="text-slate-400 hover:text-error transition-colors p-1 opacity-0 group-hover:opacity-100" title="Supprimer">
                           <span class="material-symbols-outlined text-[20px]">delete</span>
                         </button>
                       </div>
@@ -475,7 +475,7 @@
                   </tr>
                 </thead>
                 <tbody class="text-sm divide-y divide-surface-container-high/50">
-                  <tr *ngFor="let consultation of filteredConsultations" class="hover:bg-surface-bright transition-colors group">
+                  <tr *ngFor="let consultation of filteredConsultations" (click)="openProviderPopup(consultation)" class="hover:bg-surface-bright transition-colors group cursor-pointer">
                     <td class="px-6 py-4"><span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-[#76d3c8]/15 text-[#43a399]">{{ consultation.lot }}</span></td>
                     <td class="px-6 py-4 font-medium text-[#1a2e44]">{{ consultation.fournisseur.nom }}</td>
                     <td class="px-6 py-4 text-on-surface-variant">{{ consultation.fournisseur.domaine }}</td>
@@ -485,10 +485,10 @@
                         <button type="button" (click)="openProviderPopup(consultation)" class="text-slate-400 hover:text-[#76d3c8] transition-colors p-1 opacity-0 group-hover:opacity-100" title="Voir détails">
                           <span class="material-symbols-outlined text-[20px]">visibility</span>
                         </button>
-                        <button type="button" (click)="toggleConsultationDrawer(consultation)" class="text-slate-400 hover:text-[#43a399] transition-colors p-1 opacity-0 group-hover:opacity-100" title="Modifier">
+                        <button type="button" (click)="$event.stopPropagation(); toggleConsultationDrawer(consultation)" class="text-slate-400 hover:text-[#43a399] transition-colors p-1 opacity-0 group-hover:opacity-100" title="Modifier">
                           <span class="material-symbols-outlined text-[20px]">edit</span>
                         </button>
-                        <button type="button" (click)="removeConsultation(consultation)" class="text-slate-400 hover:text-error transition-colors p-1 opacity-0 group-hover:opacity-100" title="Supprimer">
+                        <button type="button" (click)="$event.stopPropagation(); removeConsultation(consultation)" class="text-slate-400 hover:text-error transition-colors p-1 opacity-0 group-hover:opacity-100" title="Supprimer">
                           <span class="material-symbols-outlined text-[20px]">delete</span>
                         </button>
                       </div>
@@ -554,7 +554,7 @@
                   </tr>
                 </thead>
                 <tbody class="text-sm divide-y divide-surface-container-high/50">
-                  <tr *ngFor="let submission of submissions" class="hover:bg-surface-bright transition-colors group">
+                  <tr *ngFor="let submission of submissions" (click)="openSubmissionPopup(submission)" class="hover:bg-surface-bright transition-colors group cursor-pointer">
                     <td class="px-6 py-4 font-mono text-xs text-secondary-fixed-variant">{{ submission.id }}</td>
                     <td class="px-6 py-4 font-medium text-[#1a2e44]">{{ submission.lot }}</td>
                     <td class="px-6 py-4">{{ submission.fournisseur.nom }}</td>
@@ -565,10 +565,10 @@
                         <button type="button" (click)="openSubmissionPopup(submission)" class="text-slate-400 hover:text-[#76d3c8] transition-colors p-1 opacity-0 group-hover:opacity-100" title="Voir détails">
                           <span class="material-symbols-outlined text-[20px]">visibility</span>
                         </button>
-                        <button type="button" (click)="toggleSoumissionDrawer(submission)" class="text-slate-400 hover:text-[#43a399] transition-colors p-1 opacity-0 group-hover:opacity-100" title="Modifier">
+                        <button type="button" (click)="$event.stopPropagation(); toggleSoumissionDrawer(submission)" class="text-slate-400 hover:text-[#43a399] transition-colors p-1 opacity-0 group-hover:opacity-100" title="Modifier">
                           <span class="material-symbols-outlined text-[20px]">edit</span>
                         </button>
-                        <button type="button" (click)="removeSoumission(submission)" class="text-slate-400 hover:text-error transition-colors p-1 opacity-0 group-hover:opacity-100" title="Supprimer">
+                        <button type="button" (click)="$event.stopPropagation(); removeSoumission(submission)" class="text-slate-400 hover:text-error transition-colors p-1 opacity-0 group-hover:opacity-100" title="Supprimer">
                           <span class="material-symbols-outlined text-[20px]">delete</span>
                         </button>
                       </div>
@@ -835,7 +835,7 @@
                     </tr>
                   </thead>
                   <tbody class="text-sm divide-y divide-surface-container-high/50">
-                    <tr *ngFor="let avn of avenants" class="hover:bg-surface-bright transition-colors group">
+                    <tr *ngFor="let avn of avenants" (click)="toggleAvenantDrawer(avn)" class="hover:bg-surface-bright transition-colors group cursor-pointer">
                       <td class="px-6 py-4 font-medium text-[#1a2e44]">Avenant n°{{ avn.numbAvenant }}</td>
                       <td class="px-6 py-4 text-on-surface-variant">{{ getSoumissionLabel(avn.idSoumissionAttribuee) }}</td>
                       <td class="px-6 py-4 text-right font-headline font-semibold text-[#1a2e44]">
@@ -844,10 +844,10 @@
                       <td class="px-6 py-4">{{ avn.DateProrogation ? (avn.DateProrogation | date:'dd MMM yyyy') : '—' }}</td>
                       <td class="px-6 py-4 text-right">
                         <div class="flex items-center justify-end gap-1">
-                          <button type="button" (click)="toggleAvenantDrawer(avn)" class="text-slate-400 hover:text-[#76d3c8] transition-colors p-1 opacity-0 group-hover:opacity-100" title="Voir / Modifier">
+                          <button type="button" (click)="$event.stopPropagation(); toggleAvenantDrawer(avn)" class="text-slate-400 hover:text-[#43a399] transition-colors p-1 opacity-0 group-hover:opacity-100" title="Modifier">
                             <span class="material-symbols-outlined text-[20px]">edit</span>
                           </button>
-                          <button type="button" (click)="removeAvenant(avn.idAvenant)" class="text-slate-400 hover:text-error transition-colors p-1 opacity-0 group-hover:opacity-100" title="Supprimer">
+                          <button type="button" (click)="$event.stopPropagation(); removeAvenant(avn.idAvenant)" class="text-slate-400 hover:text-error transition-colors p-1 opacity-0 group-hover:opacity-100" title="Supprimer">
                             <span class="material-symbols-outlined text-[20px]">delete</span>
                           </button>
                         </div>
