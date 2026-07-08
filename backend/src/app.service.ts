@@ -84,6 +84,7 @@ export interface Soumission {
   DelaiExecutionPrev?: number;
   MontantPrev?: number;
   nbExemplaire?: number;
+  Devise?: 'XOF' | 'EUR' | 'USD';
 }
 
 export interface Analyse {
@@ -651,6 +652,7 @@ export class AppService {
       DelaiExecutionPrev: soumission.DelaiExecutionPrev,
       MontantPrev: soumission.MontantPrev,
       nbExemplaire: soumission.nbExemplaire,
+      Devise: soumission.Devise ?? 'XOF',
     };
     this.soumissions.push(newSoumission);
     this.saveData();

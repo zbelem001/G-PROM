@@ -464,3 +464,46 @@ export async function updateAnalyse(numbLot: string, analyse: Partial<Analyse>):
   });
   return normalizeAnalyseResponse(response);
 }
+
+export interface ApiAvenant {
+  idAvenant: number;
+  idSoumissionAttribuee: string;
+  numbAvenant: number;
+  MontantAvenant?: number;
+  DateProrogation?: string;
+}
+
+function normalizeAvenantResponse(raw: any): ApiAvenant {
+  return {
+    idAvenant: Number(raw.idAvenant ?? raw.idavenant ?? 0),
+    idSoumissionAttribuee: raw.idSoumissionAttribuee ?? raw.idsoumissionattribuee ?? '',
+    numbAvenant: Number(raw.numbAvenant ?? raw.numbavenant ?? 0),
+    MontantAvenant: raw.MontantAvenant ?? raw.montantavenant ?? undefined,
+    DateProrogation: raw.DateProrogation ?? raw.dateprorogation ?? undefined,
+  };
+}
+
+export async function getAvenants(): Promise<ApiAvenant[]> {
+  const data = await request<any[]>('/avenants');
+  return data.map(normalizeAvenantResponse);
+}
+
+export async function createAvenant(avenant: Omit<ApiAvenant, 'idAvenant'>): Promise<ApiAvenant> {
+  const response = await request<any>('/avenants', {
+    method: 'POST',
+    body: JSON.stringify(avenant),
+  });
+  return normalizeAvenantResponse(response);
+}
+
+export async function updateAvenant(idAvenant: number, avenant: Partial<ApiAvenant>): Promise<ApiAvenant> {
+  const response = await request<any>(`/avenants/${idAvenant}`, {
+    method: 'PUT',
+    body: JSON.stringify(avenant),
+  });
+  return normalizeAvenantResponse(response);
+}
+
+export async function deleteAvenant(idAvenant: number): Promise<void> {
+  await request(`/avenants/${idAvenant}`, { method: 'DELETE' });
+}

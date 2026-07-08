@@ -37,6 +37,11 @@ import {
   Attributaire,
   ConsultationApi,
   Fournisseur,
+  ApiAvenant,
+  getAvenants,
+  createAvenant,
+  updateAvenant,
+  deleteAvenant,
 } from '../../api.service';
 
 const SCT_MEMBER_SLOTS = 4;
@@ -200,6 +205,14 @@ export class DetailsMarchesComponent implements OnInit {
   attributionErrorMessage = '';
   readonly ATTRIBUTION_STATUTS = ['En cours', 'Terminé', 'Suspendu', 'Résilié'];
   showAvenantDrawer = false;
+  avenants: ApiAvenant[] = [];
+  editingAvenant: ApiAvenant | null = null;
+  isSavingAvenant = false;
+  avenantErrorMessage = '';
+  newAvenantSoumissionId = '';
+  newAvenantNumb = 1;
+  newAvenantMontant = 0;
+  newAvenantDateProrogation = '';
   showStatusDrawer = false;
   showLotModal = false;
   showProviderModal = false;
@@ -690,6 +703,19 @@ export class DetailsMarchesComponent implements OnInit {
     return this.availableFournisseurs.find((f) => f.idFournisseur === numId)?.RaisonSocial ?? `#${id}`;
   }
 
+  get avenantCount(): number {
+    return this.avenants.length;
+  }
+
+  get avenantMontantCumule(): number {
+    return this.avenants.reduce((sum, a) => sum + (a.MontantAvenant ?? 0), 0);
+  }
+
+  get lastAvenant(): ApiAvenant | null {
+    if (this.avenants.length === 0) return null;
+    return [...this.avenants].sort((a, b) => b.numbAvenant - a.numbAvenant)[0];
+  }
+
   async saveAnalyse() {
     if (this.isSavingAnalyse || !this.newAnalyseLot) return;
 
@@ -841,18 +867,71 @@ export class DetailsMarchesComponent implements OnInit {
     }
   }
 
-  editAvenant(id: string) {
-    this.toggleAvenantDrawer();
-  }
-
-  removeAvenant(id: string) {
-    if (!confirm(`Voulez-vous vraiment supprimer l'avenant ${id} ?`)) return;
-    // TODO: intégrer API avenant
-    console.warn('[Avenant] suppression non encore intégrée:', id);
-  }
-
-  toggleAvenantDrawer() {
+  toggleAvenantDrawer(avenant?: ApiAvenant) {
     this.showAvenantDrawer = !this.showAvenantDrawer;
+    this.avenantErrorMessage = '';
+    this.isSavingAvenant = false;
+    if (this.showAvenantDrawer) {
+      if (avenant) {
+        this.editingAvenant = avenant;
+        this.newAvenantSoumissionId = avenant.idSoumissionAttribuee;
+        this.newAvenantNumb = avenant.numbAvenant;
+        this.newAvenantMontant = avenant.MontantAvenant ?? 0;
+        this.newAvenantDateProrogation = avenant.DateProrogation ?? '';
+      } else {
+        this.editingAvenant = null;
+        this.newAvenantSoumissionId = this.attributaires[0]?.idSoumissionAttribuee ?? '';
+        this.newAvenantNumb = (this.avenants.length > 0 ? Math.max(...this.avenants.map((a) => a.numbAvenant)) + 1 : 1);
+        this.newAvenantMontant = 0;
+        this.newAvenantDateProrogation = '';
+      }
+    } else {
+      this.editingAvenant = null;
+    }
+  }
+
+  async saveAvenant() {
+    if (this.isSavingAvenant || !this.newAvenantSoumissionId) return;
+    this.isSavingAvenant = true;
+    this.avenantErrorMessage = '';
+    try {
+      if (this.editingAvenant) {
+        const updated = await updateAvenant(this.editingAvenant.idAvenant, {
+          MontantAvenant: this.newAvenantMontant || undefined,
+          DateProrogation: this.newAvenantDateProrogation || undefined,
+          numbAvenant: this.newAvenantNumb,
+        });
+        const idx = this.avenants.findIndex((a) => a.idAvenant === this.editingAvenant!.idAvenant);
+        if (idx >= 0) this.avenants[idx] = updated;
+      } else {
+        const created = await createAvenant({
+          idSoumissionAttribuee: this.newAvenantSoumissionId,
+          numbAvenant: this.newAvenantNumb,
+          MontantAvenant: this.newAvenantMontant || undefined,
+          DateProrogation: this.newAvenantDateProrogation || undefined,
+        });
+        this.avenants.push(created);
+      }
+      this.isSavingAvenant = false;
+      this.showAvenantDrawer = false;
+      this.editingAvenant = null;
+      this.cd.detectChanges();
+    } catch (error: any) {
+      this.avenantErrorMessage = error?.message || "Impossible d'enregistrer l'avenant.";
+      this.isSavingAvenant = false;
+      this.cd.detectChanges();
+    }
+  }
+
+  async removeAvenant(idAvenant: number) {
+    if (!confirm(`Voulez-vous vraiment supprimer cet avenant ?`)) return;
+    try {
+      await deleteAvenant(idAvenant);
+      this.avenants = this.avenants.filter((a) => a.idAvenant !== idAvenant);
+      this.cd.detectChanges();
+    } catch (error: any) {
+      alert(error?.message || "Impossible de supprimer l'avenant.");
+    }
   }
 
   toggleStatusDrawer() {
@@ -989,7 +1068,7 @@ export class DetailsMarchesComponent implements OnInit {
     }
 
     try {
-      const [lots, submissions, fournisseurs, consultations, allAnalyses, allDocuments, allAttributaires] = await Promise.all([
+      const [lots, submissions, fournisseurs, consultations, allAnalyses, allDocuments, allAttributaires, allAvenants] = await Promise.all([
         getLots(),
         getSoumissions(),
         getFournisseurs(),
@@ -997,6 +1076,7 @@ export class DetailsMarchesComponent implements OnInit {
         getAnalyses(),
         getDocuments(),
         getAttributaires(),
+        getAvenants(),
       ]);
 
       this.allLots = lots;
@@ -1012,6 +1092,7 @@ export class DetailsMarchesComponent implements OnInit {
           .map((s) => s.idSoumission)
       );
       this.attributaires = allAttributaires.filter((a) => marketSubmissionIds.has(a.idSoumissionAttribuee));
+      this.avenants = allAvenants.filter((av) => marketSubmissionIds.has(av.idSoumissionAttribuee));
       this.lots = filteredLots.map((rawLot) => ({
         id: rawLot.numbLot,
         nomLot: rawLot.nomLot,

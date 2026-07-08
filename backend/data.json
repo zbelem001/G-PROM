@@ -176,6 +176,17 @@
       "DelaiExecutionPrev": 50,
       "MontantPrev": 1500000,
       "nbExemplaire": 3
+    },
+    {
+      "idSoumission": "SM-2026-7860",
+      "numbLot": "Lot 01",
+      "idFournisseur": 2,
+      "DateDepot": "2026-07-07",
+      "Heure": "23:38",
+      "Observation": "cool",
+      "DelaiExecutionPrev": 240,
+      "MontantPrev": 1400000,
+      "nbExemplaire": 3
     }
   ],
   "analyses": [
@@ -186,7 +197,17 @@
       "DatePresentationRapport": "2026-07-04"
     }
   ],
-  "attributaires": [],
+  "attributaires": [
+    {
+      "idSoumissionAttribuee": "SM-2026-8873",
+      "MontantEffec": 2500000,
+      "DelaiExecutionEffec": 150,
+      "DateDemarage": "2026-07-22",
+      "DatePrevFin": "2026-08-28",
+      "Observation": "cool",
+      "Statut": "En cours"
+    }
+  ],
   "avenants": [],
   "documents": []
 }
