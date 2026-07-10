@@ -14,14 +14,6 @@ interface OffreCandidature {
   statut: string;
 }
 
-interface LegalDocument {
-  nom: string;
-  statut: string;
-  expiry?: string;
-  color: 'green' | 'red';
-  icon: 'check_circle' | 'error';
-}
-
 interface FournisseurStats {
   marchesGagnes: string;
   croissance: string;
@@ -51,7 +43,6 @@ export class DetailsFournisseursComponent implements OnInit {
     marchesCandidate: '00',
   };
   offres: OffreCandidature[] = [];
-  legalDocuments: LegalDocument[] = [];
 
   constructor(private cd: ChangeDetectorRef, private route: ActivatedRoute, private router: Router, private ngZone: NgZone) {}
 
@@ -79,7 +70,6 @@ export class DetailsFournisseursComponent implements OnInit {
     } catch (error: unknown) {
       this.errorMessage = (error as Error)?.message || 'Impossible de charger le fournisseur.';
       this.offres = [];
-      this.legalDocuments = [];
       this.stats = {
         marchesGagnes: '00',
         croissance: '+0% vs LY',
@@ -103,51 +93,7 @@ export class DetailsFournisseursComponent implements OnInit {
       statut: soumission.estAdjugee ? 'Adjugé' : 'Soumis',
     }));
 
-    this.legalDocuments = this.mapDocumentRows(details.documents);
     this.stats = this.computeStatsFromOffres(this.offres);
-  }
-
-  private mapDocumentRows(rows: any[]): LegalDocument[] {
-    const fieldLabels: Record<string, string> = {
-      PV_ouverture: 'PV d’ouverture',
-      RapportAnalyse: 'Rapport d’analyse',
-      PV_attribution: 'PV d’attribution',
-      Notification: 'Notification',
-      Contrat: 'Contrat',
-      FED: 'FED',
-      BonCommande: 'Bon de commande',
-      Avenant: 'Avenant',
-      OrdreService: 'Ordre de service',
-      PV_reception_tech: 'PV de réception technique',
-    };
-
-    const documents: LegalDocument[] = [];
-    rows.forEach((row) => {
-      Object.entries(row).forEach(([key, value]) => {
-        if (key === 'numbLot' || value === null || value === undefined || value === '') {
-          return;
-        }
-        documents.push({
-          nom: fieldLabels[key] ?? key,
-          statut: 'Présent',
-          color: 'green',
-          icon: 'check_circle',
-        });
-      });
-    });
-
-    if (documents.length === 0) {
-      return [
-        {
-          nom: 'Aucun document légal trouvé',
-          statut: 'Aucun',
-          color: 'red',
-          icon: 'error',
-        },
-      ];
-    }
-
-    return documents;
   }
 
   private computeStatsFromOffres(offres: OffreCandidature[]): FournisseurStats {

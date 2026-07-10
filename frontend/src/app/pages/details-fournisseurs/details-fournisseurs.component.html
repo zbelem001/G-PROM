@@ -1,6 +1,6 @@
 <div class="bg-surface font-body text-on-surface min-h-screen flex overflow-hidden">
   <app-menu></app-menu>
-  <main class="flex-1 ml-[240px] flex flex-col h-screen overflow-y-auto bg-surface relative">
+  <main class="flex-1 ml-[240px] flex flex-col h-screen overflow-hidden bg-surface relative">
     <app-header></app-header>
     <div class="flex-1 pt-24 p-8 bg-surface">
       <div class="w-full">
@@ -15,16 +15,6 @@
             </div>
             <h2 class="text-[18px] font-black text-primary leading-tight tracking-tight">{{ fournisseur?.RaisonSocial || 'Nom du fournisseur' }}</h2>
             <p class="text-on-surface-variant max-w-2xl text-lg font-medium opacity-80">{{ fournisseur?.DomaineActivite || 'Activité non renseignée' }}</p>
-          </div>
-          <div class="flex flex-wrap items-center gap-3">
-            <button class="h-10 px-6 rounded-lg border border-[#1A3F6F]/20 text-primary font-semibold text-sm hover:bg-primary/5 transition-all flex items-center gap-2">
-              <span class="material-symbols-outlined text-lg">edit</span>
-              Modifier
-            </button>
-            <button class="h-10 px-6 rounded-lg bg-[#1A3F6F] text-white font-semibold text-sm shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-2">
-              <span class="material-symbols-outlined text-lg">file_download</span>
-              Exporter la fiche
-            </button>
           </div>
         </section>
 
@@ -66,7 +56,6 @@
           <div class="flex border-b border-slate-100 bg-surface-container-low/30">
             <button type="button" (click)="setActiveTab('Profil')" class="px-8 py-5 text-xs font-bold uppercase tracking-widest transition-colors" [class.text-primary]="activeTab === 'Profil'" [class.border-b-2]="activeTab === 'Profil'" [class.border-primary]="activeTab === 'Profil'" [class.text-slate-400]="activeTab !== 'Profil'">Profil</button>
             <button type="button" (click)="setActiveTab('Offres & Candidatures')" class="px-8 py-5 text-xs font-bold uppercase tracking-widest transition-colors" [class.text-primary]="activeTab === 'Offres & Candidatures'" [class.border-b-2]="activeTab === 'Offres & Candidatures'" [class.border-primary]="activeTab === 'Offres & Candidatures'" [class.text-slate-400]="activeTab !== 'Offres & Candidatures'">Offres &amp; Candidatures</button>
-            <button type="button" (click)="setActiveTab('Documents Légaux')" class="px-8 py-5 text-xs font-bold uppercase tracking-widest transition-colors" [class.text-primary]="activeTab === 'Documents Légaux'" [class.border-b-2]="activeTab === 'Documents Légaux'" [class.border-primary]="activeTab === 'Documents Légaux'" [class.text-slate-400]="activeTab !== 'Documents Légaux'">Documents Légaux</button>
           </div>
           <div class="p-8">
             <div *ngIf="activeTab === 'Profil'" class="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -92,16 +81,10 @@
                     </div>
                   </div>
                 </div>
-                <div class="p-6 bg-surface-container-low rounded-lg flex items-center gap-6">
-                  <div class="h-16 w-16 bg-white rounded-lg flex items-center justify-center border border-slate-200">
-                    <span class="material-symbols-outlined text-primary text-3xl">map</span>
-                  </div>
-                  <div>
-                    <p class="text-xs font-bold text-primary uppercase">Localisation</p>
-                    <p class="text-sm text-slate-600 mt-1">{{ fournisseur?.Ville || 'Ville non renseignée' }}</p>
-                    <a class="text-xs font-bold text-primary underline mt-2 block" href="#">Voir sur la carte</a>
-                  </div>
-                </div>
+                    <div class="flex flex-col">
+                      <span class="text-xs text-slate-500 font-medium">Localisation</span>
+                      <span class="text-primary font-semibold">{{ fournisseur?.Ville || 'Non renseignée' }}</span>
+                    </div>
               </div>
               <div class="space-y-8">
                 <div>
@@ -173,32 +156,6 @@
                 </tr>
               </tbody>
             </table>
-          </div>
-        </div>
-        <div *ngIf="activeTab === 'Documents Légaux'" class="space-y-8">
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <ng-container *ngFor="let doc of legalDocuments">
-              <div class="p-4 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-between hover:border-primary/20 transition-all cursor-pointer">
-                <div class="flex items-center gap-4">
-                  <span class="material-symbols-outlined text-slate-400">{{ doc.icon }}</span>
-                  <div>
-                    <p class="text-xs font-bold text-primary">{{ doc.nom }}</p>
-                    <p class="text-[10px] text-slate-500 uppercase tracking-tighter">
-                      {{ doc.statut }}<span *ngIf="doc.expiry"> • {{ doc.expiry }}</span>
-                    </p>
-                  </div>
-                </div>
-                <span [ngClass]="{
-                  'text-green-500': doc.color === 'green',
-                  'text-red-500': doc.color === 'red'
-                }" class="material-symbols-outlined text-lg">{{ doc.icon }}</span>
-              </div>
-            </ng-container>
-            <div class="p-4 rounded-xl bg-white border border-slate-100 shadow-sm flex items-center justify-center hover:border-primary/20 transition-all cursor-pointer">
-              <button class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 text-primary hover:bg-slate-200 transition-colors">
-                <span class="material-symbols-outlined text-2xl">add</span>
-              </button>
-            </div>
           </div>
         </div>
           </div>
