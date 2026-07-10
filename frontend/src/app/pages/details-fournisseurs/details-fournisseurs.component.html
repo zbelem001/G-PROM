@@ -7,8 +7,8 @@
         <section class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div class="space-y-2">
             <div class="flex flex-wrap items-center gap-3">
-              <span class="bg-green-100 text-[#1E7A4E] text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest flex items-center gap-2">
-                <span class="h-1.5 w-1.5 bg-[#1E7A4E] rounded-full"></span>
+              <span [ngClass]="getStatutFournisseurClass(fournisseur?.Statut)" class="text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest flex items-center gap-2">
+                <span class="h-1.5 w-1.5 rounded-full" [ngClass]="getStatutFournisseurDotClass(fournisseur?.Statut)"></span>
                 {{ fournisseur?.Statut || 'Conforme' }}
               </span>
               <span class="text-slate-500 text-sm font-medium">ID: F-{{ fournisseur?.idFournisseur ?? '0000' }}</span>
@@ -137,8 +137,7 @@
                 </div>
               </div>
             </div>
-          </div>
-        <div *ngIf="activeTab === 'Offres & Candidatures'" class="space-y-8">
+          <div *ngIf="activeTab === 'Offres & Candidatures'" class="space-y-8">
           <div class="overflow-x-auto">
             <table class="w-full text-left border-separate border-spacing-0">
               <thead>
@@ -202,6 +201,7 @@
             </div>
           </div>
         </div>
+          </div>
     </section>
       </div>
     </div>

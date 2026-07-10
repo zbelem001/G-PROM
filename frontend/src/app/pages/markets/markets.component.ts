@@ -144,17 +144,14 @@ export class MarketsComponent implements OnInit {
     this.marches = [];
     try {
       const raw = await getMarches();
-      this.ngZone.run(() => {
-        this.marches = raw.sort((a, b) =>
-          new Date(b.DateEnregistrement ?? 0).getTime() - new Date(a.DateEnregistrement ?? 0).getTime()
-        );
-        this.loading = false;
-      });
+      this.marches = raw.sort((a, b) =>
+        new Date(b.DateEnregistrement ?? 0).getTime() - new Date(a.DateEnregistrement ?? 0).getTime()
+      );
     } catch (error: any) {
-      this.ngZone.run(() => {
-        this.errorMessage = error?.message || 'Impossible de charger les marchés.';
-        this.loading = false;
-      });
+      this.errorMessage = error?.message || 'Impossible de charger les marchés.';
+    } finally {
+      this.loading = false;
+      this.cd.detectChanges();
     }
   }
 
@@ -216,20 +213,17 @@ export class MarketsComponent implements OnInit {
     this.submitting = true;
     try {
       const added = await createMarche(this.newMarche);
-      this.ngZone.run(() => {
-        if (Array.isArray(added) && added.length > 0) {
-          this.marches.unshift(added[0]);
-          this.currentPage = 1;
-        }
-        this.showAddMarket = false;
-        this.newMarche = this.defaultNewMarche();
-        this.submitting = false;
-      });
+      if (Array.isArray(added) && added.length > 0) {
+        this.marches.unshift(added[0]);
+        this.currentPage = 1;
+      }
+      this.showAddMarket = false;
+      this.newMarche = this.defaultNewMarche();
     } catch (error: any) {
-      this.ngZone.run(() => {
-        this.errorMessage = error.message || 'Impossible de créer le marché.';
-        this.submitting = false;
-      });
+      this.errorMessage = error.message || 'Impossible de créer le marché.';
+    } finally {
+      this.submitting = false;
+      this.cd.detectChanges();
     }
   }
 
@@ -255,18 +249,15 @@ export class MarketsComponent implements OnInit {
     this.isUpdating = true;
     try {
       const updated = await updateMarche(this.editingMarche.numbMarche, this.editingMarche as Record<string, unknown>);
-      this.ngZone.run(() => {
-        const idx = this.marches.findIndex((m) => m.numbMarche === updated.numbMarche);
-        if (idx !== -1) this.marches[idx] = updated;
-        this.showEditMarket = false;
-        this.editingMarche = {};
-        this.isUpdating = false;
-      });
+      const idx = this.marches.findIndex((m) => m.numbMarche === updated.numbMarche);
+      if (idx !== -1) this.marches[idx] = updated;
+      this.showEditMarket = false;
+      this.editingMarche = {};
     } catch (error: any) {
-      this.ngZone.run(() => {
-        this.errorMessage = error?.message || 'Impossible de modifier le marché.';
-        this.isUpdating = false;
-      });
+      this.errorMessage = error?.message || 'Impossible de modifier le marché.';
+    } finally {
+      this.isUpdating = false;
+      this.cd.detectChanges();
     }
   }
 
@@ -289,17 +280,14 @@ export class MarketsComponent implements OnInit {
     this.isDeleting = true;
     try {
       await deleteMarche(id);
-      this.ngZone.run(() => {
-        this.marches = this.marches.filter((m) => m.numbMarche !== id);
-        this.confirmDeleteMarcheId = null;
-        if (this.currentPage > this.totalPages) this.currentPage = this.totalPages;
-        this.isDeleting = false;
-      });
+      this.marches = this.marches.filter((m) => m.numbMarche !== id);
+      this.confirmDeleteMarcheId = null;
+      if (this.currentPage > this.totalPages) this.currentPage = this.totalPages;
     } catch (error: any) {
-      this.ngZone.run(() => {
-        this.errorMessage = error?.message || 'Impossible de supprimer le marché.';
-        this.isDeleting = false;
-      });
+      this.errorMessage = error?.message || 'Impossible de supprimer le marché.';
+    } finally {
+      this.isDeleting = false;
+      this.cd.detectChanges();
     }
   }
 }

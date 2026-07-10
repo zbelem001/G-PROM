@@ -133,15 +133,15 @@ CREATE TABLE Avenant (
 -- 9. Table Document
 CREATE TABLE Document (
     numbLot VARCHAR(150) PRIMARY KEY NOT NULL,
-    PV_ouverture VARCHAR(50) DEFAULT 'Non',
-    RapportAnalyse VARCHAR(50) DEFAULT 'Non',
-    PV_attribution VARCHAR(50) DEFAULT 'Non',
-    Notification VARCHAR(50) DEFAULT 'Non',
-    Contrat VARCHAR(50) DEFAULT 'Non',
-    FED VARCHAR(50) DEFAULT 'Non',
-    BonCommande VARCHAR(50) DEFAULT 'Non',
-    Avenant VARCHAR(50) DEFAULT 'Non',
-    OrdreService VARCHAR(50) DEFAULT 'Non',
-    PV_reception_tech VARCHAR(50) DEFAULT 'Non',
+    PV_ouverture TEXT DEFAULT 'Non',
+    RapportAnalyse TEXT DEFAULT 'Non',
+    PV_attribution TEXT DEFAULT 'Non',
+    Notification TEXT DEFAULT 'Non',
+    Contrat TEXT DEFAULT 'Non',
+    FED TEXT DEFAULT 'Non',
+    BonCommande TEXT DEFAULT 'Non',
+    Avenant TEXT DEFAULT 'Non',
+    OrdreService TEXT DEFAULT 'Non',
+    PV_reception_tech TEXT DEFAULT 'Non',
     CONSTRAINT fk_doc_lot FOREIGN KEY (numbLot) REFERENCES Lot(numbLot)
 );

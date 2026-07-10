@@ -1,15 +1,16 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
 import { MenuComponent } from '../../components/menu/menu.component';
-import { Fournisseur, Soumission, getFournisseurDetails, FournisseurDetails } from '../../api.service';
+import { Fournisseur, SoumissionDetail, getFournisseurDetails, FournisseurDetails } from '../../api.service';
 
 interface OffreCandidature {
   marche: string;
   lot: string;
   dateSoumission: string;
   montantPropose: string;
+  montantRaw: number;
   statut: string;
 }
 
@@ -52,7 +53,7 @@ export class DetailsFournisseursComponent implements OnInit {
   offres: OffreCandidature[] = [];
   legalDocuments: LegalDocument[] = [];
 
-  constructor(private cd: ChangeDetectorRef, private route: ActivatedRoute, private router: Router) {}
+  constructor(private cd: ChangeDetectorRef, private route: ActivatedRoute, private router: Router, private ngZone: NgZone) {}
 
   ngOnInit() {
     const snapshot = this.route.snapshot.queryParamMap;
@@ -70,9 +71,7 @@ export class DetailsFournisseursComponent implements OnInit {
 
     try {
       const id = idParam ? Number(idParam) : undefined;
-      if (!id) {
-        throw new Error('Identifiant du fournisseur manquant.');
-      }
+      if (!id) throw new Error('Identifiant du fournisseur manquant.');
 
       const details = await getFournisseurDetails(id);
       this.fournisseur = details.fournisseur;
@@ -88,19 +87,20 @@ export class DetailsFournisseursComponent implements OnInit {
         tauxSucces: '0%',
         marchesCandidate: '00',
       };
+    } finally {
+      this.loading = false;
+      this.cd.detectChanges();
     }
-
-    this.loading = false;
-    this.cd.detectChanges();
   }
 
   private populateFromDetails(details: FournisseurDetails) {
-    this.offres = details.soumissions.map((soumission: Soumission) => ({
-      marche: soumission.numbLot,
-      lot: soumission.numbLot,
+    this.offres = details.soumissions.map((soumission: SoumissionDetail) => ({
+      marche: soumission.numbMarche ?? soumission.numbLot,
+      lot: soumission.lotDescription ?? soumission.numbLot,
       dateSoumission: soumission.DateDepot ?? soumission.Heure ?? 'N/A',
       montantPropose: this.formatCurrency(soumission.MontantPrev ?? 0),
-      statut: 'Soumis',
+      montantRaw: soumission.MontantPrev ?? 0,
+      statut: soumission.estAdjugee ? 'Adjugé' : 'Soumis',
     }));
 
     this.legalDocuments = this.mapDocumentRows(details.documents);
@@ -151,11 +151,15 @@ export class DetailsFournisseursComponent implements OnInit {
   }
 
   private computeStatsFromOffres(offres: OffreCandidature[]): FournisseurStats {
-    const total = offres.length;
-    const gagnees = offres.filter((offre) => offre.statut === 'Adjugé').length;
+    const marchesCandidat = new Set(offres.map((o) => o.marche).filter(Boolean));
+    const marchesGagnes = new Set(
+      offres.filter((o) => o.statut === 'Adjugé').map((o) => o.marche).filter(Boolean)
+    );
+    const total = marchesCandidat.size;
+    const gagnees = marchesGagnes.size;
     const totalValue = offres
       .filter((offre) => offre.statut === 'Adjugé')
-      .reduce((sum, offre) => sum + this.parseMontant(offre.montantPropose), 0);
+      .reduce((sum, offre) => sum + offre.montantRaw, 0);
 
     return {
       marchesGagnes: String(gagnees).padStart(2, '0'),
@@ -164,11 +168,6 @@ export class DetailsFournisseursComponent implements OnInit {
       tauxSucces: total === 0 ? '0%' : `${Math.round((gagnees / total) * 100)}%`,
       marchesCandidate: String(total).padStart(2, '0'),
     };
-  }
-
-  private parseMontant(montant: string): number {
-    const digits = montant.replace(/[^0-9]/g, '');
-    return Number(digits) || 0;
   }
 
   private formatCurrency(value: number): string {
@@ -192,5 +191,21 @@ export class DetailsFournisseursComponent implements OnInit {
       queryParamsHandling: 'merge',
       replaceUrl: true,
     });
+  }
+
+  getStatutFournisseurClass(statut: string | undefined): string {
+    switch (statut) {
+      case 'Non conforme': return 'bg-red-100 text-red-700';
+      case 'Suspendu':     return 'bg-orange-100 text-orange-700';
+      default:             return 'bg-green-100 text-[#1E7A4E]';
+    }
+  }
+
+  getStatutFournisseurDotClass(statut: string | undefined): string {
+    switch (statut) {
+      case 'Non conforme': return 'bg-red-700';
+      case 'Suspendu':     return 'bg-orange-700';
+      default:             return 'bg-[#1E7A4E]';
+    }
   }
 }

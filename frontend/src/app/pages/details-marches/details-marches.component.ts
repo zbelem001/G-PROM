@@ -794,26 +794,19 @@ export class DetailsMarchesComponent implements OnInit {
       if (existing) {
         const { idSoumissionAttribuee, ...update } = payload;
         const updated = await updateAttributaire(this.newAttributionId, update);
-        this.ngZone.run(() => {
-          const idx = this.attributaires.findIndex((a) => a.idSoumissionAttribuee === this.newAttributionId);
-          if (idx >= 0) this.attributaires[idx] = updated;
-          this.isSavingAttribution = false;
-          this.showAttributionDrawer = false;
-        });
+        const idx = this.attributaires.findIndex((a) => a.idSoumissionAttribuee === this.newAttributionId);
+        if (idx >= 0) this.attributaires[idx] = updated;
       } else {
         const created = await createAttributaire(payload);
-        this.ngZone.run(() => {
-          this.attributaires.unshift(created);
-          this.isSavingAttribution = false;
-          this.showAttributionDrawer = false;
-        });
+        this.attributaires.unshift(created);
       }
+      this.showAttributionDrawer = false;
     } catch (error: any) {
-      this.ngZone.run(() => {
-        this.attributionErrorMessage = error?.message || "Impossible d'enregistrer l'attribution.";
-        console.error('[DetailsMarches] saveAttribution failed', error);
-        this.isSavingAttribution = false;
-      });
+      this.attributionErrorMessage = error?.message || "Impossible d'enregistrer l'attribution.";
+      console.error('[DetailsMarches] saveAttribution failed', error);
+    } finally {
+      this.isSavingAttribution = false;
+      this.cd.detectChanges();
     }
   }
 
@@ -854,13 +847,8 @@ export class DetailsMarchesComponent implements OnInit {
           numbAvenant: this.newAvenantNumb,
           Devise: this.newAvenantDevise as 'XOF' | 'EUR' | 'USD' || undefined,
         });
-        this.ngZone.run(() => {
-          const idx = this.avenants.findIndex((a) => a.idAvenant === this.editingAvenant!.idAvenant);
-          if (idx >= 0) this.avenants[idx] = updated;
-          this.showAvenantDrawer = false;
-          this.editingAvenant = null;
-          this.isSavingAvenant = false;
-        });
+        const idx = this.avenants.findIndex((a) => a.idAvenant === this.editingAvenant!.idAvenant);
+        if (idx >= 0) this.avenants[idx] = updated;
       } else {
         const created = await createAvenant({
           idSoumissionAttribuee: this.newAvenantSoumissionId,
@@ -869,19 +857,16 @@ export class DetailsMarchesComponent implements OnInit {
           DateProrogation: this.newAvenantDateProrogation || undefined,
           Devise: this.newAvenantDevise as 'XOF' | 'EUR' | 'USD' || undefined,
         });
-        this.ngZone.run(() => {
-          this.avenants.push(created);
-          this.avenants.sort((a, b) => b.numbAvenant - a.numbAvenant);
-          this.showAvenantDrawer = false;
-          this.editingAvenant = null;
-          this.isSavingAvenant = false;
-        });
+        this.avenants.push(created);
+        this.avenants.sort((a, b) => b.numbAvenant - a.numbAvenant);
       }
+      this.showAvenantDrawer = false;
+      this.editingAvenant = null;
     } catch (error: any) {
-      this.ngZone.run(() => {
-        this.avenantErrorMessage = error?.message || "Impossible d'enregistrer l'avenant.";
-        this.isSavingAvenant = false;
-      });
+      this.avenantErrorMessage = error?.message || "Impossible d'enregistrer l'avenant.";
+    } finally {
+      this.isSavingAvenant = false;
+      this.cd.detectChanges();
     }
   }
 
@@ -889,9 +874,8 @@ export class DetailsMarchesComponent implements OnInit {
     if (!confirm(`Voulez-vous vraiment supprimer cet avenant ?`)) return;
     try {
       await deleteAvenant(idAvenant);
-      this.ngZone.run(() => {
-        this.avenants = this.avenants.filter((a) => a.idAvenant !== idAvenant);
-      });
+      this.avenants = this.avenants.filter((a) => a.idAvenant !== idAvenant);
+      this.cd.detectChanges();
     } catch (error: any) {
       alert(error?.message || "Impossible de supprimer l'avenant.");
     }

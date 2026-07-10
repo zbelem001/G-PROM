@@ -123,9 +123,15 @@ export interface ConsultationApi {
   DateConsultation?: string;
 }
 
+export interface SoumissionDetail extends Soumission {
+  lotDescription?: string;
+  numbMarche?: string;
+  estAdjugee?: boolean;
+}
+
 export interface FournisseurDetails {
   fournisseur: Fournisseur;
-  soumissions: Soumission[];
+  soumissions: SoumissionDetail[];
   documents: Document[];
 }
 

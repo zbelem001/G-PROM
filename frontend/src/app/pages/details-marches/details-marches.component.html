@@ -1356,6 +1356,19 @@
 
               <div class="grid grid-cols-2 gap-4">
                 <div class="flex flex-col gap-1.5">
+                  <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Date de dépôt</label>
+                  <input name="newSoumissionDate" [(ngModel)]="newSoumissionDate" type="date"
+                         class="w-full bg-surface-container-highest border-none text-sm text-on-surface px-4 py-3 rounded-[10px] focus:ring-0 focus:bg-surface-container-lowest" />
+                </div>
+                <div class="flex flex-col gap-1.5">
+                  <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Heure de dépôt</label>
+                  <input name="newSoumissionHeure" [(ngModel)]="newSoumissionHeure" type="time"
+                         class="w-full bg-surface-container-highest border-none text-sm text-on-surface px-4 py-3 rounded-[10px] focus:ring-0 focus:bg-surface-container-lowest" />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div class="flex flex-col gap-1.5">
                   <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Montant (HT)</label>
                   <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow flex items-center bg-surface-container-highest focus-within:bg-surface-container-lowest">
                     <input name="newSoumissionMontant" [(ngModel)]="newSoumissionMontant" required class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0" placeholder="0.00" type="number" />

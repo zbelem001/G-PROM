@@ -39,49 +39,55 @@ export class FournisseurService {
   }
 
   async findDetails(idFournisseur: number) {
-    const fournisseur = await this.findOne(idFournisseur);
+    // Soumission table: lowercase columns (idfournisseur, numblot, idsoumission, montantprev)
+    // Lot table: lowercase columns (numblot, numbmarche, description)
+    // Attributaire table: PascalCase columns (idSoumissionAttribuee)
+    // Document table: PascalCase columns (numbLot, RapportAnalyse)
+    const [fournisseur, { data: soumissionsRaw, error: soumissionsError }] = await Promise.all([
+      this.findOne(idFournisseur),
+      this.supabaseService.client.from('Soumission').select('*').eq('idfournisseur', idFournisseur),
+    ]);
+    if (soumissionsError) throw new Error(soumissionsError.message);
 
-    const { data: soumissionsData, error: soumissionsError } = await this.supabaseService.client
-      .from('Soumission')
-      .select('*')
-      .eq('idfournisseur', idFournisseur);
-    if (soumissionsError) {
-      throw new Error(soumissionsError.message);
-    }
+    const rawLotKeys = (soumissionsRaw ?? []).map((s: any) => s.numblot).filter(Boolean);
+    const soumissionIds = (soumissionsRaw ?? []).map((s: any) => String(s.idsoumission ?? '')).filter(Boolean);
 
-    const lotKeys = (soumissionsData ?? []).map((soumission: any) => soumission.numbLot).filter(Boolean);
-    const lotQuery = lotKeys.length
-      ? await this.supabaseService.client.from('Lot').select('*').in('numbLot', lotKeys)
-      : { data: [], error: null };
-    if (lotQuery.error) {
-      throw new Error(lotQuery.error.message);
-    }
+    const [lotQuery, documentQuery, attributaireQuery] = await Promise.all([
+      rawLotKeys.length
+        ? this.supabaseService.client.from('Lot').select('*').in('numblot', rawLotKeys)
+        : Promise.resolve({ data: [], error: null }),
+      rawLotKeys.length
+        ? this.supabaseService.client.from('Document').select('*').in('numblot', rawLotKeys)
+        : Promise.resolve({ data: [], error: null }),
+      soumissionIds.length
+        ? this.supabaseService.client.from('Attributaire').select('*').in('idsoumissionattribuee', soumissionIds)
+        : Promise.resolve({ data: [], error: null }),
+    ]);
 
-    const documentQuery = lotKeys.length
-      ? await this.supabaseService.client.from('Document').select('*').in('numbLot', lotKeys)
-      : { data: [], error: null };
-    if (documentQuery.error) {
-      throw new Error(documentQuery.error.message);
-    }
+    const lotByNumblot = new Map<string, any>(
+      (lotQuery.data ?? []).map((l: any) => [String(l.numblot), l])
+    );
+    const adjugeeIds = new Set(
+      (attributaireQuery.data ?? []).map((a: any) => String(a.idsoumissionattribuee ?? a.idSoumissionAttribuee ?? ''))
+    );
 
-    const normalizedLots = (lotQuery.data ?? []).map((lot: any) => this.normalizeLot(lot));
-    const lotByNumbLot = new Map<string, any>(normalizedLots.map((lot: any) => [String(lot.numbLot), lot] as [string, any]));
-    const soumissions = (soumissionsData ?? []).map((soumission: any) => {
-      const normalizedSoumission = this.normalizeSoumission(soumission);
+    const soumissions = (soumissionsRaw ?? []).map((s: any) => {
+      const lot = lotByNumblot.get(String(s.numblot ?? ''));
       return {
-        ...normalizedSoumission,
-        lotDescription: lotByNumbLot.get(String(normalizedSoumission.numbLot))?.Description,
-        numbMarche: lotByNumbLot.get(String(normalizedSoumission.numbLot))?.numbMarche,
+        idSoumission: s.idsoumission,
+        numbLot: s.numblot,
+        idFournisseur: s.idfournisseur,
+        DateDepot: s.datedepot,
+        Heure: s.heure,
+        MontantPrev: s.montantprev ?? 0,
+        lotDescription: lot?.description,
+        numbMarche: lot?.numbmarche,
+        estAdjugee: adjugeeIds.has(String(s.idsoumission ?? '')),
       };
     });
 
     const documents = (documentQuery.data ?? []).map((doc: any) => this.normalizeDocument(doc));
-
-    return {
-      fournisseur,
-      soumissions,
-      documents,
-    };
+    return { fournisseur, soumissions, documents };
   }
 
   private normalizeFournisseur(raw: any): any {
@@ -108,31 +114,6 @@ export class FournisseurService {
       Telephone1Repr: raw.telephone1repr ?? raw.Telephone1Repr,
       EmailRepr: raw.emailrepr ?? raw.EmailRepr,
       Statut: raw.statut ?? raw.Statut,
-    };
-  }
-
-  private normalizeSoumission(raw: any): any {
-    if (!raw) return raw;
-    return {
-      idSoumission: raw.idsoumission ?? raw.idSoumission,
-      numbLot: raw.numbLot ?? raw.numblot ?? raw.numb_lot,
-      idFournisseur: raw.idfournisseur ?? raw.idFournisseur,
-      DateDepot: raw.datedepot ?? raw.DateDepot,
-      Heure: raw.heure ?? raw.Heure,
-      Observation: raw.observation ?? raw.Observation,
-      DelaiExecutionPrev: raw.delaiexecutionprev ?? raw.DelaiExecutionPrev,
-      MontantPrev: raw.montantprev ?? raw.MontantPrev,
-      nbExemplaire: raw.nbexemplaire ?? raw.nbExemplaire,
-    };
-  }
-
-  private normalizeLot(raw: any): any {
-    if (!raw) return raw;
-    return {
-      numbLot: raw.numbLot ?? raw.numblot ?? raw.numb_lot,
-      numbMarche: raw.numbMarche ?? raw.numbmarche ?? raw.numb_marche,
-      Description: raw.Description ?? raw.description,
-      numbContrat: raw.numbContrat ?? raw.numbcontrat ?? raw.numb_contrat,
     };
   }
 
