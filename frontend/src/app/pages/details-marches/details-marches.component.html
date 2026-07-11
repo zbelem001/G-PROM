@@ -2,106 +2,77 @@
   <app-menu></app-menu>
   <main class="flex-1 ml-[240px] flex flex-col h-screen overflow-y-auto bg-surface relative">
     <app-header></app-header>
-    <main class="flex-1 pt-28 p-8 bg-surface">
+    <div class="flex-1 pt-24 px-8 pb-8 bg-surface">
       <div class="mx-auto w-full max-w-[1600px]">
-        <div class="mb-8 flex justify-between items-start">
-        <div>
-          <div class="flex items-center gap-3 mb-2">
-            <h2 class="font-headline text-[18px] font-bold text-on-surface">{{ market?.numbMarche || 'MAR-XXXX-XXX' }}</h2>
-            <span class="px-2.5 py-1 rounded-[6px] text-xs font-medium bg-[rgba(118,211,200,0.15)] text-primary-fixed-dim flex items-center gap-1.5">
-              <span class="w-1.5 h-1.5 rounded-full bg-primary-fixed-dim"></span>
+
+        <!-- En-tête -->
+        <div class="flex items-center justify-between mb-6 pt-2">
+          <div class="flex flex-col gap-1">
+            <h1 class="text-3xl font-bold text-slate-900 leading-tight">{{ market?.numbMarche || '—' }}</h1>
+            <p class="text-sm text-slate-400 max-w-2xl">{{ market?.Description || 'Description non disponible.' }}</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-widest bg-green-100 text-[#1E7A4E]">
+              <span class="h-1.5 w-1.5 rounded-full bg-[#1E7A4E]"></span>
               {{ market?.Statut || 'Réception' }}
             </span>
+            <button type="button" (click)="toggleStatusDrawer()"
+              class="flex items-center gap-2 bg-primary text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity">
+              <span class="material-symbols-outlined text-[16px]">edit</span>
+              Modifier le statut
+            </button>
           </div>
-          <p class="text-on-surface-variant text-sm max-w-2xl leading-relaxed">
-            {{ market?.Description || 'Description du marché non disponible.' }}
-          </p>
         </div>
-        <button type="button" (click)="toggleStatusDrawer()" class="px-5 py-2.5 rounded-[10px] bg-[#039CD3] text-white font-medium text-sm shadow-[0_4px_14px_rgba(26,46,68,0.08)] hover:shadow-[0_6px_20px_rgba(26,46,68,0.12)] transition-all flex items-center gap-2">
-          <span class="material-symbols-outlined text-[18px]">edit</span>
-          Modifier le statut
-        </button>
-      </div>
-      <div class="flex flex-wrap gap-2 mb-8 border-b border-outline-variant/15 pb-2 overflow-x-auto no-scrollbar">
-        <button
-          type="button"
-          (click)="setActiveTab('Informations générales')"
-          [ngClass]="{
-            'bg-[#E42819] text-white border-transparent': activeTab === 'Informations générales',
-            'bg-white text-on-surface-variant border-surface-container-lowest hover:text-on-surface': activeTab !== 'Informations générales'
-          }"
-          class="font-medium text-sm rounded-[12px] px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
-        >
-          Informations générales
-        </button>
-        <button
-          type="button"
-          (click)="setActiveTab('Lots')"
-          [ngClass]="{
-            'bg-[#E42819] text-white border-transparent': activeTab === 'Lots',
-            'bg-white text-on-surface-variant border-surface-container-lowest hover:text-on-surface': activeTab !== 'Lots'
-          }"
-          class="font-medium text-sm rounded-[12px] px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
-        >
-          Lots
-        </button>
-        <button
-          type="button"
-          (click)="setActiveTab('Consultation')"
-          [ngClass]="{
-            'bg-[#E42819] text-white border-transparent': activeTab === 'Consultation',
-            'bg-white text-on-surface-variant border-surface-container-lowest hover:text-on-surface': activeTab !== 'Consultation'
-          }"
-          class="font-medium text-sm rounded-[12px] px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
-        >
-          Consultation
-        </button>
-        <button
-          type="button"
-          (click)="setActiveTab('Soumissions')"
-          [ngClass]="{
-            'bg-[#E42819] text-white border-transparent': activeTab === 'Soumissions',
-            'bg-white text-on-surface-variant border-surface-container-lowest hover:text-on-surface': activeTab !== 'Soumissions'
-          }"
-          class="font-medium text-sm rounded-[12px] px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
-        >
-          Soumissions
-        </button>
-        <button
-          type="button"
-          (click)="setActiveTab('Analyse (SCT)')"
-          [ngClass]="{
-            'bg-[#E42819] text-white border-transparent': activeTab === 'Analyse (SCT)',
-            'bg-white text-on-surface-variant border-surface-container-lowest hover:text-on-surface': activeTab !== 'Analyse (SCT)'
-          }"
-          class="font-medium text-sm rounded-[12px] px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
-        >
-          Analyse (SCT)
-        </button>
-        <button
-          type="button"
-          (click)="setActiveTab('Attribution')"
-          [ngClass]="{
-            'bg-[#E42819] text-white border-transparent': activeTab === 'Attribution',
-            'bg-white text-on-surface-variant border-surface-container-lowest hover:text-on-surface': activeTab !== 'Attribution'
-          }"
-          class="font-medium text-sm rounded-[12px] px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
-        >
-          Attribution
-        </button>
-        <button
-          type="button"
-          (click)="setActiveTab('Avenants')"
-          [ngClass]="{
-            'bg-[#E42819] text-white border-transparent': activeTab === 'Avenants',
-            'bg-white text-on-surface-variant border-surface-container-lowest hover:text-on-surface': activeTab !== 'Avenants'
-          }"
-          class="font-medium text-sm rounded-[12px] px-4 py-2 shadow-sm border whitespace-nowrap transition-colors duration-200"
-        >
-          Avenants
-        </button>
-      </div>
-      <div class="bg-surface-container-low rounded-xl p-1">
+
+        <!-- Onglets -->
+        <div class="bg-white rounded-xl border border-slate-100 mb-6">
+          <div class="flex overflow-x-auto no-scrollbar border-b border-slate-100">
+            <button type="button" (click)="setActiveTab('Informations générales')"
+              class="px-5 py-4 text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition-colors border-b-2 shrink-0"
+              [class.border-primary]="activeTab === 'Informations générales'"
+              [class.text-primary]="activeTab === 'Informations générales'"
+              [class.border-transparent]="activeTab !== 'Informations générales'"
+              [class.text-slate-400]="activeTab !== 'Informations générales'">Informations générales</button>
+            <button type="button" (click)="setActiveTab('Lots')"
+              class="px-5 py-4 text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition-colors border-b-2 shrink-0"
+              [class.border-primary]="activeTab === 'Lots'"
+              [class.text-primary]="activeTab === 'Lots'"
+              [class.border-transparent]="activeTab !== 'Lots'"
+              [class.text-slate-400]="activeTab !== 'Lots'">Lots</button>
+            <button type="button" (click)="setActiveTab('Consultation')"
+              class="px-5 py-4 text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition-colors border-b-2 shrink-0"
+              [class.border-primary]="activeTab === 'Consultation'"
+              [class.text-primary]="activeTab === 'Consultation'"
+              [class.border-transparent]="activeTab !== 'Consultation'"
+              [class.text-slate-400]="activeTab !== 'Consultation'">Consultation</button>
+            <button type="button" (click)="setActiveTab('Soumissions')"
+              class="px-5 py-4 text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition-colors border-b-2 shrink-0"
+              [class.border-primary]="activeTab === 'Soumissions'"
+              [class.text-primary]="activeTab === 'Soumissions'"
+              [class.border-transparent]="activeTab !== 'Soumissions'"
+              [class.text-slate-400]="activeTab !== 'Soumissions'">Soumissions</button>
+            <button type="button" (click)="setActiveTab('Analyse (SCT)')"
+              class="px-5 py-4 text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition-colors border-b-2 shrink-0"
+              [class.border-primary]="activeTab === 'Analyse (SCT)'"
+              [class.text-primary]="activeTab === 'Analyse (SCT)'"
+              [class.border-transparent]="activeTab !== 'Analyse (SCT)'"
+              [class.text-slate-400]="activeTab !== 'Analyse (SCT)'">Analyse (SCT)</button>
+            <button type="button" (click)="setActiveTab('Attribution')"
+              class="px-5 py-4 text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition-colors border-b-2 shrink-0"
+              [class.border-primary]="activeTab === 'Attribution'"
+              [class.text-primary]="activeTab === 'Attribution'"
+              [class.border-transparent]="activeTab !== 'Attribution'"
+              [class.text-slate-400]="activeTab !== 'Attribution'">Attribution</button>
+            <button type="button" (click)="setActiveTab('Avenants')"
+              class="px-5 py-4 text-[10px] font-bold uppercase tracking-widest whitespace-nowrap transition-colors border-b-2 shrink-0"
+              [class.border-primary]="activeTab === 'Avenants'"
+              [class.text-primary]="activeTab === 'Avenants'"
+              [class.border-transparent]="activeTab !== 'Avenants'"
+              [class.text-slate-400]="activeTab !== 'Avenants'">Avenants</button>
+          </div>
+
+          <!-- Contenu onglets -->
+          <div class="p-6">
         <ng-container *ngIf="activeTab === 'Informations générales'">
           <div *ngIf="market; else marcheLoading" class="grid grid-cols-1 lg:grid-cols-3 gap-1">
             <div class="bg-surface-container-lowest rounded-[16px] p-6 col-span-2 shadow-[0_2px_12px_rgba(26,46,68,0.02)]">
@@ -862,9 +833,10 @@
             </div>
           </div>
         </ng-container>
-        </div>
-      </div>
-    </main>
+          </div><!-- /p-6 -->
+        </div><!-- /onglets card -->
+      </div><!-- /mx-auto -->
+    </div><!-- /flex-1 pt-24 -->
     <div *ngIf="showAddLot" class="fixed inset-0 z-50 flex justify-end">
       <div class="absolute inset-0 bg-surface/40 backdrop-blur-sm" (click)="toggleAddLot()"></div>
       <aside class="relative right-0 top-0 h-full w-full max-w-[450px] bg-white shadow-[-20px_0_40px_rgba(26,46,68,0.15)] flex flex-col p-8 gap-8 overflow-y-auto">
@@ -1406,4 +1378,6 @@
             </button>
           </footer>
         </aside>
-      </div>
+      </div><!-- /showSoumissionDrawer -->
+  </main><!-- /outer main -->
+</div><!-- /root -->

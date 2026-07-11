@@ -27,27 +27,9 @@ interface MarketCard {
 })
 export class SuivieMarchesComponent {
   statuses = [
-    {
-      code: 'a_lancer',
-      label: 'À lancer',
-      badgeClass: 'bg-[#d1f3ea] text-[#1a6e5f]',
-      dotClass: 'bg-[#76d3c8]/40',
-      boardClass: 'bg-[#effaf7]',
-    },
-    {
-      code: 'reception',
-      label: 'Réception',
-      badgeClass: 'bg-[#dbe5ff] text-[#1f4db3]',
-      dotClass: 'bg-[#43a399]/20',
-      boardClass: 'bg-[#eff2ff]',
-    },
-    {
-      code: 'soumission',
-      label: 'Soumission',
-      badgeClass: 'bg-[#f7d8ff] text-[#7a389b]',
-      dotClass: 'bg-[#b95bd7]/20',
-      boardClass: 'bg-[#f6e7ff]',
-    },
+    { code: 'a_lancer',   label: 'À lancer',   dotClass: 'bg-emerald-400' },
+    { code: 'reception',  label: 'Réception',  dotClass: 'bg-blue-400'    },
+    { code: 'soumission', label: 'Soumission', dotClass: 'bg-violet-400'  },
   ];
 
   cards: MarketCard[] = [

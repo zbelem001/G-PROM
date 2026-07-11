@@ -160,6 +160,24 @@ export class FournisseursComponent implements OnInit {
     }
   }
 
+  getStatutClass(statut: string | undefined): string {
+    switch (statut) {
+      case 'Non conforme': return 'bg-red-100 text-red-700';
+      case 'Suspendu':     return 'bg-orange-100 text-orange-700';
+      case 'Interne':      return 'bg-blue-50 text-blue-700';
+      default:             return 'bg-green-100 text-[#1E7A4E]';
+    }
+  }
+
+  getStatutDotClass(statut: string | undefined): string {
+    switch (statut) {
+      case 'Non conforme': return 'bg-red-700';
+      case 'Suspendu':     return 'bg-orange-700';
+      case 'Interne':      return 'bg-blue-700';
+      default:             return 'bg-[#1E7A4E]';
+    }
+  }
+
   async onDeleteFournisseur(fournisseur: Fournisseur, event: Event) {
     event.stopPropagation();
     const confirmed = confirm(`Confirmez-vous la suppression du fournisseur ${fournisseur.RaisonSocial} ?`);

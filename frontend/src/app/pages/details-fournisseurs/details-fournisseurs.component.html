@@ -2,164 +2,203 @@
   <app-menu></app-menu>
   <main class="flex-1 ml-[240px] flex flex-col h-screen overflow-hidden bg-surface relative">
     <app-header></app-header>
-    <div class="flex-1 pt-24 p-8 bg-surface">
-      <div class="w-full">
-        <section class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-          <div class="space-y-2">
-            <div class="flex flex-wrap items-center gap-3">
-              <span [ngClass]="getStatutFournisseurClass(fournisseur?.Statut)" class="text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest flex items-center gap-2">
-                <span class="h-1.5 w-1.5 rounded-full" [ngClass]="getStatutFournisseurDotClass(fournisseur?.Statut)"></span>
-                {{ fournisseur?.Statut || 'Conforme' }}
-              </span>
-              <span class="text-slate-500 text-sm font-medium">ID: F-{{ fournisseur?.idFournisseur ?? '0000' }}</span>
-            </div>
-            <h2 class="text-[18px] font-black text-primary leading-tight tracking-tight">{{ fournisseur?.RaisonSocial || 'Nom du fournisseur' }}</h2>
-            <p class="text-on-surface-variant max-w-2xl text-lg font-medium opacity-80">{{ fournisseur?.DomaineActivite || 'Activité non renseignée' }}</p>
-          </div>
-        </section>
+    <div class="flex-1 pt-24 px-8 pb-8 bg-surface overflow-hidden">
 
-        <div *ngIf="loading" class="px-6 py-8 text-center text-on-surface-variant">Chargement du profil fournisseur...</div>
-        <div *ngIf="!loading && errorMessage" class="px-6 py-8 text-center text-error">{{ errorMessage }}</div>
-        <section *ngIf="!loading" class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-          <div class="bg-surface-container-lowest p-6 rounded-xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
-            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Marchés gagnés</p>
-            <div class="flex items-end justify-between gap-4">
-              <span class="text-4xl font-black text-primary tracking-tight">{{ stats.marchesGagnes }}</span>
-              <span class="text-green-600 bg-green-50 px-2 py-1 rounded text-xs font-bold">{{ stats.croissance }}</span>
-            </div>
-          </div>
-          <div class="bg-surface-container-lowest p-6 rounded-xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
-            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Valeur totale contrats</p>
-            <div class="flex items-end justify-between gap-4">
-              <span class="text-4xl font-black text-primary tracking-tight">{{ stats.valeurContrats }}</span>
-            </div>
-          </div>
-          <div class="bg-surface-container-lowest p-6 rounded-xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
-            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Taux de succès</p>
-            <div class="flex items-end justify-between gap-4">
-              <span class="text-4xl font-black text-primary tracking-tight">{{ stats.tauxSucces }}</span>
-              <div class="w-24 h-2 bg-slate-100 rounded-full overflow-hidden">
-                <div class="bg-primary h-full" [style.width]="stats.tauxSucces"></div>
-              </div>
-            </div>
-          </div>
-          <div class="bg-surface-container-lowest p-6 rounded-xl border border-slate-100 shadow-sm transition-all hover:shadow-md">
-            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">Marchés candidaté</p>
-            <div class="flex items-end justify-between gap-4">
-              <span class="text-4xl font-black text-primary tracking-tight">{{ stats.marchesCandidate }}</span>
-              <span class="text-blue-600 bg-blue-50 px-2 py-1 rounded text-xs font-bold">Nouveaux</span>
-            </div>
-          </div>
-        </section>
+      <!-- Chargement / Erreur -->
+      <div *ngIf="loading" class="py-8 text-center text-slate-400 text-sm">Chargement…</div>
+      <div *ngIf="!loading && errorMessage" class="py-8 text-center text-red-500 text-sm">{{ errorMessage }}</div>
 
-        <section class="bg-surface-container-lowest rounded-xl shadow-sm border border-slate-100 overflow-hidden mb-12">
-          <div class="flex border-b border-slate-100 bg-surface-container-low/30">
-            <button type="button" (click)="setActiveTab('Profil')" class="px-8 py-5 text-xs font-bold uppercase tracking-widest transition-colors" [class.text-primary]="activeTab === 'Profil'" [class.border-b-2]="activeTab === 'Profil'" [class.border-primary]="activeTab === 'Profil'" [class.text-slate-400]="activeTab !== 'Profil'">Profil</button>
-            <button type="button" (click)="setActiveTab('Offres & Candidatures')" class="px-8 py-5 text-xs font-bold uppercase tracking-widest transition-colors" [class.text-primary]="activeTab === 'Offres & Candidatures'" [class.border-b-2]="activeTab === 'Offres & Candidatures'" [class.border-primary]="activeTab === 'Offres & Candidatures'" [class.text-slate-400]="activeTab !== 'Offres & Candidatures'">Offres &amp; Candidatures</button>
+      <div *ngIf="!loading" class="h-full flex flex-col gap-6">
+
+        <!-- En-tête fournisseur -->
+        <div class="flex items-center justify-between">
+          <div class="flex flex-col gap-1">
+            <h1 class="text-3xl font-bold text-slate-900 leading-tight">{{ fournisseur?.RaisonSocial || '—' }}</h1>
+            <div class="flex items-center gap-2">
+              <p class="text-sm text-slate-400">{{ fournisseur?.DomaineActivite || '—' }}</p>
+              <span class="text-slate-300">·</span>
+              <span class="text-[11px] text-slate-400 font-medium tracking-wide">F-{{ fournisseur?.idFournisseur ?? '—' }}</span>
+            </div>
           </div>
-          <div class="p-8">
-            <div *ngIf="activeTab === 'Profil'" class="grid grid-cols-1 md:grid-cols-2 gap-12">
-              <div class="space-y-8">
-                <div>
-                  <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em] mb-4">Informations de Contact</p>
-                  <div class="space-y-4">
-                    <div class="flex flex-col">
-                      <span class="text-xs text-slate-500 font-medium">Adresse Siège</span>
-                      <span class="text-primary font-semibold">{{ fournisseur?.AdresseGeo || fournisseur?.AdressePost || 'Non renseignée' }}</span>
-                    </div>
-                    <div class="flex flex-col">
-                      <span class="text-xs text-slate-500 font-medium">Téléphone Principal</span>
-                      <span class="text-primary font-semibold">{{ fournisseur?.Telephone1 || 'N/A' }}</span>
-                    </div>
-                    <div class="flex flex-col">
-                      <span class="text-xs text-slate-500 font-medium">Email Professionnel</span>
-                      <span class="text-primary font-semibold">{{ fournisseur?.Email || 'N/A' }}</span>
-                    </div>
-                    <div class="flex flex-col">
-                      <span class="text-xs text-slate-500 font-medium">Site Web</span>
-                      <span class="text-primary font-semibold">{{ fournisseur?.SiteWeb || 'Non renseigné' }}</span>
-                    </div>
-                  </div>
-                </div>
-                    <div class="flex flex-col">
-                      <span class="text-xs text-slate-500 font-medium">Localisation</span>
-                      <span class="text-primary font-semibold">{{ fournisseur?.Ville || 'Non renseignée' }}</span>
-                    </div>
-              </div>
-              <div class="space-y-8">
-                <div>
-                  <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em] mb-4">Données Administratives</p>
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="flex flex-col">
-                      <span class="text-xs text-slate-500 font-medium">Numéro IFU</span>
-                      <span class="text-primary font-semibold">{{ fournisseur?.numIFU || 'N/A' }}</span>
-                    </div>
-                    <div class="flex flex-col">
-                      <span class="text-xs text-slate-500 font-medium">Capital Social</span>
-                      <span class="text-primary font-semibold">50.000.000 FCFA</span>
-                    </div>
-                    <div class="flex flex-col">
-                      <span class="text-xs text-slate-500 font-medium">RCCM</span>
-                      <span class="text-primary font-semibold">{{ fournisseur?.numRCCM || 'N/A' }}</span>
-                    </div>
-                    <div class="flex flex-col">
-                      <span class="text-xs text-slate-500 font-medium">Date de Création</span>
-                      <span class="text-primary font-semibold">12 Mars 2018</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="border-t border-slate-100 pt-8">
-                  <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.1em] mb-4">Gérant / Signataire</p>
-                  <div class="flex items-center gap-4">
-                    <img alt="Profile" class="h-12 w-12 rounded-full object-cover grayscale brightness-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDbupZ5jSH-dwHzOlXM2kTF7w1P7FU1Y5ocoGGh8eOblwpeA5ZPpZIcXTShyGbLg_usEcLHX6H3E9FJCjx1U3D4kBIVVFcHJGOrbgLboGQY7vy66HjTXbiKQTniH5bxoMjie78l_Q2ZYZMos19jKzZ8fNiu5b2ACx7wFBalpFhi6LkRXQ4eikziUBucelFgx2Pxuc5T6wkKkcCq96V_bIMv6gfgicAe6gmZYADql2YZ6ls9TXRrbc_DD3STSWYHmmHmVtBVYfqCSww" />
-                    <div>
-                      <p class="text-sm font-bold text-primary">{{ fournisseur?.NomPrenomRepr || 'N/A' }}</p>
-                      <p class="text-xs text-slate-500">{{ fournisseur?.FonctionRepr || 'Représentant' }}</p>
-                    </div>
-                  </div>
-                </div>
+          <span [ngClass]="getStatutFournisseurClass(fournisseur?.Statut)"
+            class="inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-widest">
+            <span class="h-1.5 w-1.5 rounded-full" [ngClass]="getStatutFournisseurDotClass(fournisseur?.Statut)"></span>
+            {{ fournisseur?.Statut || 'Conforme' }}
+          </span>
+        </div>
+
+        <!-- Cartes stats -->
+        <div class="grid grid-cols-4 gap-4 shrink-0">
+          <div class="bg-white rounded-xl border border-slate-100 px-5 py-4">
+            <p class="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-2">Marchés gagnés</p>
+            <div class="flex items-end gap-3">
+              <span class="text-3xl font-black text-slate-900 leading-none">{{ stats.marchesGagnes }}</span>
+              <span class="text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded mb-0.5">{{ stats.croissance }}</span>
+            </div>
+          </div>
+          <div class="bg-white rounded-xl border border-slate-100 px-5 py-4">
+            <p class="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-2">Valeur contrats</p>
+            <span class="text-3xl font-black text-slate-900 leading-none">{{ stats.valeurContrats }}</span>
+          </div>
+          <div class="bg-white rounded-xl border border-slate-100 px-5 py-4">
+            <p class="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-2">Taux de succès</p>
+            <div class="flex items-end gap-3">
+              <span class="text-3xl font-black text-slate-900 leading-none">{{ stats.tauxSucces }}</span>
+              <div class="w-20 h-1.5 bg-slate-100 rounded-full overflow-hidden mb-1.5">
+                <div class="bg-primary h-full transition-all" [style.width]="stats.tauxSucces"></div>
               </div>
             </div>
-          <div *ngIf="activeTab === 'Offres & Candidatures'" class="space-y-8">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-separate border-spacing-0">
-              <thead>
-                <tr class="bg-surface-container-low text-slate-500 text-[10px] font-bold uppercase tracking-widest">
-                  <th class="px-6 py-4 rounded-tl-lg">N° Marché</th>
-                  <th class="px-6 py-4">Titre du Lot</th>
-                  <th class="px-6 py-4">Date Soumission</th>
-                  <th class="px-6 py-4">Montant Proposé</th>
-                  <th class="px-6 py-4 rounded-tr-lg">Statut</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-slate-50">
-                <tr *ngFor="let offre of offres" class="group hover:bg-slate-50/50 transition-colors">
-                  <td class="px-6 py-4 text-xs font-bold text-primary">{{ offre.marche }}</td>
-                  <td class="px-6 py-4 text-xs font-medium">{{ offre.lot }}</td>
-                  <td class="px-6 py-4 text-xs text-slate-500">{{ offre.dateSoumission }}</td>
-                  <td class="px-6 py-4 text-xs font-bold">{{ offre.montantPropose }}</td>
-                  <td class="px-6 py-4">
-                    <span
-                      class="text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter"
-                      [ngClass]="{
-                        'bg-green-100 text-[#1E7A4E]': offre.statut === 'Adjugé',
-                        'bg-blue-100 text-blue-700': offre.statut === 'En analyse',
-                        'bg-red-100 text-[#C0392B]': offre.statut === 'Rejeté'
-                      }"
-                    >
-                      {{ offre.statut }}
-                    </span>
-                  </td>
-                </tr>
-                <tr *ngIf="offres.length === 0">
-                  <td colspan="5" class="px-6 py-8 text-center text-on-surface-variant">Aucune offre ou candidature enregistrée.</td>
-                </tr>
-              </tbody>
-            </table>
+          </div>
+          <div class="bg-white rounded-xl border border-slate-100 px-5 py-4">
+            <p class="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-2">Marchés candidatés</p>
+            <span class="text-3xl font-black text-slate-900 leading-none">{{ stats.marchesCandidate }}</span>
           </div>
         </div>
+
+        <!-- Onglets + contenu -->
+        <div class="bg-white rounded-xl border border-slate-100 flex flex-col min-h-0 flex-1">
+          <!-- Onglets -->
+          <div class="flex border-b border-slate-100 shrink-0">
+            <button type="button" (click)="setActiveTab('Profil')"
+              class="px-7 py-4 text-[10px] font-bold uppercase tracking-widest transition-colors border-b-2"
+              [class.border-primary]="activeTab === 'Profil'"
+              [class.text-primary]="activeTab === 'Profil'"
+              [class.border-transparent]="activeTab !== 'Profil'"
+              [class.text-slate-400]="activeTab !== 'Profil'">
+              Profil
+            </button>
+            <button type="button" (click)="setActiveTab('Offres & Candidatures')"
+              class="px-7 py-4 text-[10px] font-bold uppercase tracking-widest transition-colors border-b-2"
+              [class.border-primary]="activeTab === 'Offres & Candidatures'"
+              [class.text-primary]="activeTab === 'Offres & Candidatures'"
+              [class.border-transparent]="activeTab !== 'Offres & Candidatures'"
+              [class.text-slate-400]="activeTab !== 'Offres & Candidatures'">
+              Offres &amp; Candidatures
+            </button>
           </div>
-    </section>
+
+          <!-- Contenu onglets -->
+          <div class="p-7 overflow-auto flex-1">
+
+            <!-- Onglet Profil -->
+            <div *ngIf="activeTab === 'Profil'" class="grid grid-cols-2 gap-10">
+
+              <!-- Colonne gauche : Contact -->
+              <div>
+                <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Informations de contact</p>
+                <div class="divide-y divide-slate-100">
+                  <div class="py-3">
+                    <span class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-0.5">Adresse siège</span>
+                    <span class="block text-sm font-semibold text-slate-900">{{ fournisseur?.AdresseGeo || fournisseur?.AdressePost || '—' }}</span>
+                  </div>
+                  <div class="py-3">
+                    <span class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-0.5">Ville</span>
+                    <span class="block text-sm font-semibold text-slate-900">{{ fournisseur?.Ville || '—' }}</span>
+                  </div>
+                  <div class="py-3">
+                    <span class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-0.5">Pays</span>
+                    <span class="block text-sm font-semibold text-slate-900">{{ fournisseur?.Pays || '—' }}</span>
+                  </div>
+                  <div class="py-3">
+                    <span class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-0.5">Téléphone</span>
+                    <span class="block text-sm font-semibold text-slate-900">{{ fournisseur?.Telephone1 || '—' }}</span>
+                  </div>
+                  <div class="py-3">
+                    <span class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-0.5">Email</span>
+                    <span class="block text-sm font-semibold text-slate-900">{{ fournisseur?.Email || '—' }}</span>
+                  </div>
+                  <div class="py-3">
+                    <span class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-0.5">Site web</span>
+                    <span class="block text-sm font-semibold text-slate-900">{{ fournisseur?.SiteWeb || '—' }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Colonne droite : Admin + Gérant -->
+              <div class="flex flex-col gap-8">
+                <!-- Données administratives -->
+                <div>
+                  <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Données administratives</p>
+                  <div class="divide-y divide-slate-100">
+                    <div class="py-3">
+                      <span class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-0.5">Forme juridique</span>
+                      <span class="block text-sm font-semibold text-slate-900">{{ fournisseur?.FormeJuridique || '—' }}</span>
+                    </div>
+                    <div class="py-3">
+                      <span class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-0.5">Numéro IFU</span>
+                      <span class="block text-sm font-semibold text-slate-900">{{ fournisseur?.numIFU || '—' }}</span>
+                    </div>
+                    <div class="py-3">
+                      <span class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-0.5">RCCM</span>
+                      <span class="block text-sm font-semibold text-slate-900">{{ fournisseur?.numRCCM || '—' }}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Gérant -->
+                <div>
+                  <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Gérant / Signataire</p>
+                  <div class="divide-y divide-slate-100">
+                    <div class="py-3">
+                      <span class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-0.5">Nom & Prénom</span>
+                      <span class="block text-sm font-semibold text-slate-900">{{ fournisseur?.NomPrenomRepr || '—' }}</span>
+                    </div>
+                    <div class="py-3">
+                      <span class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-0.5">Fonction</span>
+                      <span class="block text-sm font-semibold text-slate-900">{{ fournisseur?.FonctionRepr || '—' }}</span>
+                    </div>
+                    <div class="py-3">
+                      <span class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-0.5">Téléphone</span>
+                      <span class="block text-sm font-semibold text-slate-900">{{ fournisseur?.Telephone1Repr || '—' }}</span>
+                    </div>
+                    <div class="py-3">
+                      <span class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-0.5">Email</span>
+                      <span class="block text-sm font-semibold text-slate-900">{{ fournisseur?.EmailRepr || '—' }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Onglet Offres -->
+            <div *ngIf="activeTab === 'Offres & Candidatures'">
+              <table class="w-full text-left border-separate border-spacing-0">
+                <thead>
+                  <tr>
+                    <th class="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 pb-3 border-b border-slate-200 px-4 first:pl-0">N° Marché</th>
+                    <th class="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 pb-3 border-b border-slate-200 px-4">Lot</th>
+                    <th class="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 pb-3 border-b border-slate-200 px-4">Date</th>
+                    <th class="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 pb-3 border-b border-slate-200 px-4">Montant</th>
+                    <th class="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 pb-3 border-b border-slate-200 px-4">Statut</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  <tr *ngFor="let offre of offres" class="hover:bg-slate-50 transition-colors">
+                    <td class="py-3 px-4 first:pl-0 text-sm font-semibold text-slate-900">{{ offre.marche }}</td>
+                    <td class="py-3 px-4 text-sm text-slate-600">{{ offre.lot }}</td>
+                    <td class="py-3 px-4 text-sm text-slate-400">{{ offre.dateSoumission }}</td>
+                    <td class="py-3 px-4 text-sm font-semibold text-slate-900">{{ offre.montantPropose }}</td>
+                    <td class="py-3 px-4">
+                      <span class="text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-tighter"
+                        [ngClass]="{
+                          'bg-emerald-50 text-emerald-700': offre.statut === 'Adjugé',
+                          'bg-blue-50 text-blue-700': offre.statut === 'En analyse',
+                          'bg-slate-100 text-slate-600': offre.statut === 'Soumis',
+                          'bg-red-50 text-red-700': offre.statut === 'Rejeté'
+                        }">{{ offre.statut }}</span>
+                    </td>
+                  </tr>
+                  <tr *ngIf="offres.length === 0">
+                    <td colspan="5" class="py-8 text-center text-sm text-slate-400">Aucune offre enregistrée.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+
       </div>
     </div>
   </main>

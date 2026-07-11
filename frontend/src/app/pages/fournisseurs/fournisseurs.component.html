@@ -1,157 +1,220 @@
 <div class="bg-surface font-body text-on-surface min-h-screen flex overflow-hidden">
   <app-menu></app-menu>
-  <main class="flex-1 ml-[240px] flex flex-col h-screen overflow-y-auto bg-surface relative">
+  <main class="flex-1 ml-[240px] flex flex-col h-screen overflow-hidden bg-surface relative">
     <app-header></app-header>
-    <div class="flex-1 pt-24 px-8 py-6">
-      <div class="flex flex-col lg:flex-row justify-between items-start gap-6 mb-10 pt-4">
+    <div class="flex-1 pt-24 px-8 pb-8 overflow-auto">
+
+      <!-- En-tête page -->
+      <div class="flex items-center justify-between mb-6 pt-2">
         <div>
-          <h2 class="inline-block text-[18px] font-headline font-bold text-white tracking-tight bg-[#D9B412] rounded-[12px] px-3 py-2">FOURNISSEURS</h2>
+          <h1 class="text-2xl font-bold text-slate-900 uppercase tracking-wide">Fournisseurs</h1>
+          <p class="text-sm text-slate-400 mt-0.5">{{ fournisseurs.length }} prestataires enregistrés</p>
         </div>
-        <button type="button" (click)="toggleAddFournisseur()" class="flex items-center gap-2 bg-[#039CD3] text-white px-6 py-3 rounded-[10px] font-semibold text-sm shadow-[0_4px_12px_rgba(3,156,211,0.25)] hover:bg-[#0278a8] transition-all transform hover:-translate-y-0.5">
+        <button type="button" (click)="toggleAddFournisseur()"
+          class="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity">
           <span class="material-symbols-outlined text-lg">add</span>
-          Ajouter un Fournisseur
+          Ajouter un fournisseur
         </button>
       </div>
 
-      <div class="bg-surface-container-low rounded-[24px] p-6 lg:p-8">
-        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full lg:w-auto">
-            <div class="relative w-full sm:w-64">
-              <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
-              <input class="w-full pl-12 pr-4 py-3 rounded-2xl bg-surface-container-highest border border-outline-variant/20 text-sm font-medium text-on-surface focus:outline-none focus:ring-1 focus:ring-primary/20" placeholder="Rechercher..." type="text" />
+      <!-- Tableau card -->
+      <div class="bg-white rounded-xl border border-slate-100">
+
+        <!-- Barre outils -->
+        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+          <div class="flex items-center gap-3">
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+              <input class="pl-9 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-300 w-56" placeholder="Rechercher..." type="text" />
             </div>
-            <button class="flex items-center gap-2 px-4 py-2 bg-surface-container-lowest text-on-surface-variant text-sm font-medium rounded-2xl shadow-sm hover:bg-surface-bright transition-colors border border-outline-variant/15">
-              <span class="material-symbols-outlined text-lg">filter_list</span>
+            <button class="flex items-center gap-1.5 px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-500 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
+              <span class="material-symbols-outlined text-[16px]">filter_list</span>
               Filtres
             </button>
           </div>
-          <div class="text-sm text-outline font-medium">Affichage de {{ displayStart }} à {{ displayEnd }} sur {{ fournisseurs.length }} fournisseurs</div>
+          <span class="text-[11px] text-slate-400 font-medium">{{ displayStart }}–{{ displayEnd }} sur {{ fournisseurs.length }}</span>
         </div>
 
-        <div class="bg-surface-container-lowest rounded-[16px] shadow-[0_6px_24px_rgba(26,46,68,0.06)] overflow-hidden">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-              <thead>
-                <tr class="bg-surface-container-low border-b border-surface-container-lowest">
-                  <th class="px-6 py-4 text-xs font-semibold uppercase tracking-widest text-on-surface-variant">ID</th>
-                  <th class="px-6 py-4 text-xs font-semibold uppercase tracking-widest text-on-surface-variant">Raison sociale</th>
-                  <th class="px-6 py-4 text-xs font-semibold uppercase tracking-widest text-on-surface-variant">Domaine</th>
-                  <th class="px-6 py-4 text-xs font-semibold uppercase tracking-widest text-on-surface-variant">Ville</th>
-                  <th class="px-6 py-4 text-xs font-semibold uppercase tracking-widest text-on-surface-variant">Téléphone / Email</th>
-                  <th class="px-6 py-4 text-xs font-semibold uppercase tracking-widest text-on-surface-variant">Statut</th>
-                  <th class="px-6 py-4 text-xs font-semibold uppercase tracking-widest text-on-surface-variant text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-surface-container-low">
-                <tr *ngIf="loading">
-                  <td colspan="7" class="px-6 py-8 text-center text-on-surface-variant">Chargement des fournisseurs...</td>
-                </tr>
-                <tr *ngIf="!loading && fournisseurs.length === 0">
-                  <td colspan="7" class="px-6 py-8 text-center text-on-surface-variant">Aucun fournisseur trouvé. Ajoutez-en un pour commencer.</td>
-                </tr>
-                <tr *ngFor="let fournisseur of displayedFournisseurs"
-                    [routerLink]="['/fournisseurs/details']"
-                    [queryParams]="{ id: fournisseur.idFournisseur }"
-                    class="bg-white hover:bg-slate-50 transition-colors group cursor-pointer">
-                  <td class="px-6 py-4 text-sm font-medium text-slate-700">{{ fournisseur.idFournisseur }}</td>
-                  <td class="px-6 py-4">
-                    <p class="text-sm font-semibold text-slate-900">{{ fournisseur.RaisonSocial }}</p>
-                    <p class="text-xs text-slate-500">{{ fournisseur.FormeJuridique }}</p>
-                  </td>
-                  <td class="px-6 py-4 text-sm text-slate-700">{{ fournisseur.DomaineActivite }}</td>
-                  <td class="px-6 py-4 text-sm text-slate-700">{{ fournisseur.Ville }}</td>
-                  <td class="px-6 py-4 text-sm text-slate-700">
-                    <p>{{ fournisseur.Telephone1 }}</p>
-                    <p class="text-xs text-slate-500 truncate">{{ fournisseur.Email }}</p>
-                  </td>
-                  <td class="px-6 py-4">
-                    <span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-semibold bg-[#76d3c8]/15 text-[#0f766e]">{{ fournisseur.Statut || 'Externe' }}</span>
-                  </td>
-                  <td class="px-6 py-4 text-right">
-                    <button type="button" (click)="$event.stopPropagation()" [routerLink]="['/fournisseurs/details']" [queryParams]="{ id: fournisseur.idFournisseur }" class="p-2 text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">visibility</span></button>
-                    <button type="button" (click)="$event.stopPropagation()" class="p-2 text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
-                    <button type="button" (click)="onDeleteFournisseur(fournisseur, $event)" class="p-2 text-error hover:text-red-600 transition-colors"><span class="material-symbols-outlined text-[20px]">delete</span></button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        <!-- Tableau -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-separate border-spacing-0">
+            <thead>
+              <tr>
+                <th class="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 pt-4 pb-3 px-6 border-b border-slate-100">ID</th>
+                <th class="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 pt-4 pb-3 px-6 border-b border-slate-100">Raison sociale</th>
+                <th class="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 pt-4 pb-3 px-6 border-b border-slate-100">Domaine</th>
+                <th class="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 pt-4 pb-3 px-6 border-b border-slate-100">Ville</th>
+                <th class="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 pt-4 pb-3 px-6 border-b border-slate-100">Contact</th>
+                <th class="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 pt-4 pb-3 px-6 border-b border-slate-100">Statut</th>
+                <th class="text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 pt-4 pb-3 px-6 border-b border-slate-100 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-50">
+              <tr *ngIf="loading">
+                <td colspan="7" class="px-6 py-10 text-center text-sm text-slate-400">Chargement…</td>
+              </tr>
+              <tr *ngIf="!loading && fournisseurs.length === 0">
+                <td colspan="7" class="px-6 py-10 text-center text-sm text-slate-400">Aucun fournisseur trouvé.</td>
+              </tr>
+              <tr *ngFor="let fournisseur of displayedFournisseurs"
+                  [routerLink]="['/fournisseurs/details']"
+                  [queryParams]="{ id: fournisseur.idFournisseur }"
+                  class="hover:bg-slate-50 transition-colors cursor-pointer">
+                <td class="px-6 py-3.5">
+                  <span class="text-[11px] font-medium text-slate-400 tracking-wide">F-{{ fournisseur.idFournisseur }}</span>
+                </td>
+                <td class="px-6 py-3.5">
+                  <p class="text-sm font-semibold text-slate-900 leading-tight">{{ fournisseur.RaisonSocial }}</p>
+                  <p class="text-[11px] text-slate-400 mt-0.5">{{ fournisseur.FormeJuridique }}</p>
+                </td>
+                <td class="px-6 py-3.5">
+                  <span class="text-sm text-slate-600">{{ fournisseur.DomaineActivite }}</span>
+                </td>
+                <td class="px-6 py-3.5">
+                  <span class="text-sm text-slate-600">{{ fournisseur.Ville }}</span>
+                </td>
+                <td class="px-6 py-3.5">
+                  <p class="text-sm text-slate-600">{{ fournisseur.Telephone1 }}</p>
+                  <p class="text-[11px] text-slate-400 mt-0.5 truncate max-w-[180px]">{{ fournisseur.Email }}</p>
+                </td>
+                <td class="px-6 py-3.5">
+                  <span class="inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-widest"
+                    [ngClass]="getStatutClass(fournisseur.Statut)">
+                    <span class="h-1.5 w-1.5 rounded-full" [ngClass]="getStatutDotClass(fournisseur.Statut)"></span>
+                    {{ fournisseur.Statut || 'Externe' }}
+                  </span>
+                </td>
+                <td class="px-6 py-3.5 text-right">
+                  <button type="button" (click)="$event.stopPropagation()"
+                    [routerLink]="['/fournisseurs/details']" [queryParams]="{ id: fournisseur.idFournisseur }"
+                    class="p-1.5 text-slate-400 hover:text-primary transition-colors rounded">
+                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                  </button>
+                  <button type="button" (click)="$event.stopPropagation()"
+                    class="p-1.5 text-slate-400 hover:text-primary transition-colors rounded">
+                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                  </button>
+                  <button type="button" (click)="onDeleteFournisseur(fournisseur, $event)"
+                    class="p-1.5 text-slate-400 hover:text-red-500 transition-colors rounded">
+                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
-        <div class="flex justify-center items-center gap-2 mt-8">
-          <button type="button" (click)="previousPage()" [disabled]="currentPage <= 1" class="p-2 text-outline hover:bg-surface-container-highest rounded-lg transition-colors disabled:opacity-40"><span class="material-symbols-outlined">chevron_left</span></button>
-          <button *ngFor="let page of pageNumbers" type="button" (click)="setPage(page)" [ngClass]="{ 'bg-primary/10 text-primary font-bold': page === currentPage, 'text-outline': page !== currentPage }" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-surface-container-highest transition-colors text-sm">{{ page }}</button>
-          <button type="button" (click)="nextPage()" [disabled]="currentPage >= totalPages" class="p-2 text-outline hover:bg-surface-container-highest rounded-lg transition-colors disabled:opacity-40"><span class="material-symbols-outlined">chevron_right</span></button>
+        <!-- Pagination -->
+        <div class="flex items-center justify-center gap-1 px-6 py-4 border-t border-slate-100">
+          <button type="button" (click)="previousPage()" [disabled]="currentPage <= 1"
+            class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors disabled:opacity-30">
+            <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+          </button>
+          <button *ngFor="let page of pageNumbers" type="button" (click)="setPage(page)"
+            class="w-7 h-7 flex items-center justify-center rounded-lg text-xs font-semibold transition-colors"
+            [ngClass]="page === currentPage ? 'bg-primary text-white' : 'text-slate-500 hover:bg-slate-100'">
+            {{ page }}
+          </button>
+          <button type="button" (click)="nextPage()" [disabled]="currentPage >= totalPages"
+            class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors disabled:opacity-30">
+            <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+          </button>
         </div>
+
       </div>
     </div>
 
+    <!-- Backdrop -->
     <div *ngIf="showAddFournisseur" class="fixed inset-0 z-40 bg-slate-950/20 backdrop-blur-sm"></div>
-    <aside *ngIf="showAddFournisseur" class="fixed right-0 top-0 z-50 h-screen w-full sm:w-[480px] bg-white/95 shadow-[-10px_0_30px_rgba(26,46,68,0.15)] flex flex-col overflow-hidden rounded-l-[24px]">
-      <div class="p-8 pb-4">
-        <div class="flex justify-between items-center mb-6">
-          <button type="button" (click)="toggleAddFournisseur()" class="w-10 h-10 rounded-full hover:bg-surface-container-high flex items-center justify-center transition-colors">
-            <span class="material-symbols-outlined text-secondary">close</span>
+
+    <!-- Drawer Ajouter -->
+    <aside *ngIf="showAddFournisseur" class="fixed right-0 top-0 z-50 h-screen w-full sm:w-[480px] bg-white shadow-[-8px_0_24px_rgba(0,0,0,0.08)] flex flex-col overflow-hidden">
+
+      <!-- En-tête drawer -->
+      <div class="px-8 pt-8 pb-5 border-b border-slate-100 shrink-0">
+        <div class="flex items-center justify-between mb-4">
+          <button type="button" (click)="toggleAddFournisseur()"
+            class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center transition-colors">
+            <span class="material-symbols-outlined text-slate-500 text-[18px]">close</span>
           </button>
-          <span class="px-3 py-1 bg-surface-container-highest text-secondary-fixed-variant text-xs font-bold rounded-full">Nouveau Fournisseur</span>
+          <span class="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">Nouveau fournisseur</span>
         </div>
-        <h2 class="text-3xl font-black text-primary leading-tight">Ajouter un fournisseur</h2>
-        <p class="text-secondary font-medium mt-2">Renseignez les informations du prestataire.</p>
-        <p *ngIf="errorMessage" class="mt-4 text-sm text-error">{{ errorMessage }}</p>
-        <p *ngIf="successMessage" class="mt-4 text-sm text-success">{{ successMessage }}</p>
+        <h2 class="text-xl font-bold text-slate-900">Ajouter un fournisseur</h2>
+        <p class="text-sm text-slate-400 mt-1">Renseignez les informations du prestataire.</p>
+        <p *ngIf="errorMessage" class="mt-3 text-sm text-red-600">{{ errorMessage }}</p>
+        <p *ngIf="successMessage" class="mt-3 text-sm text-emerald-600">{{ successMessage }}</p>
       </div>
 
-      <form id="addFournisseurForm" class="flex-1 overflow-y-auto px-8 pb-32 space-y-8" (ngSubmit)="onSubmit($event)">
-        <section class="space-y-5 bg-surface-container-low p-6 rounded-[16px]">
-          <h3 class="text-xs font-headline font-bold text-on-secondary-container uppercase tracking-wider mb-4 flex items-center gap-2">
-            <span class="material-symbols-outlined text-sm">business</span>
-            Général
-          </h3>
-          <div class="space-y-1">
-            <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Raison Sociale <span class="text-error">*</span></label>
-            <input name="raisonSocial" [(ngModel)]="newFournisseur.RaisonSocial" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="Nom de l'entreprise" type="text" />
-          </div>
-          <div class="space-y-1">
-            <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Forme Juridique</label>
-            <div class="relative">
-              <select name="formeJuridique" [(ngModel)]="newFournisseur.FormeJuridique" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 pr-10 text-sm text-on-surface appearance-none focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost custom-select transition-colors">
-                <option value="SARL">SARL</option>
-                <option value="SA">SA</option>
-                <option value="SAS">SAS</option>
-                <option value="EI">Entreprise Individuelle</option>
-                <option value="Autre">Autre</option>
-              </select>
-              <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
-            </div>
-          </div>
-          <div class="space-y-1">
-            <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Domaine d'Activité</label>
-            <input name="domaineActivite" [(ngModel)]="newFournisseur.DomaineActivite" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="Ex: Fourniture de matériel" type="text" />
-          </div>
-        </section>
+      <!-- Formulaire -->
+      <form id="addFournisseurForm" class="flex-1 overflow-y-auto px-8 py-6 space-y-7" (ngSubmit)="onSubmit($event)">
 
-        <section class="space-y-5">
-          <h3 class="text-xs font-headline font-bold text-on-secondary-container uppercase tracking-wider mb-2 flex items-center gap-2">
-            <span class="material-symbols-outlined text-sm">location_on</span>
-            Coordonnées
-          </h3>
-          <div class="space-y-1">
-            <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Adresse Géo</label>
-            <input name="adresseGeo" [(ngModel)]="newFournisseur.AdresseGeo" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="Rue, Quartier..." type="text" />
-          </div>
-          <div class="space-y-1">
-            <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Adresse Postale</label>
-            <input name="adressePost" [(ngModel)]="newFournisseur.AdressePost" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="01 BP 0000..." type="text" />
-          </div>
-          <div class="grid grid-cols-2 gap-4">
-            <div class="space-y-1 max-w-[320px]">
-              <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Ville</label>
-              <input name="ville" [(ngModel)]="newFournisseur.Ville" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="Ville" type="text" />
+        <!-- Général -->
+        <div>
+          <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Général</p>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Raison sociale <span class="text-red-500">*</span></label>
+              <input name="raisonSocial" [(ngModel)]="newFournisseur.RaisonSocial"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                placeholder="Nom de l'entreprise" type="text" />
             </div>
-            <div class="space-y-1 max-w-[320px]">
-              <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Pays</label>
-              <div class="relative">
-                <select name="pays" [(ngModel)]="newFournisseur.Pays" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 pr-10 text-sm text-on-surface appearance-none focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost custom-select transition-colors">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Forme juridique</label>
+                <select name="formeJuridique" [(ngModel)]="newFournisseur.FormeJuridique"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
+                  <option value="SARL">SARL</option>
+                  <option value="SA">SA</option>
+                  <option value="SAS">SAS</option>
+                  <option value="EI">Entreprise Individuelle</option>
+                  <option value="Autre">Autre</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Statut</label>
+                <select name="statut" [(ngModel)]="newFournisseur.Statut"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
+                  <option value="Externe">Externe</option>
+                  <option value="Interne">Interne</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Domaine d'activité</label>
+              <input name="domaineActivite" [(ngModel)]="newFournisseur.DomaineActivite"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                placeholder="Ex : Fourniture de matériel" type="text" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Adresse -->
+        <div>
+          <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Adresse</p>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Adresse géographique</label>
+              <input name="adresseGeo" [(ngModel)]="newFournisseur.AdresseGeo"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                placeholder="Rue, Quartier..." type="text" />
+            </div>
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Adresse postale</label>
+              <input name="adressePost" [(ngModel)]="newFournisseur.AdressePost"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                placeholder="01 BP 0000..." type="text" />
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Ville</label>
+                <input name="ville" [(ngModel)]="newFournisseur.Ville"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                  placeholder="Ville" type="text" />
+              </div>
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Pays</label>
+                <select name="pays" [(ngModel)]="newFournisseur.Pays"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
                   <option value="Burkina Faso">Burkina Faso</option>
                   <option value="Bénin">Bénin</option>
                   <option value="Cabo Verde">Cabo Verde</option>
@@ -169,117 +232,133 @@
                   <option value="Sierra Leone">Sierra Leone</option>
                   <option value="Togo">Togo</option>
                 </select>
-                <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
               </div>
             </div>
           </div>
-        </section>
+        </div>
 
-        <section class="space-y-5 bg-surface-container-low p-6 rounded-[16px]">
-          <h3 class="text-xs font-headline font-bold text-on-secondary-container uppercase tracking-wider mb-2 flex items-center gap-2">
-            <span class="material-symbols-outlined text-sm">call</span>
-            Contacts
-          </h3>
-          <div class="grid grid-cols-2 gap-4">
-            <div class="space-y-1">
-              <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Téléphone 1 <span class="text-error">*</span></label>
-              <input name="telephone1" [(ngModel)]="newFournisseur.Telephone1" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="+226..." type="tel" />
+        <!-- Contacts -->
+        <div>
+          <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Contacts</p>
+          <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Téléphone 1 <span class="text-red-500">*</span></label>
+                <input name="telephone1" [(ngModel)]="newFournisseur.Telephone1"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                  placeholder="+226..." type="tel" />
+              </div>
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Téléphone 2</label>
+                <input name="telephone2" [(ngModel)]="newFournisseur.Telephone2"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                  placeholder="Optionnel" type="tel" />
+              </div>
             </div>
-            <div class="space-y-1">
-              <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Téléphone 2</label>
-              <input name="telephone2" [(ngModel)]="newFournisseur.Telephone2" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="Optionnel" type="tel" />
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Email <span class="text-red-500">*</span></label>
+              <input name="email" [(ngModel)]="newFournisseur.Email"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                placeholder="contact@entreprise.com" type="email" />
             </div>
-          </div>
-          <div class="space-y-1">
-            <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Email <span class="text-error">*</span></label>
-            <input name="email" [(ngModel)]="newFournisseur.Email" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="contact@entreprise.com" type="email" />
-          </div>
-          <div class="space-y-1">
-            <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Site Web</label>
-            <input name="siteWeb" [(ngModel)]="newFournisseur.SiteWeb" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="www.entreprise.com" type="url" />
-          </div>
-        </section>
-        <section class="space-y-5">
-          <h3 class="text-xs font-headline font-bold text-on-secondary-container uppercase tracking-wider mb-2 flex items-center gap-2">
-            <span class="material-symbols-outlined text-sm">folder_open</span>
-            Références légales
-          </h3>
-          <div class="grid grid-cols-2 gap-4">
-            <div class="space-y-1">
-              <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Dispose IFU</label>
-              <select name="disposeIFU" [(ngModel)]="newFournisseur.DisposeIFU" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors">
-                <option [ngValue]="false">Non</option>
-                <option [ngValue]="true">Oui</option>
-              </select>
-            </div>
-            <div class="space-y-1">
-              <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Numéro IFU</label>
-              <input name="numIFU" [(ngModel)]="newFournisseur.numIFU" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="IFU" type="text" />
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Site web</label>
+              <input name="siteWeb" [(ngModel)]="newFournisseur.SiteWeb"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                placeholder="www.entreprise.com" type="url" />
             </div>
           </div>
-          <div class="grid grid-cols-2 gap-4">
-            <div class="space-y-1">
-              <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Dispose RCCM</label>
-              <select name="disposeRCCM" [(ngModel)]="newFournisseur.DisposeRCCM" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors">
-                <option [ngValue]="false">Non</option>
-                <option [ngValue]="true">Oui</option>
-              </select>
+        </div>
+
+        <!-- Références légales -->
+        <div>
+          <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Références légales</p>
+          <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Dispose IFU</label>
+                <select name="disposeIFU" [(ngModel)]="newFournisseur.DisposeIFU"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
+                  <option [ngValue]="false">Non</option>
+                  <option [ngValue]="true">Oui</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Numéro IFU</label>
+                <input name="numIFU" [(ngModel)]="newFournisseur.numIFU"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                  placeholder="IFU" type="text" />
+              </div>
             </div>
-            <div class="space-y-1">
-              <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Numéro RCCM</label>
-              <input name="numRCCM" [(ngModel)]="newFournisseur.numRCCM" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="RCCM" type="text" />
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Dispose RCCM</label>
+                <select name="disposeRCCM" [(ngModel)]="newFournisseur.DisposeRCCM"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
+                  <option [ngValue]="false">Non</option>
+                  <option [ngValue]="true">Oui</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Numéro RCCM</label>
+                <input name="numRCCM" [(ngModel)]="newFournisseur.numRCCM"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                  placeholder="RCCM" type="text" />
+              </div>
             </div>
           </div>
-        </section>
-        <section class="space-y-5 bg-surface-container-low p-6 rounded-[16px]">
-          <h3 class="text-xs font-headline font-bold text-on-secondary-container uppercase tracking-wider mb-2 flex items-center gap-2">
-            <span class="material-symbols-outlined text-sm">badge</span>
-            Contact représentant
-          </h3>
-          <div class="grid grid-cols-2 gap-4">
-            <div class="space-y-1">
-              <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Nom et prénom</label>
-              <input name="nomPrenomRepr" [(ngModel)]="newFournisseur.NomPrenomRepr" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="Nom du représentant" type="text" />
+        </div>
+
+        <!-- Représentant -->
+        <div>
+          <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Contact représentant</p>
+          <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Nom &amp; Prénom</label>
+                <input name="nomPrenomRepr" [(ngModel)]="newFournisseur.NomPrenomRepr"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                  placeholder="Nom du représentant" type="text" />
+              </div>
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Fonction</label>
+                <input name="fonctionRepr" [(ngModel)]="newFournisseur.FonctionRepr"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                  placeholder="Fonction" type="text" />
+              </div>
             </div>
-            <div class="space-y-1">
-              <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Fonction</label>
-              <input name="fonctionRepr" [(ngModel)]="newFournisseur.FonctionRepr" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="Fonction" type="text" />
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Téléphone</label>
+                <input name="telephone1Repr" [(ngModel)]="newFournisseur.Telephone1Repr"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                  placeholder="Téléphone" type="tel" />
+              </div>
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Email</label>
+                <input name="emailRepr" [(ngModel)]="newFournisseur.EmailRepr"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                  placeholder="Email" type="email" />
+              </div>
             </div>
           </div>
-          <div class="grid grid-cols-2 gap-4">
-            <div class="space-y-1">
-              <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Téléphone représentant</label>
-              <input name="telephone1Repr" [(ngModel)]="newFournisseur.Telephone1Repr" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="Téléphone du représentant" type="tel" />
-            </div>
-            <div class="space-y-1">
-              <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Email représentant</label>
-              <input name="emailRepr" [(ngModel)]="newFournisseur.EmailRepr" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 text-sm text-on-surface focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost transition-colors" placeholder="email du représentant" type="email" />
-            </div>
-          </div>
-        </section>
-        <section class="space-y-5">
-          <h3 class="text-xs font-headline font-bold text-on-secondary-container uppercase tracking-wider mb-2 flex items-center gap-2">
-            <span class="material-symbols-outlined text-sm">verified_user</span>
-            Statut
-          </h3>
-          <div class="space-y-1 max-w-[320px] relative">
-            <label class="text-[13px] font-medium text-on-surface-variant ml-1 block">Statut</label>
-            <select name="statut" [(ngModel)]="newFournisseur.Statut" class="w-full bg-surface-container-highest rounded-[10px] py-2.5 px-4 pr-10 text-sm text-on-surface appearance-none focus:outline-none focus:bg-surface-container-lowest focus:ring-0 input-ghost custom-select transition-colors">
-              <option value="Externe">Externe</option>
-              <option value="Interne">Interne</option>
-            </select>
-            <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
-          </div>
-        </section>
+        </div>
+
       </form>
 
-      <footer class="p-6 bg-surface-container-lowest border-t border-outline-variant/10 shrink-0 flex justify-end gap-4 shadow-[0_-4px_20px_rgba(26,46,68,0.05)]">
-        <button type="button" (click)="toggleAddFournisseur()" class="px-6 py-3 rounded-[10px] text-on-secondary-container font-semibold hover:bg-surface-container-high transition-colors text-sm">Annuler</button>
-        <button type="submit" form="addFournisseurForm" class="bg-[#039CD3] text-white px-8 py-3 rounded-[10px] font-headline font-bold shadow-[0_4px_14px_rgba(3,156,211,0.25)] hover:bg-[#0278a8] transition-all text-sm flex items-center gap-2">
+      <!-- Pied drawer -->
+      <footer class="px-8 py-5 border-t border-slate-100 shrink-0 flex justify-end gap-3">
+        <button type="button" (click)="toggleAddFournisseur()"
+          class="px-5 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors">
+          Annuler
+        </button>
+        <button type="submit" form="addFournisseurForm"
+          class="px-6 py-2.5 rounded-lg bg-primary text-white text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity flex items-center gap-2">
           Enregistrer
           <span class="material-symbols-outlined text-sm">check</span>
         </button>
       </footer>
     </aside>
+
   </main>
 </div>
