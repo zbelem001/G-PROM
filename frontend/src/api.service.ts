@@ -17,7 +17,11 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
     throw new Error(message || `HTTP ${response.status}`);
   }
 
-  return response.json() as Promise<T>;
+  const text = await response.text();
+  if (!text) {
+    return {} as T;
+  }
+  return JSON.parse(text) as T;
 }
 
 export interface Marche {
@@ -244,10 +248,11 @@ export async function createFournisseur(fournisseur: Partial<Fournisseur>): Prom
 }
 
 export async function updateFournisseur(idFournisseur: number, changes: Partial<Fournisseur>): Promise<Fournisseur> {
-  return request<Fournisseur>(`/fournisseurs/${idFournisseur}`, {
-    method: 'PUT',
+  const raw = await request<any>(`/fournisseurs/${idFournisseur}`, {
+    method: 'PATCH',
     body: JSON.stringify(changes),
   });
+  return normalizeFournisseur(raw);
 }
 
 export async function deleteFournisseur(idFournisseur: number): Promise<void> {

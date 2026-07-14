@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { HeaderComponent } from '../../components/header/header.component';
 import { MenuComponent } from '../../components/menu/menu.component';
-import { createFournisseur, deleteFournisseur, Fournisseur, getFournisseurs } from '../../../api.service';
+import { createFournisseur, deleteFournisseur, Fournisseur, getFournisseurs, updateFournisseur } from '../../../api.service';
 
 @Component({
   standalone: true,
@@ -22,6 +22,13 @@ export class FournisseursComponent implements OnInit {
   fournisseurs: Fournisseur[] = [];
   currentPage = 1;
   pageSize = 10;
+
+  showEditFournisseur = false;
+  editingFournisseur: Partial<Fournisseur> = {};
+  isUpdating = false;
+
+  confirmDeleteFournisseur: Fournisseur | null = null;
+  isDeleting = false;
 
   constructor(private cd: ChangeDetectorRef) {}
 
@@ -178,27 +185,74 @@ export class FournisseursComponent implements OnInit {
     }
   }
 
-  async onDeleteFournisseur(fournisseur: Fournisseur, event: Event) {
-    event.stopPropagation();
-    const confirmed = confirm(`Confirmez-vous la suppression du fournisseur ${fournisseur.RaisonSocial} ?`);
-    if (!confirmed) {
-      return;
-    }
+  // ── Édition ───────────────────────────────────────────────────────────────
 
-    this.loading = true;
+  openEditFournisseur(fournisseur: Fournisseur, event: Event) {
+    event.stopPropagation();
+    this.editingFournisseur = { ...fournisseur };
+    this.showEditFournisseur = true;
+    this.errorMessage = '';
+    this.successMessage = '';
+    this.cd.detectChanges();
+  }
+
+  closeEditFournisseur() {
+    this.showEditFournisseur = false;
+    this.editingFournisseur = {};
+  }
+
+  async submitEditFournisseur(event: Event) {
+    event.preventDefault();
+    if (!this.editingFournisseur.idFournisseur) return;
+    this.errorMessage = '';
+    this.isUpdating = true;
+    try {
+      const { idFournisseur, ...changes } = this.editingFournisseur;
+      const updated = await updateFournisseur(idFournisseur, changes);
+      const idx = this.fournisseurs.findIndex((f) => f.idFournisseur === idFournisseur);
+      if (idx !== -1) this.fournisseurs[idx] = updated;
+      this.showEditFournisseur = false;
+      this.editingFournisseur = {};
+      this.successMessage = 'Fournisseur modifié avec succès.';
+    } catch (error: any) {
+      this.errorMessage = error?.message || 'Impossible de modifier le fournisseur.';
+    } finally {
+      this.isUpdating = false;
+      this.cd.detectChanges();
+    }
+  }
+
+  // ── Suppression ───────────────────────────────────────────────────────────
+
+  openDeleteConfirm(fournisseur: Fournisseur, event: Event) {
+    event.stopPropagation();
+    this.confirmDeleteFournisseur = fournisseur;
+    this.cd.detectChanges();
+  }
+
+  cancelDelete() {
+    this.confirmDeleteFournisseur = null;
+    this.cd.detectChanges();
+  }
+
+  async confirmDelete() {
+    if (!this.confirmDeleteFournisseur) return;
+    const fournisseur = this.confirmDeleteFournisseur;
+    this.isDeleting = true;
     this.errorMessage = '';
     this.successMessage = '';
     try {
       await deleteFournisseur(fournisseur.idFournisseur);
       this.fournisseurs = this.fournisseurs.filter((item) => item.idFournisseur !== fournisseur.idFournisseur);
       this.successMessage = 'Fournisseur supprimé avec succès.';
+      this.confirmDeleteFournisseur = null;
       if (this.currentPage > this.totalPages) {
         this.currentPage = this.totalPages;
       }
     } catch (error: any) {
       this.errorMessage = error?.message || 'Impossible de supprimer le fournisseur.';
     } finally {
-      this.loading = false;
+      this.isDeleting = false;
       this.cd.detectChanges();
     }
   }

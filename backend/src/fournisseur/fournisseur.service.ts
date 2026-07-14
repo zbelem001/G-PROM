@@ -6,10 +6,19 @@ import { CreateFournisseurDto } from './dto/create-fournisseur.dto';
 export class FournisseurService {
   constructor(private readonly supabaseService: SupabaseService) {}
 
+  private normalizeKeys(dto: object): Record<string, unknown> {
+    return Object.entries(dto).reduce((normalized, [key, value]) => {
+      const lowerKey = key.replace(/([A-Z])/g, (match) => match.toLowerCase());
+      normalized[lowerKey] = value;
+      return normalized;
+    }, {} as Record<string, unknown>);
+  }
+
   async create(createFournisseurDto: CreateFournisseurDto) {
+    const payload = this.normalizeKeys(createFournisseurDto);
     const { data, error } = await this.supabaseService.client
       .from('Fournisseur')
-      .insert([createFournisseurDto])
+      .insert([payload])
       .select()
       .single();
     if (error) {
@@ -135,14 +144,17 @@ export class FournisseurService {
   }
 
   async update(idFournisseur: number, updateFournisseurDto: Partial<CreateFournisseurDto>) {
+    const payload = this.normalizeKeys(updateFournisseurDto);
     const { data, error } = await this.supabaseService.client
       .from('Fournisseur')
-      .update(updateFournisseurDto)
-      .eq('idfournisseur', idFournisseur);
+      .update(payload)
+      .eq('idfournisseur', idFournisseur)
+      .select()
+      .single();
     if (error) {
       throw new Error(error.message);
     }
-    return data;
+    return this.normalizeFournisseur(data);
   }
 
   async remove(idFournisseur: number) {

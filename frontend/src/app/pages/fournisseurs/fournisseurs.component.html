@@ -90,11 +90,11 @@
                     class="p-1.5 text-slate-400 hover:text-primary transition-colors rounded">
                     <span class="material-symbols-outlined text-[18px]">visibility</span>
                   </button>
-                  <button type="button" (click)="$event.stopPropagation()"
+                  <button type="button" (click)="openEditFournisseur(fournisseur, $event)"
                     class="p-1.5 text-slate-400 hover:text-primary transition-colors rounded">
                     <span class="material-symbols-outlined text-[18px]">edit</span>
                   </button>
-                  <button type="button" (click)="onDeleteFournisseur(fournisseur, $event)"
+                  <button type="button" (click)="openDeleteConfirm(fournisseur, $event)"
                     class="p-1.5 text-slate-400 hover:text-red-500 transition-colors rounded">
                     <span class="material-symbols-outlined text-[18px]">delete</span>
                   </button>
@@ -121,6 +121,34 @@
           </button>
         </div>
 
+      </div>
+    </div>
+
+    <!-- Modale confirmation suppression -->
+    <div *ngIf="confirmDeleteFournisseur" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 backdrop-blur-sm">
+      <div class="bg-white rounded-xl shadow-[0_20px_60px_rgba(26,46,68,0.2)] p-8 w-[400px] flex flex-col gap-5 border border-slate-100">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
+            <span class="material-symbols-outlined text-red-600">warning</span>
+          </div>
+          <h3 class="text-lg font-bold text-slate-900">Supprimer le fournisseur</h3>
+        </div>
+        <p class="text-sm text-slate-500 leading-relaxed">
+          Êtes-vous sûr de vouloir supprimer <span class="font-bold text-slate-900">{{ confirmDeleteFournisseur.RaisonSocial }}</span> ?
+          Cette action est irréversible.
+        </p>
+        <p *ngIf="errorMessage" class="text-sm text-red-600">{{ errorMessage }}</p>
+        <div class="flex gap-3 mt-2">
+          <button type="button" (click)="cancelDelete()" [disabled]="isDeleting"
+            class="flex-1 h-11 rounded-lg border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 transition-colors disabled:opacity-60">
+            Annuler
+          </button>
+          <button type="button" (click)="confirmDelete()" [disabled]="isDeleting"
+            class="flex-1 h-11 rounded-lg bg-red-600 text-white font-bold shadow-sm hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center justify-center gap-2">
+            <span *ngIf="isDeleting" class="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
+            {{ isDeleting ? 'Suppression...' : 'Supprimer' }}
+          </button>
+        </div>
       </div>
     </div>
 
@@ -356,6 +384,242 @@
           class="px-6 py-2.5 rounded-lg bg-primary text-white text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity flex items-center gap-2">
           Enregistrer
           <span class="material-symbols-outlined text-sm">check</span>
+        </button>
+      </footer>
+    </aside>
+
+    <!-- Backdrop édition -->
+    <div *ngIf="showEditFournisseur" class="fixed inset-0 z-40 bg-slate-950/20 backdrop-blur-sm" (click)="closeEditFournisseur()"></div>
+
+    <!-- Drawer Modifier -->
+    <aside *ngIf="showEditFournisseur" class="fixed right-0 top-0 z-50 h-screen w-full sm:w-[480px] bg-white shadow-[-8px_0_24px_rgba(0,0,0,0.08)] flex flex-col overflow-hidden">
+
+      <!-- En-tête drawer -->
+      <div class="px-8 pt-8 pb-5 border-b border-slate-100 shrink-0">
+        <div class="flex items-center justify-between mb-4">
+          <button type="button" (click)="closeEditFournisseur()"
+            class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center transition-colors">
+            <span class="material-symbols-outlined text-slate-500 text-[18px]">close</span>
+          </button>
+          <span class="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">Modifier</span>
+        </div>
+        <h2 class="text-xl font-bold text-slate-900">{{ editingFournisseur.RaisonSocial }}</h2>
+        <p class="text-sm text-slate-400 mt-1">Mettez à jour les informations du prestataire.</p>
+        <p *ngIf="errorMessage" class="mt-3 text-sm text-red-600">{{ errorMessage }}</p>
+      </div>
+
+      <!-- Formulaire -->
+      <form id="editFournisseurForm" class="flex-1 overflow-y-auto px-8 py-6 space-y-7" (ngSubmit)="submitEditFournisseur($event)">
+
+        <!-- Général -->
+        <div>
+          <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Général</p>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Raison sociale <span class="text-red-500">*</span></label>
+              <input name="editRaisonSocial" [(ngModel)]="editingFournisseur.RaisonSocial"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                placeholder="Nom de l'entreprise" type="text" />
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Forme juridique</label>
+                <select name="editFormeJuridique" [(ngModel)]="editingFournisseur.FormeJuridique"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
+                  <option value="SARL">SARL</option>
+                  <option value="SA">SA</option>
+                  <option value="SAS">SAS</option>
+                  <option value="EI">Entreprise Individuelle</option>
+                  <option value="Autre">Autre</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Statut</label>
+                <select name="editStatut" [(ngModel)]="editingFournisseur.Statut"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
+                  <option value="Externe">Externe</option>
+                  <option value="Interne">Interne</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Domaine d'activité</label>
+              <input name="editDomaineActivite" [(ngModel)]="editingFournisseur.DomaineActivite"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                placeholder="Ex : Fourniture de matériel" type="text" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Adresse -->
+        <div>
+          <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Adresse</p>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Adresse géographique</label>
+              <input name="editAdresseGeo" [(ngModel)]="editingFournisseur.AdresseGeo"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                placeholder="Rue, Quartier..." type="text" />
+            </div>
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Adresse postale</label>
+              <input name="editAdressePost" [(ngModel)]="editingFournisseur.AdressePost"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                placeholder="01 BP 0000..." type="text" />
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Ville</label>
+                <input name="editVille" [(ngModel)]="editingFournisseur.Ville"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                  placeholder="Ville" type="text" />
+              </div>
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Pays</label>
+                <select name="editPays" [(ngModel)]="editingFournisseur.Pays"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
+                  <option value="Burkina Faso">Burkina Faso</option>
+                  <option value="Bénin">Bénin</option>
+                  <option value="Cabo Verde">Cabo Verde</option>
+                  <option value="Côte d'Ivoire">Côte d'Ivoire</option>
+                  <option value="Gambie">Gambie</option>
+                  <option value="Ghana">Ghana</option>
+                  <option value="Guinée">Guinée</option>
+                  <option value="Guinée-Bissau">Guinée-Bissau</option>
+                  <option value="Libéria">Libéria</option>
+                  <option value="Mali">Mali</option>
+                  <option value="Mauritanie">Mauritanie</option>
+                  <option value="Niger">Niger</option>
+                  <option value="Nigeria">Nigeria</option>
+                  <option value="Sénégal">Sénégal</option>
+                  <option value="Sierra Leone">Sierra Leone</option>
+                  <option value="Togo">Togo</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contacts -->
+        <div>
+          <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Contacts</p>
+          <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Téléphone 1 <span class="text-red-500">*</span></label>
+                <input name="editTelephone1" [(ngModel)]="editingFournisseur.Telephone1"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                  placeholder="+226..." type="tel" />
+              </div>
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Téléphone 2</label>
+                <input name="editTelephone2" [(ngModel)]="editingFournisseur.Telephone2"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                  placeholder="Optionnel" type="tel" />
+              </div>
+            </div>
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Email <span class="text-red-500">*</span></label>
+              <input name="editEmail" [(ngModel)]="editingFournisseur.Email"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                placeholder="contact@entreprise.com" type="email" />
+            </div>
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Site web</label>
+              <input name="editSiteWeb" [(ngModel)]="editingFournisseur.SiteWeb"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                placeholder="www.entreprise.com" type="url" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Références légales -->
+        <div>
+          <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Références légales</p>
+          <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Dispose IFU</label>
+                <select name="editDisposeIFU" [(ngModel)]="editingFournisseur.DisposeIFU"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
+                  <option [ngValue]="false">Non</option>
+                  <option [ngValue]="true">Oui</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Numéro IFU</label>
+                <input name="editNumIFU" [(ngModel)]="editingFournisseur.numIFU"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                  placeholder="IFU" type="text" />
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Dispose RCCM</label>
+                <select name="editDisposeRCCM" [(ngModel)]="editingFournisseur.DisposeRCCM"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
+                  <option [ngValue]="false">Non</option>
+                  <option [ngValue]="true">Oui</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Numéro RCCM</label>
+                <input name="editNumRCCM" [(ngModel)]="editingFournisseur.numRCCM"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                  placeholder="RCCM" type="text" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Représentant -->
+        <div>
+          <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Contact représentant</p>
+          <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Nom &amp; Prénom</label>
+                <input name="editNomPrenomRepr" [(ngModel)]="editingFournisseur.NomPrenomRepr"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                  placeholder="Nom du représentant" type="text" />
+              </div>
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Fonction</label>
+                <input name="editFonctionRepr" [(ngModel)]="editingFournisseur.FonctionRepr"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                  placeholder="Fonction" type="text" />
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Téléphone</label>
+                <input name="editTelephone1Repr" [(ngModel)]="editingFournisseur.Telephone1Repr"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                  placeholder="Téléphone" type="tel" />
+              </div>
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Email</label>
+                <input name="editEmailRepr" [(ngModel)]="editingFournisseur.EmailRepr"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                  placeholder="Email" type="email" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </form>
+
+      <!-- Pied drawer -->
+      <footer class="px-8 py-5 border-t border-slate-100 shrink-0 flex justify-end gap-3">
+        <button type="button" (click)="closeEditFournisseur()" [disabled]="isUpdating"
+          class="px-5 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors disabled:opacity-60">
+          Annuler
+        </button>
+        <button type="submit" form="editFournisseurForm" [disabled]="isUpdating"
+          class="px-6 py-2.5 rounded-lg bg-primary text-white text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center gap-2">
+          <span *ngIf="isUpdating" class="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
+          {{ isUpdating ? 'Enregistrement...' : 'Enregistrer les modifications' }}
+          <span *ngIf="!isUpdating" class="material-symbols-outlined text-sm">check</span>
         </button>
       </footer>
     </aside>
