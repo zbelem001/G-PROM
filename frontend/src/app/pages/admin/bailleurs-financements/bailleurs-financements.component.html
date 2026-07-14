@@ -1,0 +1,184 @@
+<div class="bg-surface font-body text-on-surface min-h-screen flex overflow-hidden">
+  <app-admin-menu></app-admin-menu>
+  <main class="flex-1 ml-[240px] flex flex-col h-screen overflow-hidden bg-surface relative">
+    <app-header></app-header>
+    <div class="flex-1 pt-24 px-8 pb-8 overflow-auto">
+
+      <!-- En-tête page -->
+      <div class="flex items-center justify-between mb-6 pt-2">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900 uppercase tracking-wide">Bailleurs &amp; Financements</h1>
+          <p class="text-sm text-slate-400 mt-0.5">Un bailleur peut avoir plusieurs financements (projets). Ces listes alimentent le champ "Source de financement" des marchés.</p>
+        </div>
+        <button type="button" (click)="openAddBailleur()"
+          class="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity shrink-0">
+          <span class="material-symbols-outlined text-lg">add</span>
+          Nouveau bailleur
+        </button>
+      </div>
+
+      <p *ngIf="errorMessage" class="mb-4 text-sm text-red-600">{{ errorMessage }}</p>
+
+      <div *ngIf="loading" class="bg-white rounded-xl border border-slate-100 px-6 py-10 text-center text-sm text-slate-400">Chargement…</div>
+
+      <div *ngIf="!loading && bailleurs.length === 0" class="bg-white rounded-xl border border-slate-100 px-6 py-10 text-center text-sm text-slate-400">
+        Aucun bailleur enregistré pour le moment.
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div *ngFor="let bailleur of bailleurs" class="bg-white rounded-xl border border-slate-100 overflow-hidden">
+          <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="material-symbols-outlined text-[#76d3c8] shrink-0">account_balance</span>
+              <p class="text-sm font-semibold text-slate-900 truncate">{{ bailleur.nomBailleur }}</p>
+              <span class="text-[10px] font-medium text-slate-400 bg-slate-50 px-2 py-0.5 rounded-full shrink-0">
+                {{ getFinancementsForBailleur(bailleur.idBailleur).length }} financement(s)
+              </span>
+            </div>
+            <div class="flex items-center gap-1 shrink-0">
+              <button type="button" (click)="openEditBailleur(bailleur, $event)" class="p-1.5 text-slate-400 hover:text-primary transition-colors rounded">
+                <span class="material-symbols-outlined text-[18px]">edit</span>
+              </button>
+              <button type="button" (click)="openDeleteBailleur(bailleur, $event)" class="p-1.5 text-slate-400 hover:text-red-500 transition-colors rounded">
+                <span class="material-symbols-outlined text-[18px]">delete</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="px-5 py-4 space-y-2">
+            <div *ngFor="let financement of getFinancementsForBailleur(bailleur.idBailleur)"
+                 class="flex items-center justify-between gap-2 bg-slate-50 rounded-lg px-3 py-2">
+              <ng-container *ngIf="editingFinancementId !== financement.idFinancement; else editFinancementRow">
+                <span class="text-sm text-slate-700 truncate">{{ financement.nomFinancement }}</span>
+                <div class="flex items-center gap-1 shrink-0">
+                  <button type="button" (click)="startEditFinancement(financement)" class="p-1 text-slate-400 hover:text-primary transition-colors rounded">
+                    <span class="material-symbols-outlined text-[16px]">edit</span>
+                  </button>
+                  <button type="button" (click)="openDeleteFinancement(financement)" class="p-1 text-slate-400 hover:text-red-500 transition-colors rounded">
+                    <span class="material-symbols-outlined text-[16px]">delete</span>
+                  </button>
+                </div>
+              </ng-container>
+              <ng-template #editFinancementRow>
+                <input type="text" [(ngModel)]="editingFinancementName" [name]="'editFinancement_' + financement.idFinancement"
+                       class="flex-1 min-w-0 bg-white border border-slate-200 rounded-md px-2 py-1 text-sm text-slate-900 focus:outline-none focus:border-slate-400"
+                       (keyup.enter)="saveEditFinancement(financement)" (keyup.escape)="cancelEditFinancement()" />
+                <div class="flex items-center gap-1 shrink-0">
+                  <button type="button" (click)="saveEditFinancement(financement)" [disabled]="savingFinancementEdit" class="p-1 text-emerald-600 hover:text-emerald-700 transition-colors rounded disabled:opacity-50">
+                    <span class="material-symbols-outlined text-[16px]">check</span>
+                  </button>
+                  <button type="button" (click)="cancelEditFinancement()" [disabled]="savingFinancementEdit" class="p-1 text-slate-400 hover:text-slate-600 transition-colors rounded disabled:opacity-50">
+                    <span class="material-symbols-outlined text-[16px]">close</span>
+                  </button>
+                </div>
+              </ng-template>
+            </div>
+
+            <p *ngIf="getFinancementsForBailleur(bailleur.idBailleur).length === 0" class="text-xs text-slate-400 italic px-1">
+              Aucun financement pour ce bailleur.
+            </p>
+
+            <div class="flex items-center gap-2 pt-1">
+              <input type="text" [(ngModel)]="newFinancementNameByBailleur[bailleur.idBailleur]" [name]="'newFinancement_' + bailleur.idBailleur"
+                     placeholder="Nouveau financement (ex: CEA-Impact)"
+                     class="flex-1 min-w-0 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                     (keyup.enter)="addFinancement(bailleur.idBailleur)" />
+              <button type="button" (click)="addFinancement(bailleur.idBailleur)" [disabled]="savingFinancementForBailleur === bailleur.idBailleur"
+                      class="shrink-0 p-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors disabled:opacity-50">
+                <span *ngIf="savingFinancementForBailleur !== bailleur.idBailleur" class="material-symbols-outlined text-[18px]">add</span>
+                <span *ngIf="savingFinancementForBailleur === bailleur.idBailleur" class="w-[18px] h-[18px] block rounded-full border-2 border-slate-400 border-t-transparent animate-spin"></span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modale ajout / édition bailleur -->
+    <div *ngIf="showBailleurModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 backdrop-blur-sm">
+      <div class="bg-white rounded-xl shadow-[0_20px_60px_rgba(26,46,68,0.2)] p-8 w-[420px] flex flex-col gap-5 border border-slate-100">
+        <div>
+          <h3 class="text-lg font-bold text-slate-900">{{ editingBailleur ? 'Modifier le bailleur' : 'Nouveau bailleur' }}</h3>
+          <p class="text-sm text-slate-400 mt-1">{{ editingBailleur ? 'Renommez ce bailleur.' : 'Ex : Banque Mondiale, Union Européenne, 2iE...' }}</p>
+        </div>
+        <form (ngSubmit)="submitBailleur($event)" class="flex flex-col gap-4">
+          <div>
+            <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Nom du bailleur</label>
+            <input type="text" [(ngModel)]="bailleurNameInput" name="bailleurName" required autofocus
+                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                   placeholder="Nom du bailleur" />
+          </div>
+          <p *ngIf="errorMessage" class="text-sm text-red-600">{{ errorMessage }}</p>
+          <div class="flex gap-3 mt-1">
+            <button type="button" (click)="closeBailleurModal()" [disabled]="isSavingBailleur"
+              class="flex-1 h-11 rounded-lg border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 transition-colors disabled:opacity-60">
+              Annuler
+            </button>
+            <button type="submit" [disabled]="isSavingBailleur || !bailleurNameInput.trim()"
+              class="flex-1 h-11 rounded-lg bg-primary text-white font-semibold shadow-sm hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center justify-center gap-2">
+              <span *ngIf="isSavingBailleur" class="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
+              {{ isSavingBailleur ? 'Enregistrement...' : 'Enregistrer' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modale confirmation suppression bailleur -->
+    <div *ngIf="confirmDeleteBailleur" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 backdrop-blur-sm">
+      <div class="bg-white rounded-xl shadow-[0_20px_60px_rgba(26,46,68,0.2)] p-8 w-[420px] flex flex-col gap-5 border border-slate-100">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
+            <span class="material-symbols-outlined text-red-600">warning</span>
+          </div>
+          <h3 class="text-lg font-bold text-slate-900">Supprimer le bailleur</h3>
+        </div>
+        <p class="text-sm text-slate-500 leading-relaxed">
+          Êtes-vous sûr de vouloir supprimer <span class="font-bold text-slate-900">{{ confirmDeleteBailleur.nomBailleur }}</span> ?
+          <span class="block mt-1 text-red-600 font-medium" *ngIf="getFinancementsForBailleur(confirmDeleteBailleur.idBailleur).length > 0">
+            Cela supprimera aussi ses {{ getFinancementsForBailleur(confirmDeleteBailleur.idBailleur).length }} financement(s) associé(s).
+          </span>
+          Cette action est irréversible.
+        </p>
+        <div class="flex gap-3 mt-1">
+          <button type="button" (click)="cancelDeleteBailleur()" [disabled]="isDeletingBailleur"
+            class="flex-1 h-11 rounded-lg border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 transition-colors disabled:opacity-60">
+            Annuler
+          </button>
+          <button type="button" (click)="confirmDeleteBailleurAction()" [disabled]="isDeletingBailleur"
+            class="flex-1 h-11 rounded-lg bg-red-600 text-white font-bold shadow-sm hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center justify-center gap-2">
+            <span *ngIf="isDeletingBailleur" class="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
+            {{ isDeletingBailleur ? 'Suppression...' : 'Supprimer' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modale confirmation suppression financement -->
+    <div *ngIf="confirmDeleteFinancement" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 backdrop-blur-sm">
+      <div class="bg-white rounded-xl shadow-[0_20px_60px_rgba(26,46,68,0.2)] p-8 w-[420px] flex flex-col gap-5 border border-slate-100">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
+            <span class="material-symbols-outlined text-red-600">warning</span>
+          </div>
+          <h3 class="text-lg font-bold text-slate-900">Supprimer le financement</h3>
+        </div>
+        <p class="text-sm text-slate-500 leading-relaxed">
+          Êtes-vous sûr de vouloir supprimer <span class="font-bold text-slate-900">{{ confirmDeleteFinancement.nomFinancement }}</span> ? Cette action est irréversible.
+        </p>
+        <div class="flex gap-3 mt-1">
+          <button type="button" (click)="cancelDeleteFinancement()" [disabled]="isDeletingFinancement"
+            class="flex-1 h-11 rounded-lg border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 transition-colors disabled:opacity-60">
+            Annuler
+          </button>
+          <button type="button" (click)="confirmDeleteFinancementAction()" [disabled]="isDeletingFinancement"
+            class="flex-1 h-11 rounded-lg bg-red-600 text-white font-bold shadow-sm hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center justify-center gap-2">
+            <span *ngIf="isDeletingFinancement" class="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
+            {{ isDeletingFinancement ? 'Suppression...' : 'Supprimer' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>

@@ -13,6 +13,8 @@ import { AvenantModule } from './avenant/avenant.module';
 import { DocumentModule } from './document/document.module';
 import { UtilisateurModule } from './utilisateur/utilisateur.module';
 import { UploadModule } from './upload/upload.module';
+import { BailleurModule } from './bailleur/bailleur.module';
+import { FinancementModule } from './financement/financement.module';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import { UploadModule } from './upload/upload.module';
     DocumentModule,
     UtilisateurModule,
     UploadModule,
+    BailleurModule,
+    FinancementModule,
   ],
   controllers: [AppController],
   providers: [AppService],

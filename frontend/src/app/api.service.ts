@@ -519,3 +519,80 @@ export async function updateAvenant(idAvenant: number, avenant: Partial<ApiAvena
 export async function deleteAvenant(idAvenant: number): Promise<void> {
   await request(`/avenants/${idAvenant}`, { method: 'DELETE' });
 }
+
+export interface Bailleur {
+  idBailleur: number;
+  nomBailleur: string;
+}
+
+function normalizeBailleurResponse(raw: any): Bailleur {
+  return {
+    idBailleur: Number(raw.idBailleur ?? raw.idbailleur ?? 0),
+    nomBailleur: raw.nomBailleur ?? raw.nombailleur ?? '',
+  };
+}
+
+export async function getBailleurs(): Promise<Bailleur[]> {
+  const data = await request<any[]>('/bailleurs');
+  return data.map(normalizeBailleurResponse);
+}
+
+export async function createBailleur(nomBailleur: string): Promise<Bailleur> {
+  const response = await request<any>('/bailleurs', {
+    method: 'POST',
+    body: JSON.stringify({ nomBailleur }),
+  });
+  return normalizeBailleurResponse(response);
+}
+
+export async function updateBailleur(idBailleur: number, nomBailleur: string): Promise<Bailleur> {
+  const response = await request<any>(`/bailleurs/${idBailleur}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ nomBailleur }),
+  });
+  return normalizeBailleurResponse(response);
+}
+
+export async function deleteBailleur(idBailleur: number): Promise<void> {
+  await request(`/bailleurs/${idBailleur}`, { method: 'DELETE' });
+}
+
+export interface Financement {
+  idFinancement: number;
+  nomFinancement: string;
+  idBailleur: number;
+}
+
+function normalizeFinancementResponse(raw: any): Financement {
+  return {
+    idFinancement: Number(raw.idFinancement ?? raw.idfinancement ?? 0),
+    nomFinancement: raw.nomFinancement ?? raw.nomfinancement ?? '',
+    idBailleur: Number(raw.idBailleur ?? raw.idbailleur ?? 0),
+  };
+}
+
+export async function getFinancements(idBailleur?: number): Promise<Financement[]> {
+  const query = idBailleur !== undefined ? `?idBailleur=${idBailleur}` : '';
+  const data = await request<any[]>(`/financements${query}`);
+  return data.map(normalizeFinancementResponse);
+}
+
+export async function createFinancement(nomFinancement: string, idBailleur: number): Promise<Financement> {
+  const response = await request<any>('/financements', {
+    method: 'POST',
+    body: JSON.stringify({ nomFinancement, idBailleur }),
+  });
+  return normalizeFinancementResponse(response);
+}
+
+export async function updateFinancement(idFinancement: number, nomFinancement: string): Promise<Financement> {
+  const response = await request<any>(`/financements/${idFinancement}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ nomFinancement }),
+  });
+  return normalizeFinancementResponse(response);
+}
+
+export async function deleteFinancement(idFinancement: number): Promise<void> {
+  await request(`/financements/${idFinancement}`, { method: 'DELETE' });
+}

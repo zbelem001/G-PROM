@@ -9,6 +9,7 @@ import { FournisseursComponent } from './pages/fournisseurs/fournisseurs.compone
 import { DetailsFournisseursComponent } from './pages/details-fournisseurs/details-fournisseurs.component';
 import { RapportsComponent } from './pages/rapports/rapports.component';
 import { ConnexionComponent } from './pages/connexion/connexion.component';
+import { BailleursFinancementsComponent } from './pages/admin/bailleurs-financements/bailleurs-financements.component';
 
 const routes: Route[] = [
   { path: '', component: ConnexionComponent, pathMatch: 'full' },
@@ -20,6 +21,8 @@ const routes: Route[] = [
   { path: 'fournisseurs', component: FournisseursComponent },
   { path: 'fournisseurs/details', component: DetailsFournisseursComponent },
   { path: 'rapports', component: RapportsComponent },
+  { path: 'admin', redirectTo: 'admin/bailleurs-financements', pathMatch: 'full' },
+  { path: 'admin/bailleurs-financements', component: BailleursFinancementsComponent },
 ];
 
 export const appConfig: ApplicationConfig = {

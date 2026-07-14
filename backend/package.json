@@ -18,7 +18,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "create-schema": "ts-node ./scripts/create-schema.ts"
+    "create-schema": "ts-node ./scripts/create-schema.ts",
+    "migrate-bailleur-financement": "ts-node ./scripts/migrate-bailleur-financement.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

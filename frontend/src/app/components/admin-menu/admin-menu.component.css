@@ -1,0 +1,10 @@
+/* Styles spécifiques au composant admin-menu */
+
+.no-hover:hover {
+  background-color: #039CD3 !important;
+  color: #ffffff !important;
+}
+
+.no-hover:hover .material-symbols-outlined {
+  color: #ffffff !important;
+}

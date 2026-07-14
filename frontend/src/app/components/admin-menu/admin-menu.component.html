@@ -1,0 +1,40 @@
+<aside class="fixed left-0 top-2 bottom-2 w-[240px] rounded-r-[20px] bg-white z-50 flex flex-col py-8 font-['Manrope'] antialiased shadow-[0_6px_24px_rgba(26,46,68,0.08)]">
+  <div class="px-6 mb-2">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-lg bg-[#1a2e44] flex items-center justify-center">
+        <span class="material-symbols-outlined text-white">shield_person</span>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight">
+          <span class="text-[#76d3c8]">G-</span>
+          <span class="text-red-500">P</span>
+          <span class="text-yellow-500">R</span>
+          <span class="text-green-500">O</span>
+        </h1>
+        <p class="text-xs text-slate-400">Institut 2iE</p>
+      </div>
+    </div>
+  </div>
+  <div class="px-6 mb-6">
+    <span class="inline-flex items-center gap-1 bg-[#1a2e44] text-white text-[10px] font-bold uppercase tracking-[0.12em] px-2.5 py-1 rounded-full">
+      <span class="material-symbols-outlined text-[13px]">admin_panel_settings</span>
+      Administration
+    </span>
+  </div>
+  <nav class="flex-1 flex flex-col gap-2">
+    <a href="/admin/bailleurs-financements" (click)="navigate('/admin/bailleurs-financements',$event)" routerLink="/admin/bailleurs-financements" routerLinkActive="text-white bg-[#039CD3] no-hover" [routerLinkActiveOptions]="{ exact: false }" class="flex items-center gap-3 px-6 py-3 text-slate-700 font-bold hover:text-slate-900 hover:bg-slate-100 rounded-[12px] transition-all duration-200 scale-95 active:scale-100 transition-transform">
+      <span class="material-symbols-outlined">account_balance</span>
+      <span class="text-sm">Bailleurs &amp; Financements</span>
+    </a>
+  </nav>
+  <div class="px-6 mt-auto pt-3 space-y-2">
+    <a href="/dashboard" (click)="navigate('/dashboard',$event)" routerLink="/dashboard" class="block w-full text-center py-3 rounded-[14px] bg-[#f8f9fb] text-slate-700 font-bold border border-slate-200 hover:bg-[#e9eff7] transition-colors duration-200">
+      <span class="material-symbols-outlined align-middle mr-2">arrow_back</span>
+      Retour à l'application
+    </a>
+    <a routerLink="/connexion" class="block w-full text-center py-3 rounded-[14px] bg-[#f8f9fb] text-slate-700 font-bold border border-slate-200 hover:bg-[#e9eff7] transition-colors duration-200">
+      <span class="material-symbols-outlined align-middle mr-2">logout</span>
+      Déconnexion
+    </a>
+  </div>
+</aside>
