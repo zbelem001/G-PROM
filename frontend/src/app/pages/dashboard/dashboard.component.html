@@ -3,6 +3,8 @@
   <main class="flex-1 ml-[240px] flex flex-col h-screen overflow-y-auto bg-surface relative">
     <app-header></app-header>
     <div class="flex-1 pt-24 px-8 py-6">
+      <p *ngIf="errorMessage" class="mb-4 text-sm text-error">{{ errorMessage }}</p>
+
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-[0_6px_24px_rgba(26,46,68,0.08)] flex flex-col gap-4 relative overflow-hidden group">
           <div class="flex justify-between items-start">
@@ -12,8 +14,8 @@
             <span class="bg-secondary-container/15 text-secondary px-2 py-1 rounded-[6px] text-xs font-medium border-[0.5px] border-outline-variant/10">Global</span>
           </div>
           <div>
-            <div class="font-headline font-bold text-[32px] text-on-surface leading-none mb-1">142</div>
-            <div class="text-sm text-on-surface-variant font-medium">Total Markets</div>
+            <div class="font-headline font-bold text-[32px] text-on-surface leading-none mb-1">{{ totalMarches }}</div>
+            <div class="text-sm text-on-surface-variant font-medium">Total Marchés</div>
           </div>
         </div>
         <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-[0_6px_24px_rgba(26,46,68,0.08)] flex flex-col gap-4">
@@ -21,45 +23,48 @@
             <div class="w-10 h-10 rounded-xl bg-[rgba(118,211,200,0.1)] flex items-center justify-center text-[#43a399]">
               <span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300">autorenew</span>
             </div>
-            <span class="bg-[rgba(118,211,200,0.15)] text-[#43a399] px-2 py-1 rounded-[6px] text-xs font-medium">En cours</span>
+            <span class="bg-[rgba(118,211,200,0.15)] text-[#006a62] px-2 py-1 rounded-[6px] text-xs font-medium">En cours</span>
           </div>
           <div>
-            <div class="font-headline font-bold text-[32px] text-on-surface leading-none mb-1">45</div>
-            <div class="text-sm text-on-surface-variant font-medium">In Progress</div>
+            <div class="font-headline font-bold text-[32px] text-on-surface leading-none mb-1">{{ enCoursCount }}</div>
+            <div class="text-sm text-on-surface-variant font-medium">Marchés en cours</div>
           </div>
         </div>
         <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-[0_6px_24px_rgba(26,46,68,0.08)] flex flex-col gap-4">
           <div class="flex justify-between items-start">
-            <div class="w-10 h-10 rounded-xl bg-tertiary-container/10 flex items-center justify-center text-tertiary-container">
+            <div class="w-10 h-10 rounded-xl bg-[#FFF3CD]/60 flex items-center justify-center text-[#856404]">
               <span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300">rocket_launch</span>
             </div>
-            <span class="bg-tertiary-container/10 text-tertiary-container px-2 py-1 rounded-[6px] text-xs font-medium">À lancer</span>
+            <span class="bg-[#FFF3CD] text-[#856404] px-2 py-1 rounded-[6px] text-xs font-medium">À lancer</span>
           </div>
           <div>
-            <div class="font-headline font-bold text-[32px] text-on-surface leading-none mb-1">28</div>
-            <div class="text-sm text-on-surface-variant font-medium">To Launch</div>
+            <div class="font-headline font-bold text-[32px] text-on-surface leading-none mb-1">{{ aLancerCount }}</div>
+            <div class="text-sm text-on-surface-variant font-medium">Marchés à lancer</div>
           </div>
         </div>
         <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-[0_6px_24px_rgba(26,46,68,0.08)] flex flex-col gap-4">
           <div class="flex justify-between items-start">
-            <div class="w-10 h-10 rounded-xl bg-[#1a2e44]/10 flex items-center justify-center text-[#1a2e44]">
+            <div class="w-10 h-10 rounded-xl bg-[#E9ECEF] flex items-center justify-center text-[#6C757D]">
               <span class="material-symbols-outlined" style="font-variation-settings: 'wght' 300">task_alt</span>
             </div>
-            <span class="bg-[#1a2e44]/10 text-[#1a2e44] px-2 py-1 rounded-[6px] text-xs font-medium">Exécuté</span>
+            <span class="bg-[#E9ECEF] text-[#6C757D] px-2 py-1 rounded-[6px] text-xs font-medium">Clôturé</span>
           </div>
           <div>
-            <div class="font-headline font-bold text-[32px] text-on-surface leading-none mb-1">69</div>
-            <div class="text-sm text-on-surface-variant font-medium">Executed</div>
+            <div class="font-headline font-bold text-[32px] text-on-surface leading-none mb-1">{{ clotureCount }}</div>
+            <div class="text-sm text-on-surface-variant font-medium">Marchés clôturés</div>
           </div>
         </div>
       </div>
+
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-[0_6px_24px_rgba(26,46,68,0.08)]">
           <div class="flex items-center justify-between mb-4">
             <div>
-              <h3 class="font-headline font-bold text-xl text-on-surface mt-2">Croissance du trafic</h3>
+              <h3 class="font-headline font-bold text-xl text-on-surface mt-2">Marchés enregistrés</h3>
             </div>
-            <span class="text-xs text-slate-500">+24% cette semaine</span>
+            <span class="text-xs font-medium" [ngClass]="monthlyTrendPct >= 0 ? 'text-[#43a399]' : 'text-error'">
+              {{ monthlyTrendPct >= 0 ? '+' : '' }}{{ monthlyTrendPct }}% ce mois
+            </span>
           </div>
           <div class="h-44 relative overflow-hidden rounded-2xl bg-slate-50 p-4">
             <div class="absolute inset-x-0 bottom-4 flex items-end justify-between gap-3">
@@ -67,83 +72,72 @@
               <div class="w-full rounded-full bg-[#d6f6f2] h-1"></div>
             </div>
             <div class="relative h-full flex items-end gap-3">
-              <div class="flex-1 rounded-full bg-[#76d3c8]" style="height: 38%"></div>
-              <div class="flex-1 rounded-full bg-[#43a399]" style="height: 56%"></div>
-              <div class="flex-1 rounded-full bg-[#2a6f6a]" style="height: 47%"></div>
-              <div class="flex-1 rounded-full bg-[#a3e7dc]" style="height: 64%"></div>
-              <div class="flex-1 rounded-full bg-[#76d3c8]" style="height: 72%"></div>
-              <div class="flex-1 rounded-full bg-[#43a399]" style="height: 52%"></div>
-              <div class="flex-1 rounded-full bg-[#2a6f6a]" style="height: 60%"></div>
+              <div
+                *ngFor="let m of monthlyRegistrations; let i = index"
+                class="flex-1 rounded-full transition-all"
+                [ngClass]="i % 4 === 0 ? 'bg-[#76d3c8]' : i % 4 === 1 ? 'bg-[#43a399]' : i % 4 === 2 ? 'bg-[#2a6f6a]' : 'bg-[#a3e7dc]'"
+                [style.height.%]="barHeight(m.count)"
+                [title]="m.count + ' marché(s)'"
+              ></div>
             </div>
           </div>
-          <div class="mt-4 grid grid-cols-3 gap-2 text-xs text-on-surface-variant">
-            <span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-[#76d3c8]"></span>Web</span>
-            <span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-[#43a399]"></span>API</span>
-            <span class="inline-flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-[#2a6f6a]"></span>Mobile</span>
+          <div class="mt-4 flex justify-between gap-1 text-[10px] text-on-surface-variant text-center">
+            <span class="flex-1" *ngFor="let m of monthlyRegistrations">{{ m.label }}</span>
           </div>
         </div>
+
         <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-[0_6px_24px_rgba(26,46,68,0.08)]">
           <div class="flex items-center justify-between mb-4">
             <div>
-              <h3 class="font-headline font-bold text-xl text-on-surface mt-2">Type de marchés</h3>
+              <h3 class="font-headline font-bold text-xl text-on-surface mt-2">Répartition par statut</h3>
             </div>
-            <span class="text-xs text-slate-500">Aujourd’hui</span>
+            <span class="text-xs text-slate-500">{{ totalMarches }} marchés</span>
           </div>
           <div class="flex items-center justify-center">
             <div class="relative w-40 h-40">
               <div class="absolute inset-0 rounded-full bg-slate-100"></div>
               <div class="absolute inset-4 rounded-full bg-white"></div>
-              <div class="absolute inset-0 rounded-full bg-[conic-gradient(from_180deg_at_50%_50%,_rgba(118,211,200,0.9)_0deg,_rgba(67,163,153,0.9)_120deg,_rgba(38,82,74,0.9)_210deg,_rgba(186,239,225,0.9)_280deg,_rgba(118,211,200,0.9)_360deg)]"></div>
+              <div class="absolute inset-0 rounded-full" [style.background]="donutGradient"></div>
               <div class="absolute inset-12 rounded-full bg-slate-100"></div>
             </div>
           </div>
           <div class="mt-6 grid grid-cols-2 gap-3 text-sm text-on-surface-variant">
-            <div class="inline-flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-[#76d3c8]"></span> Travaux
-            </div>
-            <div class="inline-flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-[#43a399]"></span> Fourniture
-            </div>
-            <div class="inline-flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-[#2a6f6a]"></span> Services
-            </div>
-            <div class="inline-flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-[#a3e7dc]"></span> Autres
+            <div class="inline-flex items-center gap-2" *ngFor="let s of statutBreakdown">
+              <span class="w-2 h-2 rounded-full" [style.background]="s.color"></span> {{ s.label }} ({{ s.count }})
             </div>
           </div>
         </div>
+
         <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-[0_6px_24px_rgba(26,46,68,0.08)]">
           <div class="flex items-center justify-between mb-4">
             <div>
-              <h3 class="font-headline font-bold text-xl text-on-surface mt-2">Valeur marchés</h3>
+              <h3 class="font-headline font-bold text-xl text-on-surface mt-2">Fournisseurs par domaine</h3>
             </div>
-            <span class="text-xs text-slate-500">7 derniers jours</span>
+            <span class="text-xs text-slate-500">{{ totalFournisseurs }} fournisseurs</span>
           </div>
-          <div class="h-44 grid grid-cols-6 gap-2 items-end">
-            <div class="bg-[#76d3c8]/90 rounded-full" style="height: 48%"></div>
-            <div class="bg-[#43a399]/90 rounded-full" style="height: 64%"></div>
-            <div class="bg-[#2a6f6a]/90 rounded-full" style="height: 56%"></div>
-            <div class="bg-[#a3e7dc]/90 rounded-full" style="height: 72%"></div>
-            <div class="bg-[#76d3c8]/90 rounded-full" style="height: 58%"></div>
-            <div class="bg-[#43a399]/90 rounded-full" style="height: 68%"></div>
+          <div class="h-44 flex gap-2 items-end">
+            <div
+              *ngFor="let d of topDomains; let i = index"
+              class="flex-1 rounded-full transition-all"
+              [ngClass]="i % 4 === 0 ? 'bg-[#76d3c8]/90' : i % 4 === 1 ? 'bg-[#43a399]/90' : i % 4 === 2 ? 'bg-[#2a6f6a]/90' : 'bg-[#a3e7dc]/90'"
+              [style.height.%]="domainBarHeight(d.count)"
+              [title]="d.label + ': ' + d.count"
+            ></div>
+            <p *ngIf="!topDomains.length" class="text-xs text-on-surface-variant self-center mx-auto">Aucune donnée</p>
           </div>
-          <div class="mt-4 flex justify-between text-xs text-on-surface-variant">
-            <span>Lun</span>
-            <span>Mar</span>
-            <span>Mer</span>
-            <span>Jeu</span>
-            <span>Ven</span>
-            <span>Sam</span>
+          <div class="mt-4 flex gap-1 text-[10px] text-on-surface-variant text-center">
+            <span class="flex-1 truncate" *ngFor="let d of topDomains" [title]="d.label">{{ shortDomainLabel(d.label) }}</span>
           </div>
         </div>
       </div>
+
       <div class="bg-surface-container-lowest rounded-2xl p-8 shadow-[0_6px_24px_rgba(26,46,68,0.08)]">
         <div class="flex justify-between items-center mb-6">
           <h3 class="font-headline font-bold text-lg text-on-surface">Marchés Récents</h3>
-          <button class="text-sm font-semibold text-[#43a399] hover:text-[#00332f] transition-colors">Voir tout</button>
+          <a routerLink="/marches" class="text-sm font-semibold text-[#43a399] hover:text-[#00332f] transition-colors">Voir tout</a>
         </div>
         <div class="overflow-x-auto">
-          <table class="w-full text-left border-collapse">
+          <table class="w-full text-left border-collapse" *ngIf="recentMarches.length">
             <thead>
               <tr>
                 <th class="pb-4 text-xs font-semibold text-on-surface-variant uppercase tracking-wider w-32">N° Marché</th>
@@ -154,26 +148,24 @@
               </tr>
             </thead>
             <tbody class="text-sm">
-              <tr class="group hover:bg-surface-bright transition-colors rounded-lg">
-                <td class="py-4 font-medium text-on-surface group-hover:bg-surface-bright rounded-l-lg pl-2">MKT-2023-089</td>
-                <td class="py-4 text-on-surface-variant">Fourniture de matériel informatique pour laboratoires</td>
+              <tr
+                *ngFor="let marche of recentMarches"
+                [routerLink]="['/marches/details']"
+                [queryParams]="{ tab: 'Informations générales', id: marche.numbMarche }"
+                class="group hover:bg-surface-bright transition-colors rounded-lg cursor-pointer"
+              >
+                <td class="py-4 font-medium text-on-surface group-hover:bg-surface-bright rounded-l-lg pl-2">{{ marche.numbMarche }}</td>
+                <td class="py-4 text-on-surface-variant">{{ marche.Description }}</td>
                 <td class="py-4">
-                  <span class="bg-[rgba(118,211,200,0.15)] text-[#43a399] px-2 py-1 rounded-[6px] text-xs font-medium">En cours</span>
+                  <span class="px-2 py-1 rounded-[6px] text-xs font-medium" [ngClass]="getStatutClass(marche.Statut)">{{ marche.Statut || 'En cours' }}</span>
                 </td>
-                <td class="py-4 text-on-surface-variant">12 Oct 2023</td>
-                <td class="py-4 text-on-surface group-hover:bg-surface-bright rounded-r-lg">Jean Dupont</td>
-              </tr>
-              <tr class="group hover:bg-surface-bright transition-colors rounded-lg">
-                <td class="py-4 font-medium text-on-surface group-hover:bg-surface-bright rounded-l-lg pl-2">MKT-2023-088</td>
-                <td class="py-4 text-on-surface-variant">Rénovation du bâtiment principal campus sud</td>
-                <td class="py-4">
-                  <span class="bg-tertiary-container/10 text-tertiary-container px-2 py-1 rounded-[6px] text-xs font-medium">À lancer</span>
-                </td>
-                <td class="py-4 text-on-surface-variant">05 Oct 2023</td>
-                <td class="py-4 text-on-surface group-hover:bg-surface-bright rounded-r-lg">Marie Kouadio</td>
+                <td class="py-4 text-on-surface-variant">{{ formatDate(marche.DateEnregistrement) }}</td>
+                <td class="py-4 text-on-surface group-hover:bg-surface-bright rounded-r-lg">{{ marche.ResponsableSuivi || '—' }}</td>
               </tr>
             </tbody>
           </table>
+          <p *ngIf="!loading && !recentMarches.length" class="text-sm text-on-surface-variant py-6 text-center">Aucun marché enregistré pour le moment.</p>
+          <p *ngIf="loading && !recentMarches.length" class="text-sm text-on-surface-variant py-6 text-center">Chargement…</p>
         </div>
       </div>
     </div>
