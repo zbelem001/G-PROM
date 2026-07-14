@@ -16,4 +16,5 @@ export class CreateMarcheDto {
   SCT_person4?: string;
   DatePrevReception?: string;
   Statut?: string;
+  BudgetEstimatif?: number;
 }

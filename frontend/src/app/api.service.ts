@@ -510,7 +510,7 @@ export async function createAvenant(avenant: Omit<ApiAvenant, 'idAvenant'>): Pro
 
 export async function updateAvenant(idAvenant: number, avenant: Partial<ApiAvenant>): Promise<ApiAvenant> {
   const response = await request<any>(`/avenants/${idAvenant}`, {
-    method: 'PUT',
+    method: 'PATCH',
     body: JSON.stringify(avenant),
   });
   return normalizeAvenantResponse(response);

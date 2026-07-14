@@ -3,4 +3,5 @@ export class CreateAvenantDto {
   numbAvenant: number;
   MontantAvenant?: number;
   DateProrogation?: string;
+  Devise?: 'XOF' | 'EUR' | 'USD';
 }

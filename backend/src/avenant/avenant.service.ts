@@ -2,13 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
 import { CreateAvenantDto } from './dto/create-avenant.dto';
 
-function normalizePayload(dto: Partial<CreateAvenantDto>): Record<string, unknown> {
-  const payload: Record<string, unknown> = {};
-  if (dto.idSoumissionAttribuee !== undefined) payload.idsoumissionattribuee = dto.idSoumissionAttribuee;
-  if (dto.numbAvenant !== undefined) payload.numbavenant = dto.numbAvenant ? Number(dto.numbAvenant) : null;
-  if (dto.MontantAvenant !== undefined) payload.montantavenant = dto.MontantAvenant ? Number(dto.MontantAvenant) : null;
-  if (dto.DateProrogation !== undefined) payload.dateprorogation = dto.DateProrogation || null;
-  return payload;
+function normalizeKeys(dto: object): Record<string, unknown> {
+  return Object.entries(dto).reduce((normalized, [key, value]) => {
+    const lowerKey = key.replace(/([A-Z])/g, (match) => match.toLowerCase());
+    normalized[lowerKey] = value;
+    return normalized;
+  }, {} as Record<string, unknown>);
 }
 
 @Injectable()
@@ -16,7 +15,7 @@ export class AvenantService {
   constructor(private readonly supabaseService: SupabaseService) {}
 
   async create(createAvenantDto: CreateAvenantDto) {
-    const payload = normalizePayload(createAvenantDto);
+    const payload = normalizeKeys(createAvenantDto);
     const { data, error } = await this.supabaseService.client
       .from('Avenant')
       .insert([payload])
@@ -43,7 +42,7 @@ export class AvenantService {
   }
 
   async update(idAvenant: number, updateAvenantDto: Partial<CreateAvenantDto>) {
-    const payload = normalizePayload(updateAvenantDto);
+    const payload = normalizeKeys(updateAvenantDto);
     const { data, error } = await this.supabaseService.client
       .from('Avenant')
       .update(payload)
