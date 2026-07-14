@@ -278,92 +278,109 @@
     </div>
 
     <div *ngIf="showAddMarket" class="fixed inset-0 z-40 bg-slate-950/20 backdrop-blur-sm"></div>
-    <aside *ngIf="showAddMarket" class="fixed right-0 top-0 z-50 h-screen w-[480px] bg-white/95 shadow-[-10px_0_30px_rgba(26,46,68,0.15)] flex flex-col p-0 overflow-hidden rounded-l-[24px]">
-      <div class="p-8 pb-4">
-        <div class="flex justify-between items-center mb-6">
-          <button type="button" (click)="toggleAddMarket()" class="w-10 h-10 rounded-full hover:bg-surface-container-high flex items-center justify-center transition-colors">
-            <span class="material-symbols-outlined text-secondary">close</span>
+    <aside *ngIf="showAddMarket" class="fixed right-0 top-0 z-50 h-screen w-full sm:w-[480px] bg-white shadow-[-8px_0_24px_rgba(0,0,0,0.08)] flex flex-col overflow-hidden">
+      <div class="px-8 pt-8 pb-5 border-b border-slate-100 shrink-0">
+        <div class="flex items-center justify-between mb-4">
+          <button type="button" (click)="toggleAddMarket()" class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center transition-colors">
+            <span class="material-symbols-outlined text-slate-500 text-[18px]">close</span>
           </button>
-          <span class="px-3 py-1 bg-surface-container-highest text-secondary-fixed-variant text-xs font-bold rounded-full">Nouveau Marché</span>
+          <span class="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">Nouveau marché</span>
         </div>
-        <h2 class="text-3xl font-black text-primary leading-tight">Ajouter un marché</h2>
-        <p class="text-secondary font-medium mt-2">Renseignez les informations du marché pour ouvrir un nouveau dossier.</p>
-        <p *ngIf="errorMessage" class="mt-4 text-sm text-error">{{ errorMessage }}</p>
+        <h2 class="text-xl font-bold text-slate-900">Ajouter un marché</h2>
+        <p class="text-sm text-slate-400 mt-1">Renseignez les informations du marché pour ouvrir un nouveau dossier.</p>
+        <p *ngIf="errorMessage" class="mt-3 text-sm text-red-600">{{ errorMessage }}</p>
       </div>
-      <form id="addMarketForm" (submit)="submitAddMarket($event)" class="flex-1 overflow-y-auto px-8 pb-32 space-y-8">
-        <div class="space-y-5">
-          <div class="flex items-center gap-2 text-primary/60 border-b border-outline-variant/15 pb-2">
-            <span class="material-symbols-outlined text-sm">fingerprint</span>
-            <span class="text-xs font-bold uppercase tracking-widest">Identification du Marché</span>
-          </div>
-          <div class="space-y-2">
-            <label class="text-sm font-semibold text-secondary ml-1">Numéro de Marché <span class="text-error">*</span></label>
-            <input [(ngModel)]="newMarche.numbMarche" name="numbMarche" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="Ex: MAR-2024-001" required type="text" />
-          </div>
-          <div class="space-y-2">
-            <label class="text-sm font-semibold text-secondary ml-1">Description de l'objet <span class="text-error">*</span></label>
-            <textarea [(ngModel)]="newMarche.Description" name="description" class="w-full p-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none resize-none" placeholder="Détails du marché..." required rows="3"></textarea>
-          </div>
-          <div class="space-y-2">
-            <label class="text-sm font-semibold text-secondary ml-1">Observation</label>
-            <textarea [(ngModel)]="newMarche.Observation" name="observation" class="w-full p-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none resize-none" placeholder="Saisir des observations générales..." rows="3"></textarea>
+      <form id="addMarketForm" (submit)="submitAddMarket($event)" class="flex-1 overflow-y-auto px-8 py-6 space-y-7">
+        <div>
+          <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Identification du marché</p>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Numéro de marché <span class="text-red-500">*</span></label>
+              <input [(ngModel)]="newMarche.numbMarche" name="numbMarche" required type="text"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                placeholder="Ex: MAR-2024-001" />
+            </div>
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Description de l'objet <span class="text-red-500">*</span></label>
+              <textarea [(ngModel)]="newMarche.Description" name="description" required rows="3"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors resize-none"
+                placeholder="Détails du marché..."></textarea>
+            </div>
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Observation</label>
+              <textarea [(ngModel)]="newMarche.Observation" name="observation" rows="3"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors resize-none"
+                placeholder="Saisir des observations générales..."></textarea>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Nombre de lots <span class="text-red-500">*</span></label>
+                <input [(ngModel)]="newMarche.NombreLot" name="nombreLot" min="1" required type="number"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors" />
+              </div>
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Mode de passation</label>
+                <select [(ngModel)]="newMarche.ModePassation" name="modePassation"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
+                  <option value="Appel d'Offres Ouvert">Appel d'Offres Ouvert</option>
+                  <option value="Appel d'Offres Restreint">Appel d'Offres Restreint</option>
+                  <option value="Gré à Gré">Gré à Gré</option>
+                </select>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-4">
-          <div class="space-y-2">
-            <label class="text-sm font-semibold text-secondary ml-1">Nombre de Lots <span class="text-error">*</span></label>
-            <input [(ngModel)]="newMarche.NombreLot" name="nombreLot" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" min="1" required type="number" />
-          </div>
-          <div class="space-y-2">
-            <label class="text-sm font-semibold text-secondary ml-1">Mode de passation</label>
-            <select [(ngModel)]="newMarche.ModePassation" name="modePassation" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none appearance-none">
-              <option value="Appel d'Offres Ouvert">Appel d'Offres Ouvert</option>
-              <option value="Appel d'Offres Restreint">Appel d'Offres Restreint</option>
-              <option value="Gré à Gré">Gré à Gré</option>
-            </select>
-          </div>
-        </div>
-        <div class="space-y-5">
-          <div class="flex items-center gap-2 text-primary/60 border-b border-outline-variant/15 pb-2">
-            <span class="material-symbols-outlined text-sm">payments</span>
-            <span class="text-xs font-bold uppercase tracking-widest">Modalités de Financement</span>
-          </div>
-          <div class="grid grid-cols-2 gap-4">
-            <div class="space-y-2">
-              <label class="text-sm font-semibold text-secondary ml-1">Source de financement</label>
-              <input [(ngModel)]="newMarche.Financement" name="financement" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="Ex: Fonds Propres" type="text" />
+
+        <div>
+          <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Modalités de financement</p>
+          <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Source de financement</label>
+                <input [(ngModel)]="newMarche.Financement" name="financement" type="text"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                  placeholder="Ex: Fonds Propres" />
+              </div>
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Budget estimatif</label>
+                <input [(ngModel)]="newMarche.BudgetEstimatif" name="budgetEstimatif" min="0" type="number"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                  placeholder="45 000 000" />
+              </div>
             </div>
-            <div class="space-y-2">
-              <label class="text-sm font-semibold text-secondary ml-1">Budget estimatif</label>
-              <input [(ngModel)]="newMarche.BudgetEstimatif" name="budgetEstimatif" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="45 000 000" min="0" type="number" />
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Devise</label>
+                <select [(ngModel)]="newMarche.Devise" name="devise"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
+                  <option value="XOF">XOF</option>
+                  <option value="EUR">EUR</option>
+                  <option value="USD">USD</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Nature d'ouverture</label>
+                <input [(ngModel)]="newMarche.NatureOuverture" name="natureOuverture" type="text"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                  placeholder="Ex: Ouverture publique" />
+              </div>
             </div>
-          </div>
-          <div class="grid grid-cols-2 gap-4">
-            <div class="space-y-2">
-              <label class="text-sm font-semibold text-secondary ml-1">Devise</label>
-              <select [(ngModel)]="newMarche.Devise" name="devise" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none appearance-none">
-                <option value="XOF">XOF</option>
-                <option value="EUR">EUR</option>
-                <option value="USD">USD</option>
-              </select>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Date d'enregistrement</label>
+                <input [(ngModel)]="newMarche.DateEnregistrement" name="dateEnregistrement" type="date"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors" />
+              </div>
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Date prévisionnelle réception</label>
+                <input [(ngModel)]="newMarche.DatePrevReception" name="datePrevReception" type="date"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors" />
+              </div>
             </div>
-            <div class="space-y-2">
-              <label class="text-sm font-semibold text-secondary ml-1">Nature d'ouverture</label>
-              <input [(ngModel)]="newMarche.NatureOuverture" name="natureOuverture" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="Ex: Ouverture publique" type="text" />
-            </div>
-            <div class="space-y-2">
-              <label class="text-sm font-semibold text-secondary ml-1">Date d'enregistrement</label>
-              <input [(ngModel)]="newMarche.DateEnregistrement" name="dateEnregistrement" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" type="date" />
-            </div>
-          </div>
-          <div class="grid grid-cols-2 gap-4">
-            <div class="space-y-2">
-              <label class="text-sm font-semibold text-secondary ml-1">Date prévisionnelle réception</label>
-              <input [(ngModel)]="newMarche.DatePrevReception" name="datePrevReception" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" type="date" />
-            </div>
-            <div class="space-y-2">
-              <label class="text-sm font-semibold text-secondary ml-1">Statut</label>
-              <select [(ngModel)]="newMarche.Statut" name="statut" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none appearance-none">
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Statut</label>
+              <select [(ngModel)]="newMarche.Statut" name="statut"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
                 <option>À lancer</option>
                 <option>En cours</option>
                 <option>Clôturé</option>
@@ -371,35 +388,39 @@
             </div>
           </div>
         </div>
-        <div class="space-y-5">
-          <div class="flex items-center gap-2 text-primary/60 border-b border-outline-variant/15 pb-2">
-            <span class="material-symbols-outlined text-sm">badge</span>
-            <span class="text-xs font-bold uppercase tracking-widest">Responsable</span>
-          </div>
+
+        <div>
+          <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Responsable</p>
           <div class="space-y-4">
-            <div class="space-y-2">
-              <label class="text-sm font-semibold text-secondary ml-1">Demandeur du Marché</label>
-              <select [(ngModel)]="newMarche.Demandeur" name="demandeur" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none appearance-none">
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Demandeur du marché</label>
+              <select [(ngModel)]="newMarche.Demandeur" name="demandeur"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
                 <option value="" disabled>Sélectionner un département</option>
                 <option *ngFor="let departement of departements" [value]="departement">{{ departement }}</option>
               </select>
             </div>
-            <div class="space-y-2">
-              <label class="text-sm font-semibold text-secondary ml-1">Responsable Suivi</label>
-              <input [(ngModel)]="newMarche.ResponsableSuivi" name="responsableSuivi" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" placeholder="Nom complet" type="text" />
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Responsable suivi</label>
+              <input [(ngModel)]="newMarche.ResponsableSuivi" name="responsableSuivi" type="text"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                placeholder="Nom complet" />
             </div>
           </div>
         </div>
-        <div class="absolute bottom-0 left-0 w-full p-8 bg-white/95 backdrop-blur-md border-t border-outline-variant/15 flex items-center gap-4">
-          <button type="button" (click)="toggleAddMarket()" class="flex-1 h-14 rounded-[10px] border-2 border-[#1a2e44] text-[#1a2e44] font-bold hover:bg-surface-container-low transition-all" [disabled]="submitting">
-            Annuler
-          </button>
-          <button type="submit" [disabled]="submitting" class="flex-[2] h-14 rounded-[10px] bg-gradient-to-br from-[#039CD3] to-[#0278a8] text-white font-bold shadow-[0_4px_14px_rgba(3,156,211,0.3)] hover:opacity-95 active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-3">
-            <span *ngIf="submitting" class="h-5 w-5 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
-            <span>{{ submitting ? 'Enregistrement...' : 'Enregistrer le Marché' }}</span>
-          </button>
-        </div>
       </form>
+      <footer class="px-8 py-5 border-t border-slate-100 shrink-0 flex justify-end gap-3">
+        <button type="button" (click)="toggleAddMarket()" [disabled]="submitting"
+          class="px-5 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors disabled:opacity-60">
+          Annuler
+        </button>
+        <button type="submit" form="addMarketForm" [disabled]="submitting"
+          class="px-6 py-2.5 rounded-lg bg-primary text-white text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center gap-2">
+          <span *ngIf="submitting" class="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
+          {{ submitting ? 'Enregistrement...' : 'Enregistrer le marché' }}
+          <span *ngIf="!submitting" class="material-symbols-outlined text-sm">check</span>
+        </button>
+      </footer>
     </aside>
   </main>
 </div>

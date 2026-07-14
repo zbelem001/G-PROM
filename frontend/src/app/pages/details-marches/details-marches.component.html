@@ -178,16 +178,18 @@
                 </div>
                 <p *ngIf="!canAddSctMember" class="mt-4 text-xs text-on-surface-variant text-center">Maximum de 4 membres atteint.</p>
                 <p *ngIf="sctMemberErrorMessage" class="mt-2 text-xs text-error">{{ sctMemberErrorMessage }}</p>
-                <form *ngIf="showAddSctMember" (ngSubmit)="addSctMember()" class="mt-4 space-y-3 bg-white rounded-[14px] p-4 border border-surface-container-high shadow-sm">
+                <form *ngIf="showAddSctMember" (ngSubmit)="addSctMember()" class="mt-4 space-y-3 bg-white rounded-lg p-4 border border-slate-100 shadow-sm">
                   <div>
-                    <label class="block text-xs font-semibold text-on-surface-variant mb-1">Nom du membre</label>
-                    <input type="text" [(ngModel)]="newSctMemberName" name="newSctMemberName" class="w-full rounded-[10px] border border-surface-container-high px-3 py-2 text-sm" placeholder="Nom complet" required />
+                    <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Nom du membre</label>
+                    <input type="text" [(ngModel)]="newSctMemberName" name="newSctMemberName"
+                      class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                      placeholder="Nom complet" required />
                   </div>
                   <div class="flex gap-2">
-                    <button type="submit" [disabled]="isSavingSctMember" class="flex-1 rounded-[10px] bg-[#039CD3] text-white py-2 text-sm font-medium disabled:opacity-60">
+                    <button type="submit" [disabled]="isSavingSctMember" class="flex-1 rounded-lg bg-primary text-white py-2 text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity disabled:opacity-60">
                       {{ isSavingSctMember ? 'Ajout...' : 'Ajouter' }}
                     </button>
-                    <button type="button" (click)="toggleAddSctMember()" [disabled]="isSavingSctMember" class="flex-1 rounded-[10px] border border-surface-container-high py-2 text-sm font-medium text-on-surface">Annuler</button>
+                    <button type="button" (click)="toggleAddSctMember()" [disabled]="isSavingSctMember" class="flex-1 rounded-lg border border-slate-200 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors disabled:opacity-60">Annuler</button>
                   </div>
                 </form>
               </div>
@@ -634,9 +636,11 @@
 
             <p *ngIf="analyses.length === 0" class="text-sm text-on-surface-variant italic">Aucune analyse SCT enregistrée pour ce marché.</p>
 
-            <div *ngFor="let analyse of analyses" class="bg-surface-container-lowest rounded-[24px] p-6 shadow-[0_4px_20px_rgba(26,46,68,0.04)]">
+            <div *ngFor="let analyse of analyses" class="bg-surface-container-lowest rounded-[24px] p-6 shadow-[0_4px_20px_rgba(26,46,68,0.04)] border-l-4"
+                 [style.border-left-color]="getLotAccent(analyse.numbLot).solid">
               <div class="flex items-center gap-3 mb-4">
-                <span class="bg-[#1a2e44] text-white px-3 py-1 rounded-md font-headline font-bold text-sm tracking-widest">
+                <span class="text-white px-3 py-1 rounded-md font-headline font-bold text-sm tracking-widest"
+                      [style.background]="getLotAccent(analyse.numbLot).solid">
                   {{ getLotNom(analyse.numbLot) }}
                 </span>
                 <span class="text-sm text-on-surface-variant">Rapport d'analyse SCT</span>
@@ -715,9 +719,11 @@
 
             <p *ngIf="attributaires.length === 0" class="text-sm text-on-surface-variant italic">Aucune attribution enregistrée pour ce marché.</p>
 
-            <div *ngFor="let attr of attributaires" class="bg-surface-container-lowest rounded-[24px] p-6 shadow-[0_4px_20px_rgba(26,46,68,0.04)]">
+            <div *ngFor="let attr of attributaires" class="bg-surface-container-lowest rounded-[24px] p-6 shadow-[0_4px_20px_rgba(26,46,68,0.04)] border-l-4"
+                 [style.border-left-color]="getAttributionAccent(attr.idSoumissionAttribuee).solid">
               <div class="flex items-center gap-3 mb-5">
-                <span class="bg-[#1a2e44] text-white px-3 py-1 rounded-md font-headline font-bold text-sm tracking-widest">
+                <span class="text-white px-3 py-1 rounded-md font-headline font-bold text-sm tracking-widest"
+                      [style.background]="getAttributionAccent(attr.idSoumissionAttribuee).solid">
                   {{ getSoumissionLabel(attr.idSoumissionAttribuee) }}
                 </span>
                 <span class="text-[10px] px-2.5 py-0.5 rounded-full font-medium ml-auto"
@@ -794,14 +800,16 @@
                   <ng-template #noLastAv><p class="text-lg font-semibold text-[#1a2e44]">—</p></ng-template>
                 </div>
               </div>
+              <p *ngIf="avenantDocError" class="text-xs text-red-600 mb-2">{{ avenantDocError }}</p>
               <div class="bg-surface-container-lowest rounded-[24px] p-6 shadow-[0_4px_20px_rgba(26,46,68,0.04)] overflow-x-auto">
-                <table class="w-full min-w-[760px] text-left border-collapse">
+                <table class="w-full min-w-[820px] text-left border-collapse">
                   <thead>
                     <tr class="bg-surface-container/50 border-b border-surface-container-high text-xs uppercase tracking-wider font-semibold text-on-surface-variant">
                       <th class="px-6 py-4">N° Avenant</th>
                       <th class="px-6 py-4">Soumission attribuée</th>
                       <th class="px-6 py-4 text-right">Montant</th>
                       <th class="px-6 py-4">Date prorogation</th>
+                      <th class="px-6 py-4">Document</th>
                       <th class="px-6 py-4 text-right">Actions</th>
                     </tr>
                   </thead>
@@ -813,6 +821,28 @@
                         {{ avn.MontantAvenant ? (avn.MontantAvenant | number) + ' ' + (avn.Devise || market?.Devise || 'XOF') : '—' }}
                       </td>
                       <td class="px-6 py-4">{{ avn.DateProrogation ? (avn.DateProrogation | date:'dd MMM yyyy') : '—' }}</td>
+                      <td class="px-6 py-4" (click)="$event.stopPropagation()">
+                        <div class="flex items-center gap-1.5">
+                          <button *ngIf="getAvenantDocUrl(avn)" type="button" (click)="openDocument(getAvenantDocUrl(avn))"
+                            class="text-xs text-[#039CD3] hover:text-[#0277a8] underline flex items-center gap-1 transition-colors" title="Ouvrir le document">
+                            <span class="material-symbols-outlined text-[14px]">open_in_new</span>
+                            Voir
+                          </button>
+                          <label *ngIf="uploadingAvenantDocId !== avn.idAvenant" [for]="'avenantDoc_' + avn.idAvenant"
+                                 class="cursor-pointer text-[11px] font-medium text-slate-500 hover:text-[#43a399] px-2 py-1 rounded-[6px] border border-slate-200 hover:border-[#43a399]/40 transition-colors shrink-0 whitespace-nowrap select-none">
+                            {{ getAvenantDocUrl(avn) ? 'Remplacer' : 'Uploader' }}
+                          </label>
+                          <span *ngIf="uploadingAvenantDocId === avn.idAvenant" class="text-[11px] text-[#43a399] flex items-center gap-1">
+                            <span class="w-3 h-3 border-2 border-[#43a399]/30 border-t-[#43a399] rounded-full animate-spin inline-block"></span>
+                            Envoi...
+                          </span>
+                          <input [id]="'avenantDoc_' + avn.idAvenant" type="file"
+                                 accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg"
+                                 class="hidden"
+                                 (change)="onAvenantDocFileSelected($event, avn)"
+                                 [disabled]="!!uploadingAvenantDocId" />
+                        </div>
+                      </td>
                       <td class="px-6 py-4 text-right">
                         <div class="flex items-center justify-end gap-1">
                           <button type="button" (click)="$event.stopPropagation(); toggleAvenantDrawer(avn)" class="text-slate-400 hover:text-[#43a399] transition-colors p-1 opacity-0 group-hover:opacity-100" title="Modifier">
@@ -825,7 +855,7 @@
                       </td>
                     </tr>
                     <tr *ngIf="avenants.length === 0">
-                      <td colspan="5" class="px-6 py-12 text-center text-on-surface-variant text-sm">Aucun avenant enregistré pour ce marché.</td>
+                      <td colspan="6" class="px-6 py-12 text-center text-on-surface-variant text-sm">Aucun avenant enregistré pour ce marché.</td>
                     </tr>
                   </tbody>
                 </table>
@@ -837,547 +867,462 @@
         </div><!-- /onglets card -->
       </div><!-- /mx-auto -->
     </div><!-- /flex-1 pt-24 -->
-    <div *ngIf="showAddLot" class="fixed inset-0 z-50 flex justify-end">
-      <div class="absolute inset-0 bg-surface/40 backdrop-blur-sm" (click)="toggleAddLot()"></div>
-      <aside class="relative right-0 top-0 h-full w-full max-w-[450px] bg-white shadow-[-20px_0_40px_rgba(26,46,68,0.15)] flex flex-col p-8 gap-8 overflow-y-auto">
-        <header class="flex justify-between items-start mb-8">
-          <div>
-            <h2 class="text-[22px] font-headline font-bold text-on-surface tracking-tight">
-              {{ editingLot ? 'Modifier le lot' : 'Ajouter un lot' }}
-            </h2>
-            <p class="text-sm text-on-surface-variant mt-1">
-              {{ editingLot ? editingLot.nomLot : 'Subdivision du marché ' + (market?.numbMarche || '') }}
-            </p>
-          </div>
-          <button type="button" aria-label="Fermer" class="text-outline hover:text-on-surface transition-colors p-1" (click)="toggleAddLot()">
-            <span class="material-symbols-outlined">close</span>
+    <div *ngIf="showAddLot" class="fixed inset-0 z-40 bg-slate-950/20 backdrop-blur-sm" (click)="toggleAddLot()"></div>
+    <aside *ngIf="showAddLot" class="fixed right-0 top-0 z-50 h-screen w-full sm:w-[480px] bg-white shadow-[-8px_0_24px_rgba(0,0,0,0.08)] flex flex-col overflow-hidden">
+      <div class="px-8 pt-8 pb-5 border-b border-slate-100 shrink-0">
+        <div class="flex items-center justify-between mb-4">
+          <button type="button" (click)="toggleAddLot()" class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center transition-colors">
+            <span class="material-symbols-outlined text-slate-500 text-[18px]">close</span>
           </button>
-        </header>
-        <div class="flex-1 overflow-y-auto">
-          <form class="space-y-6">
-            <div *ngIf="lotErrorMessage" class="rounded-[10px] border border-error/20 bg-error/10 p-4 text-sm text-error">
-              {{ lotErrorMessage }}
-            </div>
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-on-surface" for="lotNumber">Numéro du Lot</label>
-              <div class="relative">
-                <input id="lotNumber" type="text" [(ngModel)]="newLotNumero" name="newLotNumero" class="w-full bg-surface-container-highest border border-transparent rounded-[10px] text-sm text-on-surface px-4 py-3 focus:bg-surface-container-lowest focus:border-primary/20 focus:ring-0 transition-colors" />
-              </div>
-              <p class="text-xs text-outline">Généré automatiquement, modifiable si nécessaire.</p>
-            </div>
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-on-surface" for="marketNumber">Numéro du Marché</label>
-              <input id="marketNumber" type="text" [(ngModel)]="newLotNumbMarche" name="newLotNumbMarche" readonly class="w-full bg-surface-container-highest border border-transparent rounded-[10px] text-sm text-on-surface px-4 py-3 focus:ring-0 cursor-not-allowed" />
-              <p class="text-xs text-outline">Le marché associé est ajouté automatiquement à la création.</p>
-            </div>
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-on-surface" for="description">Description <span class="text-error">*</span></label>
-              <textarea id="description" rows="4" required [(ngModel)]="newLotDescription" name="newLotDescription" class="w-full bg-surface-container-highest border border-transparent rounded-[10px] text-sm text-on-surface px-4 py-3 focus:bg-surface-container-lowest focus:border-primary/20 focus:ring-0 transition-colors resize-none" placeholder="Détaillez les spécifications du lot..."></textarea>
-            </div>
-            <div class="space-y-2">
-              <label class="block text-sm font-medium text-on-surface" for="contractNumber">Numéro de Contrat</label>
-              <input id="contractNumber" type="text" placeholder="Ex: CTR-2024-01" [(ngModel)]="newLotContract" name="newLotContract" class="w-full bg-surface-container-highest border border-transparent rounded-[10px] text-sm text-on-surface px-4 py-3 focus:bg-surface-container-lowest focus:border-primary/20 focus:ring-0 transition-colors" />
-            </div>
-          </form>
+          <span class="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">{{ editingLot ? 'Modifier' : 'Nouveau lot' }}</span>
         </div>
-        <footer class="pt-6 flex items-center justify-end gap-4 mt-auto">
-          <button type="button" class="px-5 py-2.5 text-sm font-medium text-on-secondary-container bg-transparent hover:bg-surface-container-high rounded-[10px] transition-colors" (click)="toggleAddLot()">Annuler</button>
-          <button type="button" class="px-5 py-2.5 text-sm font-medium text-on-primary bg-[#039CD3] hover:bg-[#0284b6] rounded-[10px] transition-all flex items-center justify-center gap-2" [disabled]="!newLotDescription.trim() || isSavingLot" (click)="addLot()">
-            <span *ngIf="isSavingLot" class="spinner-border animate-spin inline-block w-4 h-4 border-2 border-current border-r-transparent rounded-full"></span>
-            {{ isSavingLot ? 'Enregistrement...' : (editingLot ? 'Modifier le lot' : 'Enregistrer le lot') }}
+        <h2 class="text-xl font-bold text-slate-900">{{ editingLot ? 'Modifier le lot' : 'Ajouter un lot' }}</h2>
+        <p class="text-sm text-slate-400 mt-1">{{ editingLot ? editingLot.nomLot : 'Subdivision du marché ' + (market?.numbMarche || '') }}</p>
+        <p *ngIf="lotErrorMessage" class="mt-3 text-sm text-red-600">{{ lotErrorMessage }}</p>
+      </div>
+      <form id="addLotForm" class="flex-1 overflow-y-auto px-8 py-6 space-y-4">
+        <div>
+          <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Numéro du lot</label>
+          <input type="text" [(ngModel)]="newLotNumero" name="newLotNumero"
+            class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors" />
+          <p class="text-[11px] text-slate-400 mt-1">Généré automatiquement, modifiable si nécessaire.</p>
+        </div>
+        <div>
+          <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Numéro du marché</label>
+          <input type="text" [(ngModel)]="newLotNumbMarche" name="newLotNumbMarche" readonly
+            class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-500 cursor-not-allowed" />
+          <p class="text-[11px] text-slate-400 mt-1">Le marché associé est ajouté automatiquement à la création.</p>
+        </div>
+        <div>
+          <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Description <span class="text-red-500">*</span></label>
+          <textarea rows="4" required [(ngModel)]="newLotDescription" name="newLotDescription"
+            class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors resize-none"
+            placeholder="Détaillez les spécifications du lot..."></textarea>
+        </div>
+        <div>
+          <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Numéro de contrat</label>
+          <input type="text" placeholder="Ex: CTR-2024-01" [(ngModel)]="newLotContract" name="newLotContract"
+            class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors" />
+        </div>
+      </form>
+      <footer class="px-8 py-5 border-t border-slate-100 shrink-0 flex justify-end gap-3">
+        <button type="button" class="px-5 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors" (click)="toggleAddLot()">Annuler</button>
+        <button type="button" class="px-6 py-2.5 rounded-lg bg-primary text-white text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center gap-2" [disabled]="!newLotDescription.trim() || isSavingLot" (click)="addLot()">
+          <span *ngIf="isSavingLot" class="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
+          {{ isSavingLot ? 'Enregistrement...' : (editingLot ? 'Modifier le lot' : 'Enregistrer le lot') }}
+        </button>
+      </footer>
+    </aside>
+      <div *ngIf="showConsultationDrawer" class="fixed inset-0 z-40 bg-slate-950/20 backdrop-blur-sm" (click)="toggleConsultationDrawer()"></div>
+      <aside *ngIf="showConsultationDrawer" class="fixed right-0 top-0 z-50 h-screen w-full sm:w-[480px] bg-white shadow-[-8px_0_24px_rgba(0,0,0,0.08)] flex flex-col overflow-hidden">
+        <div class="px-8 pt-8 pb-5 border-b border-slate-100 shrink-0">
+          <div class="flex items-center justify-between mb-4">
+            <button type="button" (click)="toggleConsultationDrawer()" class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center transition-colors">
+              <span class="material-symbols-outlined text-slate-500 text-[18px]">close</span>
+            </button>
+            <span class="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">{{ editingConsultation ? 'Modifier' : 'Nouvelle consultation' }}</span>
+          </div>
+          <h2 class="text-xl font-bold text-slate-900">{{ editingConsultation ? 'Modifier la consultation' : 'Consulter un fournisseur' }}</h2>
+          <p class="text-sm text-slate-400 mt-1">{{ editingConsultation ? 'Modifier la date de consultation' : 'Enregistrer une invitation à soumissionner' }}</p>
+          <p *ngIf="consultationErrorMessage" class="mt-3 text-sm text-red-600">{{ consultationErrorMessage }}</p>
+        </div>
+        <form id="addConsultationForm" class="flex-1 overflow-y-auto px-8 py-6 space-y-4">
+          <div class="bg-slate-50 border border-slate-100 rounded-lg px-3.5 py-3 flex items-start gap-2">
+            <span class="material-symbols-outlined text-[#43a399] text-[18px] shrink-0">info</span>
+            <p class="text-xs text-slate-500 leading-relaxed">Un fournisseur peut être consulté sur plusieurs lots distincts du même marché.</p>
+          </div>
+          <ng-container *ngIf="editingConsultation; else newConsultationFields">
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Lot</label>
+              <p class="text-sm font-medium text-slate-700 bg-slate-50 border border-slate-200 rounded-lg px-3.5 py-2.5">{{ editingConsultation.lot }}</p>
+            </div>
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Fournisseur</label>
+              <p class="text-sm font-medium text-slate-700 bg-slate-50 border border-slate-200 rounded-lg px-3.5 py-2.5">{{ editingConsultation.fournisseur.nom }}</p>
+            </div>
+          </ng-container>
+          <ng-template #newConsultationFields>
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Lot <span class="text-red-500">*</span></label>
+              <select name="numbLot" [(ngModel)]="newConsultationLot" required
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
+                <option disabled value="">Sélectionner un lot...</option>
+                <option *ngFor="let lot of lots" [value]="lot.id">{{ lot.nomLot }} - {{ lot.description }}</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Fournisseur <span class="text-red-500">*</span></label>
+              <select name="idFournisseur" [(ngModel)]="newConsultationFournisseurId" required
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
+                <option [value]="0" disabled>Sélectionner un fournisseur...</option>
+                <option *ngFor="let f of availableFournisseurs" [value]="f.idFournisseur">{{ f.RaisonSocial }}</option>
+              </select>
+            </div>
+          </ng-template>
+          <div>
+            <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Date de consultation</label>
+            <input name="DateConsultation" [(ngModel)]="newConsultationDate" type="date"
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors" />
+          </div>
+        </form>
+        <footer class="px-8 py-5 border-t border-slate-100 shrink-0 flex justify-end gap-3">
+          <button type="button" class="px-5 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors" (click)="toggleConsultationDrawer()">Annuler</button>
+          <button type="button" [disabled]="isSavingConsultation || !newConsultationLot || !newConsultationFournisseurId" class="px-6 py-2.5 rounded-lg bg-primary text-white text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center gap-2" (click)="addConsultation()">
+            <span *ngIf="isSavingConsultation" class="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
+            {{ isSavingConsultation ? 'Enregistrement...' : 'Enregistrer la consultation' }}
           </button>
         </footer>
       </aside>
-    </div>
-      <div *ngIf="showConsultationDrawer" class="fixed inset-0 z-50 flex justify-end">
-        <div class="absolute inset-0 bg-surface/40 backdrop-blur-sm" (click)="toggleConsultationDrawer()"></div>
-        <aside class="relative right-0 top-0 h-full w-full max-w-[450px] bg-white shadow-[-20px_0_40px_rgba(26,46,68,0.15)] flex flex-col p-8 gap-8 overflow-y-auto">
-          <header class="flex justify-between items-start mb-8">
-            <div>
-              <h2 class="text-[22px] font-headline font-bold text-on-surface tracking-tight">
-                {{ editingConsultation ? 'Modifier la consultation' : 'Consulter un fournisseur' }}
-              </h2>
-              <p class="text-sm text-on-surface-variant mt-1">
-                {{ editingConsultation ? 'Modifier la date de consultation' : 'Enregistrer une invitation à soumissionner' }}
-              </p>
-            </div>
-            <button type="button" aria-label="Fermer" class="text-outline hover:text-on-surface transition-colors p-1" (click)="toggleConsultationDrawer()">
-              <span class="material-symbols-outlined">close</span>
+      <div *ngIf="showAnalyseDrawer" class="fixed inset-0 z-40 bg-slate-950/20 backdrop-blur-sm" (click)="toggleAnalyseDrawer()"></div>
+      <aside *ngIf="showAnalyseDrawer" class="fixed right-0 top-0 z-50 h-screen w-full sm:w-[480px] bg-white shadow-[-8px_0_24px_rgba(0,0,0,0.08)] flex flex-col overflow-hidden">
+        <div class="px-8 pt-8 pb-5 border-b border-slate-100 shrink-0">
+          <div class="flex items-center justify-between mb-4">
+            <button type="button" (click)="toggleAnalyseDrawer()" class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center transition-colors">
+              <span class="material-symbols-outlined text-slate-500 text-[18px]">close</span>
             </button>
-          </header>
-          <div class="flex-1 overflow-y-auto">
-            <div *ngIf="consultationErrorMessage" class="mb-6 p-4 bg-error-container text-on-error-container rounded-[10px] text-sm font-medium">
-              {{ consultationErrorMessage }}
-            </div>
-            <div class="bg-[#f0fdfb] rounded-[10px] p-4 mb-6 relative before:absolute before:inset-0 before:rounded-[10px] before:border before:border-primary before:opacity-15 pointer-events-none">
-              <span class="material-symbols-outlined text-primary-container shrink-0 mt-0.5">info</span>
-              <p class="text-sm text-primary-container leading-relaxed mt-2">
-                Un fournisseur peut être consulté sur plusieurs lots distincts du même marché.
-              </p>
-            </div>
-            <form class="space-y-6">
-              <ng-container *ngIf="editingConsultation; else newConsultationFields">
-                <div class="space-y-2">
-                  <p class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Lot</p>
-                  <p class="text-sm font-medium text-on-surface bg-surface-container-highest rounded-[10px] px-4 py-3">{{ editingConsultation.lot }}</p>
-                </div>
-                <div class="space-y-2">
-                  <p class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Fournisseur</p>
-                  <p class="text-sm font-medium text-on-surface bg-surface-container-highest rounded-[10px] px-4 py-3">{{ editingConsultation.fournisseur.nom }}</p>
-                </div>
-              </ng-container>
-              <ng-template #newConsultationFields>
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-on-surface" for="numbLot">Lot <span class="text-error">*</span></label>
-                  <div class="relative">
-                    <select id="numbLot" name="numbLot" [(ngModel)]="newConsultationLot" required style="background-image:none" class="w-full appearance-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
-                      <option disabled value="">Sélectionner un lot...</option>
-                      <option *ngFor="let lot of lots" [value]="lot.id">{{ lot.nomLot }} - {{ lot.description }}</option>
-                    </select>
-                    <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant">expand_more</span>
-                  </div>
-                </div>
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-on-surface" for="idFournisseur">Fournisseur <span class="text-error">*</span></label>
-                  <div class="relative">
-                    <select id="idFournisseur" name="idFournisseur" [(ngModel)]="newConsultationFournisseurId" required style="background-image:none" class="w-full appearance-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
-                      <option [value]="0" disabled>Sélectionner un fournisseur...</option>
-                      <option *ngFor="let f of availableFournisseurs" [value]="f.idFournisseur">{{ f.RaisonSocial }}</option>
-                    </select>
-                    <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
-                  </div>
-                </div>
-              </ng-template>
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface" for="DateConsultation">Date de Consultation</label>
-                <div class="relative">
-                  <input id="DateConsultation" name="DateConsultation" [(ngModel)]="newConsultationDate" type="date" class="w-full bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors" />
-                </div>
-              </div>
-            </form>
+            <span class="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">Analyse SCT</span>
           </div>
-          <footer class="pt-6 flex items-center justify-end gap-4 mt-auto">
-            <button type="button" class="px-5 py-2.5 text-sm font-medium text-on-secondary-container bg-transparent hover:bg-surface-container-high rounded-[10px] transition-colors" (click)="toggleConsultationDrawer()">Annuler</button>
-            <button type="button" [disabled]="isSavingConsultation || !newConsultationLot || !newConsultationFournisseurId" class="px-5 py-2.5 text-sm font-medium text-white bg-[#039CD3] hover:bg-[#0284b6] rounded-[10px] transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2" (click)="addConsultation()">
-              <span *ngIf="isSavingConsultation" class="spinner-border animate-spin inline-block w-4 h-4 border-2 border-current border-r-transparent rounded-full"></span>
-              {{ isSavingConsultation ? 'Enregistrement...' : 'Enregistrer la Consultation' }}
-            </button>
-          </footer>
-        </aside>
-      </div>
-      <div *ngIf="showAnalyseDrawer" class="fixed inset-0 z-50 flex justify-end">
-        <div class="absolute inset-0 bg-surface/40 backdrop-blur-sm" (click)="toggleAnalyseDrawer()"></div>
-        <aside class="relative right-0 top-0 h-full w-full max-w-[500px] bg-white shadow-[-20px_0_40px_rgba(26,46,68,0.15)] flex flex-col p-8 gap-8 overflow-y-auto">
-          <header class="flex justify-between items-start mb-8">
-            <div>
-              <h2 class="text-[22px] font-headline font-bold text-on-surface tracking-tight">Enregistrer l'Analyse SCT</h2>
-              <p class="text-sm text-on-surface-variant mt-1">Évaluation des offres — Lot 1</p>
-            </div>
-            <button type="button" aria-label="Fermer" class="text-outline hover:text-on-surface transition-colors p-1" (click)="toggleAnalyseDrawer()">
-              <span class="material-symbols-outlined">close</span>
-            </button>
-          </header>
-          <div class="flex-1 overflow-y-auto">
-            <div class="bg-[#f0fdfb] rounded-[10px] p-4 mb-6">
-              <span class="material-symbols-outlined text-[#43a399]">info</span>
-              <p class="text-sm text-[#43a399] leading-relaxed mt-2">
-                Enregistrez les conclusions de la sous-commission technique pour le lot sélectionné.
-              </p>
-            </div>
-            <form class="space-y-6">
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface" for="lotAnalyse">Lot concerné</label>
-                <div class="relative">
-                  <select id="lotAnalyse" name="lotAnalyse" [(ngModel)]="newAnalyseLot" (change)="onAnalyseLotChange()" required style="background-image:none" class="w-full appearance-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors">
-                    <option disabled value="">Sélectionner un lot...</option>
-                    <option *ngFor="let lot of lots" [value]="lot.id">{{ lot.nomLot }}</option>
-                  </select>
-                  <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant">expand_more</span>
-                </div>
-              </div>
-              <div class="grid grid-cols-2 gap-4">
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-on-surface" for="receptionSCT">Date de réception SCT</label>
-                  <input id="receptionSCT" name="receptionSCT" [(ngModel)]="newAnalyseDateReception" type="date" class="w-full bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors" />
-                </div>
-                <div class="space-y-2">
-                  <label class="block text-sm font-medium text-on-surface" for="presentationCA">Date présentation CA</label>
-                  <input id="presentationCA" name="presentationCA" [(ngModel)]="newAnalyseDatePresentation" type="date" class="w-full bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors" />
-                </div>
-              </div>
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface" for="attributaireSCT">Attributaire prévisionnel</label>
-                <div class="relative">
-                  <select id="attributaireSCT" name="attributaireSCT" [(ngModel)]="newAnalyseIdAttributaire" style="background-image:none" [disabled]="!newAnalyseLot || analyseConsultedFournisseurs.length === 0" class="w-full appearance-none bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors disabled:opacity-50">
-                    <option [value]="0" disabled>{{ !newAnalyseLot ? 'Sélectionner un lot d\'abord...' : (analyseConsultedFournisseurs.length === 0 ? 'Aucun fournisseur consulté pour ce lot' : 'Sélectionner un fournisseur...') }}</option>
-                    <option *ngFor="let f of analyseConsultedFournisseurs" [value]="f.idFournisseur">{{ f.RaisonSocial }}</option>
-                  </select>
-                  <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
-                </div>
-              </div>
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface" for="observationsSCT">Observations de la SCT</label>
-                <textarea id="observationsSCT" name="observationsSCT" [(ngModel)]="newAnalyseObservation" rows="4" class="w-full bg-surface-container-highest border-0 rounded-[10px] px-4 py-3 text-sm text-on-surface focus:ring-0 focus:bg-surface-container-lowest focus:outline-none transition-colors resize-none" placeholder="Remarques, réserves ou justifications..."></textarea>
-              </div>
-              <!-- Rapport d'analyse SCT — optionnel -->
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface">
-                  Rapport d'analyse SCT
-                  <span class="text-xs font-normal text-on-surface-variant ml-1">(optionnel)</span>
-                </label>
-                <div class="flex items-center gap-3 bg-surface-container-highest rounded-[10px] px-4 py-3">
-                  <label for="analyseDocFile" class="cursor-pointer flex items-center gap-1.5 text-xs font-medium text-white bg-[#76d3c8] hover:bg-[#43a399] px-3 py-1.5 rounded-[8px] transition-colors shrink-0">
-                    <span class="material-symbols-outlined text-[15px]">upload_file</span>
-                    Choisir
-                  </label>
-                  <span class="text-xs truncate min-w-0"
-                        [class]="pendingAnalyseDocName ? 'text-on-surface font-medium' : 'text-on-surface-variant'">
-                    {{ pendingAnalyseDocName || (newAnalyseLot && getAnalyseDocUrl(newAnalyseLot) ? 'Rapport existant — remplacer ?' : 'Aucun fichier sélectionné') }}
-                  </span>
-                  <button *ngIf="pendingAnalyseDocName" type="button" (click)="pendingAnalyseDoc = null; pendingAnalyseDocName = ''"
-                          class="ml-auto text-on-surface-variant hover:text-on-surface shrink-0 text-xs">✕</button>
-                  <input id="analyseDocFile" type="file"
-                         accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg"
-                         class="hidden"
-                         (change)="onPendingAnalyseDocSelected($event)" />
-                </div>
-              </div>
-              <p *ngIf="analyseErrorMessage" class="text-sm text-error">{{ analyseErrorMessage }}</p>
-            </form>
+          <h2 class="text-xl font-bold text-slate-900">Enregistrer l'analyse SCT</h2>
+          <p class="text-sm text-slate-400 mt-1">Évaluation des offres pour le lot sélectionné.</p>
+          <p *ngIf="analyseErrorMessage" class="mt-3 text-sm text-red-600">{{ analyseErrorMessage }}</p>
+        </div>
+        <form id="addAnalyseForm" class="flex-1 overflow-y-auto px-8 py-6 space-y-4">
+          <div class="bg-slate-50 border border-slate-100 rounded-lg px-3.5 py-3 flex items-start gap-2">
+            <span class="material-symbols-outlined text-[#43a399] text-[18px] shrink-0">info</span>
+            <p class="text-xs text-slate-500 leading-relaxed">Enregistrez les conclusions de la sous-commission technique pour le lot sélectionné.</p>
           </div>
-          <footer class="pt-6 flex items-center justify-end gap-4 mt-auto">
-            <button type="button" class="w-full bg-transparent hover:bg-surface-container-high text-on-secondary-container font-body font-semibold text-sm py-3 px-6 rounded-[10px] transition-all duration-200" (click)="toggleAnalyseDrawer()">
-              Annuler
-            </button>
-            <button type="button" [disabled]="!newAnalyseLot || isSavingAnalyse" (click)="saveAnalyse()" class="w-full bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white font-body font-semibold text-sm py-3 px-6 rounded-[10px] shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-60">
-              <span *ngIf="isSavingAnalyse" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-              {{ isSavingAnalyse ? 'Enregistrement...' : (getAnalyseForLot(newAnalyseLot) ? 'Mettre à jour' : 'Valider le Rapport') }}
-            </button>
-          </footer>
-        </aside>
-      </div>
-      <div *ngIf="showAttributionDrawer" class="fixed inset-0 z-50 flex justify-end">
-        <div class="absolute inset-0 bg-surface/40 backdrop-blur-sm" (click)="toggleAttributionDrawer()"></div>
-        <aside class="relative right-0 top-0 h-full w-full max-w-[500px] bg-white shadow-[-20px_0_40px_rgba(26,46,68,0.15)] flex flex-col p-8 gap-8 overflow-y-auto">
-          <header class="flex justify-between items-start mb-8">
-            <div>
-              <h2 class="text-[22px] font-headline font-bold text-on-surface tracking-tight">
-                {{ newAttributionId ? 'Modifier l\'attribution' : 'Nouvelle attribution' }}
-              </h2>
-              <p class="text-sm text-on-surface-variant mt-1">Contractualisation du marché</p>
-            </div>
-            <button type="button" aria-label="Fermer" class="text-outline hover:text-on-surface transition-colors p-1" (click)="toggleAttributionDrawer()">
-              <span class="material-symbols-outlined">close</span>
-            </button>
-          </header>
-          <div class="flex-1 overflow-y-auto">
-            <div *ngIf="attributionErrorMessage" class="bg-red-50 text-red-700 rounded-[10px] p-4 mb-6 text-sm">{{ attributionErrorMessage }}</div>
-            <form class="space-y-6">
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface" for="idSoumissionAttribuee">Soumission attribuée *</label>
-                <div class="relative">
-                  <select id="idSoumissionAttribuee" name="idSoumissionAttribuee"
-                          [(ngModel)]="newAttributionId"
-                          [disabled]="!!newAttributionId"
-                          style="background-image:none"
-                          class="w-full appearance-none bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 focus:border-[#76d3c8]/40 transition-all shadow-sm disabled:opacity-50">
-                    <option value="">Sélectionner une soumission...</option>
-                    <option *ngFor="let sub of submissions" [value]="sub.id">
-                      {{ sub.id }} — {{ sub.fournisseur.nom }}
-                    </option>
-                  </select>
-                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-on-surface-variant">
-                    <span class="material-symbols-outlined text-lg">expand_more</span>
-                  </div>
-                </div>
-              </div>
-              <div class="grid grid-cols-2 gap-4">
-                <div class="flex flex-col gap-1.5">
-                  <label class="text-xs font-semibold text-on-surface-variant ml-1" for="MontantEffec">Montant effectif ({{ market?.Devise || 'XOF' }})</label>
-                  <input id="MontantEffec" name="MontantEffec" placeholder="Ex: 15000000" type="number"
-                         [(ngModel)]="newAttributionMontant"
-                         class="w-full bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 focus:border-[#76d3c8]/40 transition-all shadow-sm placeholder:text-outline-variant" />
-                </div>
-                <div class="flex flex-col gap-1.5">
-                  <label class="text-xs font-semibold text-on-surface-variant ml-1" for="DelaiExecutionEffec">Délai effectif (jours)</label>
-                  <input id="DelaiExecutionEffec" name="DelaiExecutionEffec" placeholder="Ex: 90" type="number"
-                         [(ngModel)]="newAttributionDelai"
-                         class="w-full bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 focus:border-[#76d3c8]/40 transition-all shadow-sm placeholder:text-outline-variant" />
-                </div>
-              </div>
-              <div class="grid grid-cols-2 gap-4">
-                <div class="flex flex-col gap-1.5">
-                  <label class="text-xs font-semibold text-on-surface-variant ml-1" for="DateDemarage">Date de démarrage</label>
-                  <div class="relative">
-                    <input id="DateDemarage" name="DateDemarage" type="date"
-                           [(ngModel)]="newAttributionDateDemarage"
-                           class="w-full bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 focus:border-[#76d3c8]/40 transition-all shadow-sm" />
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-on-surface-variant">
-                      <span class="material-symbols-outlined text-lg">calendar_month</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="flex flex-col gap-1.5">
-                  <label class="text-xs font-semibold text-on-surface-variant ml-1" for="DatePrevFin">Date fin prévue</label>
-                  <div class="relative">
-                    <input id="DatePrevFin" name="DatePrevFin" type="date"
-                           [(ngModel)]="newAttributionDatePrevFin"
-                           class="w-full bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 focus:border-[#76d3c8]/40 transition-all shadow-sm" />
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-on-surface-variant">
-                      <span class="material-symbols-outlined text-lg">event</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-semibold text-on-surface-variant ml-1" for="AttributionStatut">Statut</label>
-                <div class="relative">
-                  <select id="AttributionStatut" name="AttributionStatut"
-                          [(ngModel)]="newAttributionStatut"
-                          style="background-image:none"
-                          class="w-full appearance-none bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 focus:border-[#76d3c8]/40 transition-all shadow-sm">
-                    <option *ngFor="let s of ATTRIBUTION_STATUTS" [value]="s">{{ s }}</option>
-                  </select>
-                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-on-surface-variant">
-                    <span class="material-symbols-outlined text-lg">expand_more</span>
-                  </div>
-                </div>
-              </div>
-              <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-semibold text-on-surface-variant ml-1" for="AttributionObservation">Observation</label>
-                <textarea id="AttributionObservation" name="AttributionObservation" rows="4"
-                          [(ngModel)]="newAttributionObservation"
-                          placeholder="Ajouter des notes ou observations..."
-                          class="w-full bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 resize-none focus:bg-surface-container-lowest focus:ring-0 focus:border-[#76d3c8]/40 transition-all shadow-sm placeholder:text-outline-variant"></textarea>
-              </div>
-            </form>
+          <div>
+            <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Lot concerné <span class="text-red-500">*</span></label>
+            <select name="lotAnalyse" [(ngModel)]="newAnalyseLot" (change)="onAnalyseLotChange()" required
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
+              <option disabled value="">Sélectionner un lot...</option>
+              <option *ngFor="let lot of lots" [value]="lot.id">{{ lot.nomLot }}</option>
+            </select>
           </div>
-          <footer class="pt-6 flex items-center justify-end gap-4 mt-auto">
-            <button type="button" class="w-full bg-transparent hover:bg-surface-container-high text-on-secondary-container font-body font-semibold text-sm py-3 px-6 rounded-[10px] transition-all duration-200" (click)="toggleAttributionDrawer()">
-              Annuler
-            </button>
-            <button type="button"
-                    [disabled]="isSavingAttribution || !newAttributionId"
-                    (click)="saveAttribution()"
-                    class="w-full bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white font-body font-semibold text-sm py-3 px-6 rounded-[10px] shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-200 disabled:opacity-50">
-              {{ isSavingAttribution ? 'Enregistrement...' : 'Enregistrer l\'attribution' }}
-            </button>
-          </footer>
-        </aside>
-      </div>
-      <div *ngIf="showAvenantDrawer" class="fixed inset-0 z-50 flex justify-end">
-        <div class="absolute inset-0 bg-surface/40 backdrop-blur-sm" (click)="toggleAvenantDrawer()"></div>
-        <aside class="relative right-0 top-0 h-full w-full max-w-[500px] bg-white shadow-[-20px_0_40px_rgba(26,46,68,0.15)] flex flex-col p-8 gap-8 overflow-y-auto">
-          <header class="flex justify-between items-start mb-8">
+          <div class="grid grid-cols-2 gap-4">
             <div>
-              <h2 class="text-[22px] font-headline font-bold text-on-surface tracking-tight">{{ editingAvenant ? 'Modifier l\'Avenant' : 'Ajouter un Avenant' }}</h2>
-              <p class="text-sm text-on-surface-variant mt-1">Modification contractuelle du marché.</p>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Date de réception SCT</label>
+              <input name="receptionSCT" [(ngModel)]="newAnalyseDateReception" type="date"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors" />
             </div>
-            <button type="button" aria-label="Fermer" class="text-outline hover:text-on-surface transition-colors p-1" (click)="toggleAvenantDrawer()">
-              <span class="material-symbols-outlined">close</span>
-            </button>
-          </header>
-          <div class="flex-1 overflow-y-auto">
-            <div class="bg-[#fff9e6] rounded-[10px] p-4 mb-6 flex gap-3 items-start">
-              <span class="material-symbols-outlined text-[#8a6d00] flex-shrink-0">warning</span>
-              <p class="text-sm text-[#8a6d00] leading-relaxed">
-                L'ajout d'un avenant modifie les conditions financières et temporelles du marché. Vérifiez les montants avant validation.
-              </p>
-            </div>
-            <div *ngIf="avenantErrorMessage" class="bg-red-50 text-red-700 text-sm rounded-[10px] px-4 py-3 mb-4 border border-red-200">{{ avenantErrorMessage }}</div>
-            <form class="space-y-6">
-              <div class="space-y-2">
-                <label class="block text-xs font-semibold text-on-surface-variant ml-1" for="avenantSoumission">Soumission attribuée</label>
-                <ng-container *ngIf="editingAvenant; else soumissionSelect">
-                  <p class="px-4 py-3 bg-surface-container-highest rounded-[10px] text-sm text-on-surface-variant">{{ getSoumissionLabel(newAvenantSoumissionId) }}</p>
-                </ng-container>
-                <ng-template #soumissionSelect>
-                  <div class="relative">
-                    <select id="avenantSoumission" name="avenantSoumission" [(ngModel)]="newAvenantSoumissionId" style="background-image:none" class="w-full appearance-none bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 transition-all shadow-sm">
-                      <option value="" disabled>Sélectionner une soumission attribuée...</option>
-                      <option *ngFor="let attr of attributaires" [value]="attr.idSoumissionAttribuee">{{ getSoumissionLabel(attr.idSoumissionAttribuee) }}</option>
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-on-surface-variant">
-                      <span class="material-symbols-outlined text-lg">expand_more</span>
-                    </div>
-                  </div>
-                </ng-template>
-              </div>
-              <div class="grid grid-cols-2 gap-4">
-                <div class="flex flex-col gap-1.5">
-                  <label class="text-xs font-semibold text-on-surface-variant ml-1" for="avenantNumero">N° Avenant</label>
-                  <input id="avenantNumero" name="avenantNumero" [(ngModel)]="newAvenantNumb" placeholder="Ex: 1" type="number" min="1" class="w-full bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 transition-all shadow-sm" />
-                </div>
-                <div class="flex flex-col gap-1.5">
-                  <label class="text-xs font-semibold text-on-surface-variant ml-1" for="avenantMontant">Montant</label>
-                  <div class="flex rounded-[10px] overflow-hidden border border-outline-variant/15 bg-surface-container-highest shadow-sm">
-                    <input id="avenantMontant" name="avenantMontant" [(ngModel)]="newAvenantMontant" placeholder="0" type="number" class="flex-1 bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0" />
-                    <select name="avenantDevise" [(ngModel)]="newAvenantDevise" style="background-image:none" class="border-none border-l border-outline-variant/20 bg-surface-container-high text-xs font-semibold text-on-surface-variant px-2 py-3 focus:ring-0 appearance-none cursor-pointer">
-                      <option value="XOF">XOF</option>
-                      <option value="EUR">EUR</option>
-                      <option value="USD">USD</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div class="flex flex-col gap-1.5">
-                <label class="text-xs font-semibold text-on-surface-variant ml-1" for="avenantProrogation">Date de prorogation</label>
-                <div class="relative">
-                  <input id="avenantProrogation" name="avenantProrogation" [(ngModel)]="newAvenantDateProrogation" type="date" class="w-full bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 transition-all shadow-sm" />
-                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-on-surface-variant">
-                    <span class="material-symbols-outlined text-lg">event</span>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-          <footer class="pt-6 flex items-center justify-end gap-4 mt-auto">
-            <button type="button" class="w-full bg-transparent hover:bg-surface-container-high text-on-secondary-container font-body font-semibold text-sm py-3 px-6 rounded-[10px] transition-all duration-200" (click)="toggleAvenantDrawer()">Annuler</button>
-            <button type="button" [disabled]="isSavingAvenant || !newAvenantSoumissionId" (click)="saveAvenant()" class="w-full bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white font-body font-semibold text-sm py-3 px-6 rounded-[10px] shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-              <span *ngIf="isSavingAvenant" class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span>
-              {{ isSavingAvenant ? 'Enregistrement...' : (editingAvenant ? 'Modifier' : "Enregistrer l'avenant") }}
-            </button>
-          </footer>
-        </aside>
-      </div>
-      <div *ngIf="showStatusDrawer" class="fixed inset-0 z-50 flex justify-end">
-        <div class="absolute inset-0 bg-surface/40 backdrop-blur-sm" (click)="toggleStatusDrawer()"></div>
-        <aside class="relative right-0 top-0 h-full w-full max-w-[500px] bg-white shadow-[-20px_0_40px_rgba(26,46,68,0.15)] flex flex-col p-8 gap-8 overflow-y-auto">
-          <header class="flex justify-between items-start mb-8">
             <div>
-              <h2 class="text-[22px] font-headline font-bold text-on-surface tracking-tight">Modifier le statut</h2>
-              <p class="text-sm text-on-surface-variant mt-1">Mettre à jour le statut du marché.</p>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Date présentation CA</label>
+              <input name="presentationCA" [(ngModel)]="newAnalyseDatePresentation" type="date"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors" />
             </div>
-            <button type="button" aria-label="Fermer" class="text-outline hover:text-on-surface transition-colors p-1" (click)="toggleStatusDrawer()">
-              <span class="material-symbols-outlined">close</span>
-            </button>
-          </header>
-          <div class="flex-1 overflow-y-auto">
-            <form class="space-y-6">
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface" for="statusSelect">Nouveau statut</label>
-                <div class="relative">
-                  <select id="statusSelect" [(ngModel)]="currentStatus" name="statusSelect" class="w-full appearance-none bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 transition-all shadow-sm">
-                    <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
-                  </select>
-                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-on-surface-variant">
-                    <span class="material-symbols-outlined text-lg">expand_more</span>
-                  </div>
-                </div>
-              </div>
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface" for="statusComment">Commentaires</label>
-                <textarea id="statusComment" rows="4" class="w-full bg-surface-container-highest border border-outline-variant/15 text-on-surface text-sm rounded-[10px] px-4 py-3.5 focus:bg-surface-container-lowest focus:ring-0 transition-all shadow-sm resize-none" placeholder="Ajouter une note sur ce changement de statut..."></textarea>
-              </div>
-            </form>
           </div>
-          <footer class="pt-6 flex items-center justify-end gap-4 mt-auto">
-            <button type="button" class="w-full bg-transparent hover:bg-surface-container-high text-on-secondary-container font-body font-semibold text-sm py-3 px-6 rounded-[10px] transition-all duration-200" (click)="toggleStatusDrawer()">Annuler</button>
-            <button type="button" class="w-full bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white font-body font-semibold text-sm py-3 px-6 rounded-[10px] shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-200" (click)="toggleStatusDrawer()">Enregistrer</button>
-          </footer>
-        </aside>
-      </div>
-      <div *ngIf="showSoumissionDrawer" class="fixed inset-0 z-50 flex justify-end">
-        <div class="absolute inset-0 bg-surface/40 backdrop-blur-sm" (click)="toggleSoumissionDrawer()"></div>
-        <aside class="relative right-0 top-0 h-full w-full max-w-[500px] bg-white shadow-[-20px_0_40px_rgba(26,46,68,0.15)] flex flex-col p-8 gap-8 overflow-y-auto">
-          <header class="flex justify-between items-start mb-8">
+          <div>
+            <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Attributaire prévisionnel</label>
+            <select name="attributaireSCT" [(ngModel)]="newAnalyseIdAttributaire" [disabled]="!newAnalyseLot || analyseConsultedFournisseurs.length === 0"
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors disabled:opacity-50">
+              <option [value]="0" disabled>{{ !newAnalyseLot ? 'Sélectionner un lot d\'abord...' : (analyseConsultedFournisseurs.length === 0 ? 'Aucun fournisseur consulté pour ce lot' : 'Sélectionner un fournisseur...') }}</option>
+              <option *ngFor="let f of analyseConsultedFournisseurs" [value]="f.idFournisseur">{{ f.RaisonSocial }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Observations de la SCT</label>
+            <textarea name="observationsSCT" [(ngModel)]="newAnalyseObservation" rows="4"
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors resize-none"
+              placeholder="Remarques, réserves ou justifications..."></textarea>
+          </div>
+          <div>
+            <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Rapport d'analyse SCT <span class="normal-case text-slate-300">(optionnel)</span></label>
+            <div class="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-lg px-3.5 py-2.5">
+              <label for="analyseDocFile" class="cursor-pointer flex items-center gap-1.5 text-xs font-medium text-white bg-[#76d3c8] hover:bg-[#43a399] px-3 py-1.5 rounded-[8px] transition-colors shrink-0">
+                <span class="material-symbols-outlined text-[15px]">upload_file</span>
+                Choisir
+              </label>
+              <span class="text-xs truncate min-w-0"
+                    [class]="pendingAnalyseDocName ? 'text-slate-900 font-medium' : 'text-slate-400'">
+                {{ pendingAnalyseDocName || (newAnalyseLot && getAnalyseDocUrl(newAnalyseLot) ? 'Rapport existant — remplacer ?' : 'Aucun fichier sélectionné') }}
+              </span>
+              <button *ngIf="pendingAnalyseDocName" type="button" (click)="pendingAnalyseDoc = null; pendingAnalyseDocName = ''"
+                      class="ml-auto text-slate-400 hover:text-slate-600 shrink-0 text-xs">✕</button>
+              <input id="analyseDocFile" type="file"
+                     accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg"
+                     class="hidden"
+                     (change)="onPendingAnalyseDocSelected($event)" />
+            </div>
+          </div>
+        </form>
+        <footer class="px-8 py-5 border-t border-slate-100 shrink-0 flex justify-end gap-3">
+          <button type="button" class="px-5 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors" (click)="toggleAnalyseDrawer()">Annuler</button>
+          <button type="button" [disabled]="!newAnalyseLot || isSavingAnalyse" (click)="saveAnalyse()" class="px-6 py-2.5 rounded-lg bg-primary text-white text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center gap-2">
+            <span *ngIf="isSavingAnalyse" class="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
+            {{ isSavingAnalyse ? 'Enregistrement...' : (getAnalyseForLot(newAnalyseLot) ? 'Mettre à jour' : 'Valider le rapport') }}
+          </button>
+        </footer>
+      </aside>
+      <div *ngIf="showAttributionDrawer" class="fixed inset-0 z-40 bg-slate-950/20 backdrop-blur-sm" (click)="toggleAttributionDrawer()"></div>
+      <aside *ngIf="showAttributionDrawer" class="fixed right-0 top-0 z-50 h-screen w-full sm:w-[480px] bg-white shadow-[-8px_0_24px_rgba(0,0,0,0.08)] flex flex-col overflow-hidden">
+        <div class="px-8 pt-8 pb-5 border-b border-slate-100 shrink-0">
+          <div class="flex items-center justify-between mb-4">
+            <button type="button" (click)="toggleAttributionDrawer()" class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center transition-colors">
+              <span class="material-symbols-outlined text-slate-500 text-[18px]">close</span>
+            </button>
+            <span class="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">{{ newAttributionId ? 'Modifier' : 'Nouvelle attribution' }}</span>
+          </div>
+          <h2 class="text-xl font-bold text-slate-900">{{ newAttributionId ? "Modifier l'attribution" : 'Nouvelle attribution' }}</h2>
+          <p class="text-sm text-slate-400 mt-1">Contractualisation du marché.</p>
+          <p *ngIf="attributionErrorMessage" class="mt-3 text-sm text-red-600">{{ attributionErrorMessage }}</p>
+        </div>
+        <form id="addAttributionForm" class="flex-1 overflow-y-auto px-8 py-6 space-y-4">
+          <div>
+            <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Soumission attribuée <span class="text-red-500">*</span></label>
+            <select name="idSoumissionAttribuee" [(ngModel)]="newAttributionId" [disabled]="!!newAttributionId"
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors disabled:opacity-50">
+              <option value="">Sélectionner une soumission...</option>
+              <option *ngFor="let sub of submissions" [value]="sub.id">{{ sub.id }} — {{ sub.fournisseur.nom }}</option>
+            </select>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
             <div>
-              <h2 class="text-[22px] font-headline font-bold text-on-surface tracking-tight">
-                {{ editingSoumissionId ? 'Modifier la soumission' : 'Enregistrer une soumission' }}
-              </h2>
-              <p class="text-sm text-on-surface-variant mt-1">
-                {{ editingSoumissionId ? editingSoumissionId : 'Ajouter une offre déposée pour le marché' }}
-              </p>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Montant effectif ({{ market?.Devise || 'XOF' }})</label>
+              <input name="MontantEffec" placeholder="Ex: 15000000" type="number" [(ngModel)]="newAttributionMontant"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors" />
             </div>
-            <button type="button" aria-label="Fermer" class="text-outline hover:text-on-surface transition-colors p-1" (click)="toggleSoumissionDrawer()">
-              <span class="material-symbols-outlined">close</span>
-            </button>
-          </header>
-          <div class="flex-1 overflow-y-auto">
-            <div *ngIf="soumissionErrorMessage" class="bg-red-50 text-red-700 rounded-[10px] p-4 mb-4 text-sm">
-              {{ soumissionErrorMessage }}
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Délai effectif (jours)</label>
+              <input name="DelaiExecutionEffec" placeholder="Ex: 90" type="number" [(ngModel)]="newAttributionDelai"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors" />
             </div>
-            <div class="bg-[#f0fdfb] rounded-[10px] p-4 mb-6">
-              <span class="material-symbols-outlined text-primary-container">info</span>
-              <p class="text-sm text-primary-container leading-relaxed mt-2">
-                Cette soumission sera associée au lot sélectionné et enregistrée dans le flux de marché.
-              </p>
-            </div>
-            <form (ngSubmit)="addSoumission()" #soumissionForm="ngForm" class="space-y-6">
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface">Lot Concerné</label>
-                <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow">
-                  <select name="newSoumissionLot" [(ngModel)]="newSoumissionLot" required style="background-image:none" class="w-full bg-surface-container-highest border-none text-sm text-on-surface px-4 py-3 appearance-none focus:bg-surface-container-lowest focus:ring-0">
-                    <option disabled selected value="">Sélectionner un lot</option>
-                    <option *ngFor="let lot of lots" [value]="lot.id">{{ lot.nomLot }}</option>
-                  </select>
-                  <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
-                </div>
-              </div>
-
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface">Fournisseur</label>
-                <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow">
-                  <select name="newSoumissionIdFournisseur" [(ngModel)]="newSoumissionIdFournisseur" required style="background-image:none" class="w-full bg-surface-container-highest border-none text-sm text-on-surface px-4 py-3 appearance-none focus:bg-surface-container-lowest focus:ring-0">
-                    <option [value]="0" disabled>Sélectionner un fournisseur</option>
-                    <option *ngFor="let f of availableFournisseurs" [value]="f.idFournisseur">{{ f.RaisonSocial }}</option>
-                  </select>
-                  <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
-                </div>
-              </div>
-
-              <div class="grid grid-cols-2 gap-4">
-                <div class="flex flex-col gap-1.5">
-                  <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Date de dépôt</label>
-                  <input name="newSoumissionDate" [(ngModel)]="newSoumissionDate" type="date"
-                         class="w-full bg-surface-container-highest border-none text-sm text-on-surface px-4 py-3 rounded-[10px] focus:ring-0 focus:bg-surface-container-lowest" />
-                </div>
-                <div class="flex flex-col gap-1.5">
-                  <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Heure de dépôt</label>
-                  <input name="newSoumissionHeure" [(ngModel)]="newSoumissionHeure" type="time"
-                         class="w-full bg-surface-container-highest border-none text-sm text-on-surface px-4 py-3 rounded-[10px] focus:ring-0 focus:bg-surface-container-lowest" />
-                </div>
-              </div>
-
-              <div class="grid grid-cols-2 gap-4">
-                <div class="flex flex-col gap-1.5">
-                  <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Montant (HT)</label>
-                  <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow flex items-center bg-surface-container-highest focus-within:bg-surface-container-lowest">
-                    <input name="newSoumissionMontant" [(ngModel)]="newSoumissionMontant" required class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0" placeholder="0.00" type="number" />
-                    <select name="newSoumissionDevise" [(ngModel)]="newSoumissionDevise" style="background-image:none" class="border-none border-l border-outline-variant/20 bg-surface-container-high text-xs font-semibold text-on-surface-variant px-2 py-3 focus:ring-0 appearance-none cursor-pointer">
-                      <option value="XOF">XOF</option>
-                      <option value="EUR">EUR</option>
-                      <option value="USD">USD</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="flex flex-col gap-1.5">
-                  <label class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Délai</label>
-                  <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow flex items-center bg-surface-container-highest focus-within:bg-surface-container-lowest">
-                    <input name="newSoumissionDelai" [(ngModel)]="newSoumissionDelai" required class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0" placeholder="Ex: 90" type="number" min="1" />
-                    <span class="pr-4 text-xs font-semibold text-on-surface-variant whitespace-nowrap">jours</span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="space-y-2">
-                <label class="block text-sm font-medium text-on-surface">Observation</label>
-                <div class="relative ghost-border rounded-[10px] overflow-hidden transition-shadow flex items-center bg-surface-container-highest focus-within:bg-surface-container-lowest">
-                  <textarea name="newSoumissionObservation" [(ngModel)]="newSoumissionObservation" class="w-full bg-transparent border-none text-sm text-on-surface px-4 py-3 focus:ring-0 resize-none" placeholder="Remarques ou précisions sur la soumission..." rows="2"></textarea>
-                </div>
-              </div>
-            </form>
           </div>
-          <footer class="pt-6 flex items-center justify-end gap-4 mt-auto">
-            <button type="button" class="w-full bg-transparent hover:bg-surface-container-high text-on-secondary-container font-body font-semibold text-sm py-3 px-6 rounded-[10px] transition-all duration-200" (click)="toggleSoumissionDrawer()">
-              Annuler
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Date de démarrage</label>
+              <input name="DateDemarage" type="date" [(ngModel)]="newAttributionDateDemarage"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors" />
+            </div>
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Date fin prévue</label>
+              <input name="DatePrevFin" type="date" [(ngModel)]="newAttributionDatePrevFin"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Statut</label>
+            <select name="AttributionStatut" [(ngModel)]="newAttributionStatut"
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
+              <option *ngFor="let s of ATTRIBUTION_STATUTS" [value]="s">{{ s }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Observation</label>
+            <textarea name="AttributionObservation" rows="4" [(ngModel)]="newAttributionObservation"
+              placeholder="Ajouter des notes ou observations..."
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors resize-none"></textarea>
+          </div>
+        </form>
+        <footer class="px-8 py-5 border-t border-slate-100 shrink-0 flex justify-end gap-3">
+          <button type="button" class="px-5 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors" (click)="toggleAttributionDrawer()">Annuler</button>
+          <button type="button"
+                  [disabled]="isSavingAttribution || !newAttributionId"
+                  (click)="saveAttribution()"
+                  class="px-6 py-2.5 rounded-lg bg-primary text-white text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center gap-2">
+            <span *ngIf="isSavingAttribution" class="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
+            {{ isSavingAttribution ? 'Enregistrement...' : "Enregistrer l'attribution" }}
+          </button>
+        </footer>
+      </aside>
+      <div *ngIf="showAvenantDrawer" class="fixed inset-0 z-40 bg-slate-950/20 backdrop-blur-sm" (click)="toggleAvenantDrawer()"></div>
+      <aside *ngIf="showAvenantDrawer" class="fixed right-0 top-0 z-50 h-screen w-full sm:w-[480px] bg-white shadow-[-8px_0_24px_rgba(0,0,0,0.08)] flex flex-col overflow-hidden">
+        <div class="px-8 pt-8 pb-5 border-b border-slate-100 shrink-0">
+          <div class="flex items-center justify-between mb-4">
+            <button type="button" (click)="toggleAvenantDrawer()" class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center transition-colors">
+              <span class="material-symbols-outlined text-slate-500 text-[18px]">close</span>
             </button>
-            <button type="button" (click)="addSoumission()" [disabled]="!soumissionForm.valid || isSavingSoumission" class="w-full bg-gradient-to-br from-[#76d3c8] to-[#43a399] text-white font-body font-semibold text-sm py-3 px-6 rounded-[10px] shadow-[0_6px_24px_rgba(26,46,68,0.08)] transition-all duration-200 flex items-center justify-center gap-2">
-              <span *ngIf="isSavingSoumission" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-              {{ isSavingSoumission ? 'Enregistrement...' : 'Enregistrer la Soumission' }}
+            <span class="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">{{ editingAvenant ? 'Modifier' : 'Nouvel avenant' }}</span>
+          </div>
+          <h2 class="text-xl font-bold text-slate-900">{{ editingAvenant ? "Modifier l'avenant" : 'Ajouter un avenant' }}</h2>
+          <p class="text-sm text-slate-400 mt-1">Modification contractuelle du marché.</p>
+          <p *ngIf="avenantErrorMessage" class="mt-3 text-sm text-red-600">{{ avenantErrorMessage }}</p>
+        </div>
+        <form id="addAvenantForm" class="flex-1 overflow-y-auto px-8 py-6 space-y-4">
+          <div class="bg-amber-50 border border-amber-100 rounded-lg px-3.5 py-3 flex items-start gap-2">
+            <span class="material-symbols-outlined text-amber-700 text-[18px] shrink-0">warning</span>
+            <p class="text-xs text-amber-800 leading-relaxed">L'ajout d'un avenant modifie les conditions financières et temporelles du marché. Vérifiez les montants avant validation.</p>
+          </div>
+          <div>
+            <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Soumission attribuée</label>
+            <ng-container *ngIf="editingAvenant; else soumissionSelect">
+              <p class="text-sm font-medium text-slate-700 bg-slate-50 border border-slate-200 rounded-lg px-3.5 py-2.5">{{ getSoumissionLabel(newAvenantSoumissionId) }}</p>
+            </ng-container>
+            <ng-template #soumissionSelect>
+              <select name="avenantSoumission" [(ngModel)]="newAvenantSoumissionId"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
+                <option value="" disabled>Sélectionner une soumission attribuée...</option>
+                <option *ngFor="let attr of attributaires" [value]="attr.idSoumissionAttribuee">{{ getSoumissionLabel(attr.idSoumissionAttribuee) }}</option>
+              </select>
+            </ng-template>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">N° avenant</label>
+              <input name="avenantNumero" [(ngModel)]="newAvenantNumb" placeholder="Ex: 1" type="number" min="1"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors" />
+            </div>
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Montant</label>
+              <div class="flex rounded-lg overflow-hidden border border-slate-200 bg-slate-50">
+                <input name="avenantMontant" [(ngModel)]="newAvenantMontant" placeholder="0" type="number"
+                  class="flex-1 min-w-0 bg-transparent border-none text-sm text-slate-900 px-3.5 py-2.5 focus:outline-none focus:ring-0" />
+                <select name="avenantDevise" [(ngModel)]="newAvenantDevise"
+                  class="border-none border-l border-slate-200 bg-slate-100 text-xs font-semibold text-slate-500 px-2 focus:outline-none focus:ring-0 cursor-pointer">
+                  <option value="XOF">XOF</option>
+                  <option value="EUR">EUR</option>
+                  <option value="USD">USD</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div>
+            <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Date de prorogation</label>
+            <input name="avenantProrogation" [(ngModel)]="newAvenantDateProrogation" type="date"
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors" />
+          </div>
+          <div>
+            <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Document de l'avenant <span class="normal-case text-slate-300">(optionnel, ajoutable plus tard)</span></label>
+            <div class="flex items-center gap-3 bg-slate-50 border border-slate-200 rounded-lg px-3.5 py-2.5">
+              <label for="avenantDocFile" class="cursor-pointer flex items-center gap-1.5 text-xs font-medium text-white bg-[#76d3c8] hover:bg-[#43a399] px-3 py-1.5 rounded-[8px] transition-colors shrink-0">
+                <span class="material-symbols-outlined text-[15px]">upload_file</span>
+                Choisir
+              </label>
+              <span class="text-xs truncate min-w-0"
+                    [class]="pendingAvenantDocName ? 'text-slate-900 font-medium' : 'text-slate-400'">
+                {{ pendingAvenantDocName || (editingAvenant && getAvenantDocUrl(editingAvenant) ? 'Document existant — remplacer ?' : 'Aucun fichier sélectionné') }}
+              </span>
+              <button *ngIf="pendingAvenantDocName" type="button" (click)="pendingAvenantDoc = null; pendingAvenantDocName = ''"
+                      class="ml-auto text-slate-400 hover:text-slate-600 shrink-0 text-xs">✕</button>
+              <input id="avenantDocFile" type="file"
+                     accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg"
+                     class="hidden"
+                     (change)="onPendingAvenantDocSelected($event)" />
+            </div>
+          </div>
+        </form>
+        <footer class="px-8 py-5 border-t border-slate-100 shrink-0 flex justify-end gap-3">
+          <button type="button" class="px-5 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors" (click)="toggleAvenantDrawer()">Annuler</button>
+          <button type="button" [disabled]="isSavingAvenant || !newAvenantSoumissionId" (click)="saveAvenant()" class="px-6 py-2.5 rounded-lg bg-primary text-white text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center gap-2">
+            <span *ngIf="isSavingAvenant" class="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
+            {{ isSavingAvenant ? 'Enregistrement...' : (editingAvenant ? 'Modifier' : "Enregistrer l'avenant") }}
+          </button>
+        </footer>
+      </aside>
+      <div *ngIf="showStatusDrawer" class="fixed inset-0 z-40 bg-slate-950/20 backdrop-blur-sm" (click)="toggleStatusDrawer()"></div>
+      <aside *ngIf="showStatusDrawer" class="fixed right-0 top-0 z-50 h-screen w-full sm:w-[480px] bg-white shadow-[-8px_0_24px_rgba(0,0,0,0.08)] flex flex-col overflow-hidden">
+        <div class="px-8 pt-8 pb-5 border-b border-slate-100 shrink-0">
+          <div class="flex items-center justify-between mb-4">
+            <button type="button" (click)="toggleStatusDrawer()" class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center transition-colors">
+              <span class="material-symbols-outlined text-slate-500 text-[18px]">close</span>
             </button>
-          </footer>
-        </aside>
-      </div><!-- /showSoumissionDrawer -->
+            <span class="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">Statut</span>
+          </div>
+          <h2 class="text-xl font-bold text-slate-900">Modifier le statut</h2>
+          <p class="text-sm text-slate-400 mt-1">Mettre à jour le statut du marché.</p>
+        </div>
+        <form id="statusForm" class="flex-1 overflow-y-auto px-8 py-6 space-y-4">
+          <div>
+            <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Nouveau statut</label>
+            <select [(ngModel)]="currentStatus" name="statusSelect"
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
+              <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Commentaires</label>
+            <textarea rows="4"
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors resize-none"
+              placeholder="Ajouter une note sur ce changement de statut..."></textarea>
+          </div>
+        </form>
+        <footer class="px-8 py-5 border-t border-slate-100 shrink-0 flex justify-end gap-3">
+          <button type="button" class="px-5 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors" (click)="toggleStatusDrawer()">Annuler</button>
+          <button type="button" class="px-6 py-2.5 rounded-lg bg-primary text-white text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity" (click)="toggleStatusDrawer()">Enregistrer</button>
+        </footer>
+      </aside>
+      <div *ngIf="showSoumissionDrawer" class="fixed inset-0 z-40 bg-slate-950/20 backdrop-blur-sm" (click)="toggleSoumissionDrawer()"></div>
+      <aside *ngIf="showSoumissionDrawer" class="fixed right-0 top-0 z-50 h-screen w-full sm:w-[480px] bg-white shadow-[-8px_0_24px_rgba(0,0,0,0.08)] flex flex-col overflow-hidden">
+        <div class="px-8 pt-8 pb-5 border-b border-slate-100 shrink-0">
+          <div class="flex items-center justify-between mb-4">
+            <button type="button" (click)="toggleSoumissionDrawer()" class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center transition-colors">
+              <span class="material-symbols-outlined text-slate-500 text-[18px]">close</span>
+            </button>
+            <span class="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">{{ editingSoumissionId ? 'Modifier' : 'Nouvelle soumission' }}</span>
+          </div>
+          <h2 class="text-xl font-bold text-slate-900">{{ editingSoumissionId ? 'Modifier la soumission' : 'Enregistrer une soumission' }}</h2>
+          <p class="text-sm text-slate-400 mt-1">{{ editingSoumissionId ? editingSoumissionId : 'Ajouter une offre déposée pour le marché' }}</p>
+          <p *ngIf="soumissionErrorMessage" class="mt-3 text-sm text-red-600">{{ soumissionErrorMessage }}</p>
+        </div>
+        <form id="addSoumissionForm" (ngSubmit)="addSoumission()" #soumissionForm="ngForm" class="flex-1 overflow-y-auto px-8 py-6 space-y-4">
+          <div class="bg-slate-50 border border-slate-100 rounded-lg px-3.5 py-3 flex items-start gap-2">
+            <span class="material-symbols-outlined text-[#43a399] text-[18px] shrink-0">info</span>
+            <p class="text-xs text-slate-500 leading-relaxed">Cette soumission sera associée au lot sélectionné et enregistrée dans le flux de marché.</p>
+          </div>
+          <div>
+            <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Lot concerné <span class="text-red-500">*</span></label>
+            <select name="newSoumissionLot" [(ngModel)]="newSoumissionLot" required
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
+              <option disabled selected value="">Sélectionner un lot</option>
+              <option *ngFor="let lot of lots" [value]="lot.id">{{ lot.nomLot }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Fournisseur <span class="text-red-500">*</span></label>
+            <select name="newSoumissionIdFournisseur" [(ngModel)]="newSoumissionIdFournisseur" required
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
+              <option [value]="0" disabled>Sélectionner un fournisseur</option>
+              <option *ngFor="let f of availableFournisseurs" [value]="f.idFournisseur">{{ f.RaisonSocial }}</option>
+            </select>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Date de dépôt</label>
+              <input name="newSoumissionDate" [(ngModel)]="newSoumissionDate" type="date"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors" />
+            </div>
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Heure de dépôt</label>
+              <input name="newSoumissionHeure" [(ngModel)]="newSoumissionHeure" type="time"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors" />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Montant (HT) <span class="text-red-500">*</span></label>
+              <div class="flex rounded-lg overflow-hidden border border-slate-200 bg-slate-50">
+                <input name="newSoumissionMontant" [(ngModel)]="newSoumissionMontant" required
+                  class="flex-1 min-w-0 bg-transparent border-none text-sm text-slate-900 px-3.5 py-2.5 focus:outline-none focus:ring-0" placeholder="0.00" type="number" />
+                <select name="newSoumissionDevise" [(ngModel)]="newSoumissionDevise"
+                  class="border-none border-l border-slate-200 bg-slate-100 text-xs font-semibold text-slate-500 px-2 focus:outline-none focus:ring-0 cursor-pointer">
+                  <option value="XOF">XOF</option>
+                  <option value="EUR">EUR</option>
+                  <option value="USD">USD</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Délai <span class="text-red-500">*</span></label>
+              <div class="flex items-center rounded-lg border border-slate-200 bg-slate-50">
+                <input name="newSoumissionDelai" [(ngModel)]="newSoumissionDelai" required
+                  class="flex-1 min-w-0 bg-transparent border-none text-sm text-slate-900 px-3.5 py-2.5 focus:outline-none focus:ring-0" placeholder="Ex: 90" type="number" min="1" />
+                <span class="pr-3.5 text-xs font-semibold text-slate-400 whitespace-nowrap">jours</span>
+              </div>
+            </div>
+          </div>
+          <div>
+            <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Observation</label>
+            <textarea name="newSoumissionObservation" [(ngModel)]="newSoumissionObservation" rows="2"
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors resize-none"
+              placeholder="Remarques ou précisions sur la soumission..."></textarea>
+          </div>
+        </form>
+        <footer class="px-8 py-5 border-t border-slate-100 shrink-0 flex justify-end gap-3">
+          <button type="button" class="px-5 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors" (click)="toggleSoumissionDrawer()">Annuler</button>
+          <button type="button" (click)="addSoumission()" [disabled]="!soumissionForm.valid || isSavingSoumission" class="px-6 py-2.5 rounded-lg bg-primary text-white text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center gap-2">
+            <span *ngIf="isSavingSoumission" class="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
+            {{ isSavingSoumission ? 'Enregistrement...' : 'Enregistrer la soumission' }}
+          </button>
+        </footer>
+      </aside><!-- /showSoumissionDrawer -->
   </main><!-- /outer main -->
 </div><!-- /root -->

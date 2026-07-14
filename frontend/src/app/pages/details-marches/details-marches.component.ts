@@ -213,6 +213,10 @@ export class DetailsMarchesComponent implements OnInit {
   newAvenantMontant = 0;
   newAvenantDevise = 'XOF';
   newAvenantDateProrogation = '';
+  pendingAvenantDoc: File | null = null;
+  pendingAvenantDocName = '';
+  uploadingAvenantDocId: number | null = null;
+  avenantDocError = '';
   showStatusDrawer = false;
   showLotModal = false;
   showProviderModal = false;
@@ -612,6 +616,20 @@ export class DetailsMarchesComponent implements OnInit {
     return this.lots.find((l) => l.id === lotId)?.nomLot ?? lotId;
   }
 
+  private readonly lotAccentPalette = [
+    { solid: '#1a2e44', soft: '#eef1f5' }, // marine
+    { solid: '#43a399', soft: '#e6f6f4' }, // teal
+    { solid: '#856404', soft: '#fff8e6' }, // amber
+    { solid: '#039CD3', soft: '#e6f6fc' }, // bleu
+    { solid: '#8b5cf6', soft: '#f3eefe' }, // violet
+    { solid: '#dc6803', soft: '#fef3e6' }, // orange
+  ];
+
+  getLotAccent(lotId: string): { solid: string; soft: string } {
+    const idx = this.lots.findIndex((l) => l.id === lotId);
+    return this.lotAccentPalette[(idx < 0 ? 0 : idx) % this.lotAccentPalette.length];
+  }
+
   get montantHeaderLabel(): string {
     const devises = [...new Set(this.submissions.map((s) => s.devise).filter(Boolean))];
     return devises.length ? `Montant (${devises.join(' / ')})` : 'Montant';
@@ -774,6 +792,11 @@ export class DetailsMarchesComponent implements OnInit {
     return s ? `${s.lot} — ${s.fournisseur.nom}` : idSoumission;
   }
 
+  getAttributionAccent(idSoumission: string): { solid: string; soft: string } {
+    const lotId = this.submissions.find((sub) => sub.id === idSoumission)?.lotId ?? '';
+    return this.getLotAccent(lotId);
+  }
+
   async saveAttribution() {
     if (this.isSavingAttribution || !this.newAttributionId) return;
     this.isSavingAttribution = true;
@@ -814,6 +837,8 @@ export class DetailsMarchesComponent implements OnInit {
     this.showAvenantDrawer = !this.showAvenantDrawer;
     this.avenantErrorMessage = '';
     this.isSavingAvenant = false;
+    this.pendingAvenantDoc = null;
+    this.pendingAvenantDocName = '';
     if (this.showAvenantDrawer) {
       if (avenant) {
         this.editingAvenant = avenant;
@@ -860,12 +885,74 @@ export class DetailsMarchesComponent implements OnInit {
         this.avenants.push(created);
         this.avenants.sort((a, b) => b.numbAvenant - a.numbAvenant);
       }
+
+      if (this.pendingAvenantDoc) {
+        const lotId = this.getLotIdForSoumission(this.newAvenantSoumissionId);
+        if (lotId) {
+          const url = await uploadFile(this.pendingAvenantDoc);
+          const updated = await upsertDocument(lotId, { Avenant: url });
+          const idx = this.documents.findIndex((d) => d.numbLot === lotId);
+          if (idx >= 0) this.documents[idx] = updated;
+          else this.documents.push(updated);
+        }
+        this.pendingAvenantDoc = null;
+        this.pendingAvenantDocName = '';
+      }
+
       this.showAvenantDrawer = false;
       this.editingAvenant = null;
     } catch (error: any) {
       this.avenantErrorMessage = error?.message || "Impossible d'enregistrer l'avenant.";
     } finally {
       this.isSavingAvenant = false;
+      this.cd.detectChanges();
+    }
+  }
+
+  getLotIdForSoumission(idSoumission: string): string | undefined {
+    return this.submissions.find((s) => s.id === idSoumission)?.lotId;
+  }
+
+  getAvenantDocUrl(avenant: ApiAvenant): string | undefined {
+    const lotId = this.getLotIdForSoumission(avenant.idSoumissionAttribuee);
+    if (!lotId) return undefined;
+    return this.documents.find((d) => d.numbLot === lotId)?.Avenant || undefined;
+  }
+
+  onPendingAvenantDocSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (file) {
+      this.pendingAvenantDoc = file;
+      this.pendingAvenantDocName = file.name;
+    }
+  }
+
+  async onAvenantDocFileSelected(event: Event, avenant: ApiAvenant) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file || this.uploadingAvenantDocId) return;
+
+    const lotId = this.getLotIdForSoumission(avenant.idSoumissionAttribuee);
+    if (!lotId) {
+      this.avenantDocError = "Impossible de déterminer le lot associé à cet avenant.";
+      return;
+    }
+
+    this.uploadingAvenantDocId = avenant.idAvenant;
+    this.avenantDocError = '';
+
+    try {
+      const url = await uploadFile(file);
+      const updated = await upsertDocument(lotId, { Avenant: url });
+      const idx = this.documents.findIndex((d) => d.numbLot === lotId);
+      if (idx >= 0) this.documents[idx] = updated;
+      else this.documents.push(updated);
+    } catch (error: any) {
+      this.avenantDocError = error?.message || 'Erreur lors du téléversement.';
+    } finally {
+      this.uploadingAvenantDocId = null;
+      input.value = '';
       this.cd.detectChanges();
     }
   }
