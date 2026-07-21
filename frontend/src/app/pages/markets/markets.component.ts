@@ -94,6 +94,19 @@ export class MarketsComponent implements OnInit {
     return this.filteredMarches.slice(start, start + this.pageSize);
   }
 
+  get nextMarcheNumero(): string {
+    const year = new Date().getFullYear();
+    const pattern = new RegExp(`^${year}/0*(\\d+)`);
+    const numbers = this.marches
+      .map((m) => {
+        const match = pattern.exec(m.numbMarche);
+        return match ? Number(match[1]) : 0;
+      })
+      .filter((value) => value > 0);
+    const nextNumber = numbers.length > 0 ? Math.max(...numbers) + 1 : 1;
+    return `${year}/${String(nextNumber).padStart(3, '0')}/`;
+  }
+
   get totalPages(): number {
     return Math.max(1, Math.ceil(this.filteredMarches.length / this.pageSize));
   }
@@ -204,7 +217,10 @@ export class MarketsComponent implements OnInit {
 
   toggleAddMarket() {
     this.showAddMarket = !this.showAddMarket;
-    if (this.showAddMarket) this.errorMessage = '';
+    if (this.showAddMarket) {
+      this.errorMessage = '';
+      this.newMarche.numbMarche = this.nextMarcheNumero;
+    }
   }
 
   async submitAddMarket(event: Event) {

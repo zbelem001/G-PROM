@@ -261,7 +261,7 @@ export class DetailsMarchesComponent implements OnInit {
       .filter((value) => value > 0);
 
     const nextNumber = lotNumbers.length > 0 ? Math.max(...lotNumbers) + 1 : 1;
-    return `Lot ${String(nextNumber).padStart(2, '0')}`;
+    return `LOT ${String(nextNumber).padStart(3, '0')}`;
   }
 
   toggleAddLot(lot?: MarketLot) {
@@ -297,7 +297,7 @@ export class DetailsMarchesComponent implements OnInit {
       return;
     }
 
-    const lotNumero = this.newLotNumero.trim();
+    const lotNumero = this.newLotNumero.trim().toUpperCase();
     const currentMarche = this.newLotNumbMarche.trim();
     const duplicate = this.allLots.some(
       (lot) =>
