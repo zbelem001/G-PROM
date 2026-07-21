@@ -16,11 +16,6 @@
               <span class="h-1.5 w-1.5 rounded-full bg-[#1E7A4E]"></span>
               {{ market?.Statut || 'Réception' }}
             </span>
-            <button type="button" (click)="toggleStatusDrawer()"
-              class="flex items-center gap-2 bg-primary text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity">
-              <span class="material-symbols-outlined text-[16px]">edit</span>
-              Modifier le statut
-            </button>
           </div>
         </div>
 
@@ -1239,38 +1234,6 @@
             <span *ngIf="isSavingAvenant" class="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
             {{ isSavingAvenant ? 'Enregistrement...' : (editingAvenant ? 'Modifier' : "Enregistrer l'avenant") }}
           </button>
-        </footer>
-      </aside>
-      <div *ngIf="showStatusDrawer" class="fixed inset-0 z-40 bg-slate-950/20 backdrop-blur-sm" (click)="toggleStatusDrawer()"></div>
-      <aside *ngIf="showStatusDrawer" class="fixed right-0 top-0 z-50 h-screen w-full sm:w-[480px] bg-white shadow-[-8px_0_24px_rgba(0,0,0,0.08)] flex flex-col overflow-hidden">
-        <div class="px-8 pt-8 pb-5 border-b border-slate-100 shrink-0">
-          <div class="flex items-center justify-between mb-4">
-            <button type="button" (click)="toggleStatusDrawer()" class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center transition-colors">
-              <span class="material-symbols-outlined text-slate-500 text-[18px]">close</span>
-            </button>
-            <span class="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">Statut</span>
-          </div>
-          <h2 class="text-xl font-bold text-slate-900">Modifier le statut</h2>
-          <p class="text-sm text-slate-400 mt-1">Mettre à jour le statut du marché.</p>
-        </div>
-        <form id="statusForm" class="flex-1 overflow-y-auto px-8 py-6 space-y-4">
-          <div>
-            <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Nouveau statut</label>
-            <select [(ngModel)]="currentStatus" name="statusSelect"
-              class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
-              <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Commentaires</label>
-            <textarea rows="4"
-              class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors resize-none"
-              placeholder="Ajouter une note sur ce changement de statut..."></textarea>
-          </div>
-        </form>
-        <footer class="px-8 py-5 border-t border-slate-100 shrink-0 flex justify-end gap-3">
-          <button type="button" class="px-5 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors" (click)="toggleStatusDrawer()">Annuler</button>
-          <button type="button" class="px-6 py-2.5 rounded-lg bg-primary text-white text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity" (click)="toggleStatusDrawer()">Enregistrer</button>
         </footer>
       </aside>
       <div *ngIf="showSoumissionDrawer" class="fixed inset-0 z-40 bg-slate-950/20 backdrop-blur-sm" (click)="toggleSoumissionDrawer()"></div>

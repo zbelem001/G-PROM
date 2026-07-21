@@ -228,15 +228,12 @@ export class DetailsMarchesComponent implements OnInit {
   pendingAvenantDocName = '';
   uploadingAvenantDocId: number | null = null;
   avenantDocError = '';
-  showStatusDrawer = false;
   showLotModal = false;
   showProviderModal = false;
   showSubmissionModal = false;
   selectedLot: MarketLot | null = null;
   selectedProvider: Provider | null = null;
   selectedSubmission: Submission | null = null;
-  currentStatus = 'Réception';
-  statusOptions = ['Réception', 'Ouvert', 'Consultation', 'Soumissions', 'Analyse SCT', 'Attribution', 'Clôturé'];
   showAddSctMember = false;
   newSctMemberName = '';
   isSavingSctMember = false;
@@ -1064,10 +1061,6 @@ export class DetailsMarchesComponent implements OnInit {
     } catch (error: any) {
       alert(error?.message || "Impossible de supprimer l'avenant.");
     }
-  }
-
-  toggleStatusDrawer() {
-    this.showStatusDrawer = !this.showStatusDrawer;
   }
 
   openLotPopup(lot: MarketLot) {
