@@ -168,6 +168,8 @@ export class DetailsMarchesComponent implements OnInit {
   newSoumissionObservation: string = '';
   isSavingSoumission = false;
   soumissionErrorMessage = '';
+  soumissionFournisseurSearch = '';
+  showSoumissionFournisseurDropdown = false;
 
   // Documents
   documents: ApiDocument[] = [];
@@ -508,6 +510,7 @@ export class DetailsMarchesComponent implements OnInit {
     this.showSoumissionDrawer = !this.showSoumissionDrawer;
     this.isSavingSoumission = false;
     this.soumissionErrorMessage = '';
+    this.showSoumissionFournisseurDropdown = false;
     if (this.showSoumissionDrawer) {
       if (submission) {
         this.editingSoumissionId = submission.id;
@@ -521,6 +524,7 @@ export class DetailsMarchesComponent implements OnInit {
         this.newSoumissionDelai = submission.delaiRaw;
         this.newSoumissionExemplaires = submission.exemplaires;
         this.newSoumissionObservation = submission.observation !== '—' ? submission.observation : '';
+        this.soumissionFournisseurSearch = submission.fournisseur.nom;
       } else {
         this.editingSoumissionId = '';
         this.newSoumissionId = `SM-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
@@ -533,10 +537,29 @@ export class DetailsMarchesComponent implements OnInit {
         this.newSoumissionDelai = 0;
         this.newSoumissionExemplaires = 3;
         this.newSoumissionObservation = '';
+        this.soumissionFournisseurSearch = '';
       }
     } else {
       this.editingSoumissionId = '';
     }
+  }
+
+  get filteredSoumissionFournisseurs(): Fournisseur[] {
+    const q = this.soumissionFournisseurSearch.trim().toLowerCase();
+    const list = this.sortedAvailableFournisseurs;
+    if (!q) return list;
+    return list.filter((f) => f.RaisonSocial.toLowerCase().includes(q));
+  }
+
+  onSoumissionFournisseurSearchChange() {
+    this.newSoumissionIdFournisseur = 0;
+    this.showSoumissionFournisseurDropdown = true;
+  }
+
+  selectSoumissionFournisseur(f: Fournisseur) {
+    this.newSoumissionIdFournisseur = f.idFournisseur;
+    this.soumissionFournisseurSearch = f.RaisonSocial;
+    this.showSoumissionFournisseurDropdown = false;
   }
 
   async addSoumission() {

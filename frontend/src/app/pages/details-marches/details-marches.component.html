@@ -1274,7 +1274,7 @@
         </footer>
       </aside>
       <div *ngIf="showSoumissionDrawer" class="fixed inset-0 z-40 bg-slate-950/20 backdrop-blur-sm" (click)="toggleSoumissionDrawer()"></div>
-      <aside *ngIf="showSoumissionDrawer" class="fixed right-0 top-0 z-50 h-screen w-full sm:w-[480px] bg-white shadow-[-8px_0_24px_rgba(0,0,0,0.08)] flex flex-col overflow-hidden">
+      <aside *ngIf="showSoumissionDrawer" (click)="showSoumissionFournisseurDropdown = false" class="fixed right-0 top-0 z-50 h-screen w-full sm:w-[480px] bg-white shadow-[-8px_0_24px_rgba(0,0,0,0.08)] flex flex-col overflow-hidden">
         <div class="px-8 pt-8 pb-5 border-b border-slate-100 shrink-0">
           <div class="flex items-center justify-between mb-4">
             <button type="button" (click)="toggleSoumissionDrawer()" class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center transition-colors">
@@ -1299,13 +1299,26 @@
               <option *ngFor="let lot of lots" [value]="lot.id">{{ lot.nomLot }}</option>
             </select>
           </div>
-          <div>
+          <div class="relative">
             <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Fournisseur <span class="text-red-500">*</span></label>
-            <select name="newSoumissionIdFournisseur" [(ngModel)]="newSoumissionIdFournisseur" required
-              class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
-              <option [value]="0" disabled>Sélectionner un fournisseur</option>
-              <option *ngFor="let f of availableFournisseurs" [value]="f.idFournisseur">{{ f.RaisonSocial }}</option>
-            </select>
+            <input type="text" name="soumissionFournisseurSearch" autocomplete="off"
+              [(ngModel)]="soumissionFournisseurSearch"
+              (ngModelChange)="onSoumissionFournisseurSearchChange()"
+              (focus)="showSoumissionFournisseurDropdown = true"
+              (click)="$event.stopPropagation()"
+              placeholder="Rechercher un fournisseur..."
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors" />
+            <div *ngIf="showSoumissionFournisseurDropdown"
+              class="absolute z-10 mt-1 w-full max-h-56 overflow-y-auto bg-white border border-slate-200 rounded-lg shadow-lg py-1"
+              (click)="$event.stopPropagation()">
+              <button *ngFor="let f of filteredSoumissionFournisseurs" type="button"
+                (click)="selectSoumissionFournisseur(f)"
+                class="w-full text-left px-3.5 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                [class.bg-slate-50]="f.idFournisseur === newSoumissionIdFournisseur">
+                {{ f.RaisonSocial }}
+              </button>
+              <p *ngIf="filteredSoumissionFournisseurs.length === 0" class="px-3.5 py-2 text-xs text-slate-400">Aucun fournisseur trouvé.</p>
+            </div>
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div>
