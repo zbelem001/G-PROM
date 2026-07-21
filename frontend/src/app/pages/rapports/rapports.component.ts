@@ -300,9 +300,11 @@ export class RapportsComponent implements OnInit {
     if (this.exporting || !this.reportContent) return;
     this.exporting = true;
     this.cd.markForCheck();
+    const el = this.reportContent.nativeElement;
     try {
       const [{ default: html2canvas }, { jsPDF }] = await Promise.all([import('html2canvas'), import('jspdf')]);
-      const el = this.reportContent.nativeElement;
+      el.classList.add('pdf-export-mode');
+      await new Promise((resolve) => setTimeout(resolve, 50));
       const canvas = await html2canvas(el, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
       const imgData = canvas.toDataURL('image/png');
 
@@ -332,6 +334,7 @@ export class RapportsComponent implements OnInit {
         this.cd.markForCheck();
       });
     } finally {
+      el.classList.remove('pdf-export-mode');
       this.ngZone.run(() => {
         this.exporting = false;
         this.cd.markForCheck();

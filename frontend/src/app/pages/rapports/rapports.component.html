@@ -29,7 +29,7 @@
       <p *ngIf="loading" class="mb-4 text-sm text-on-surface-variant">Chargement des données du rapport…</p>
 
       <div #reportContent class="bg-surface p-2">
-        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-8">
+        <div class="kpi-grid grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-8">
           <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-[0_4px_12px_rgba(26,46,68,0.03)] border border-outline-variant/10">
             <div class="w-9 h-9 rounded-xl bg-surface-container-low flex items-center justify-center text-secondary mb-3">
               <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'wght' 300">inbox</span>
@@ -59,7 +59,7 @@
             <h3 class="font-headline text-[26px] font-bold text-secondary leading-none mb-1">{{ totalLotsCount }}</h3>
             <p class="text-xs font-medium text-on-surface-variant">Lots au total</p>
           </div>
-          <div class="bg-surface-container-lowest rounded-2xl p-6 shadow-[0_4px_12px_rgba(26,46,68,0.03)] border border-outline-variant/10 md:col-span-2 lg:col-span-2">
+          <div class="kpi-span-2 bg-surface-container-lowest rounded-2xl p-6 shadow-[0_4px_12px_rgba(26,46,68,0.03)] border border-outline-variant/10 md:col-span-2 lg:col-span-2">
             <div class="w-9 h-9 rounded-xl bg-[rgba(3,156,211,0.1)] flex items-center justify-center text-[#039CD3] mb-3">
               <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'wght' 300">schedule</span>
             </div>
@@ -68,7 +68,7 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div class="charts-grid grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           <div class="lg:col-span-1 bg-surface-container-lowest rounded-2xl p-6 shadow-[0_4px_12px_rgba(26,46,68,0.03)] border border-outline-variant/10">
             <div class="flex items-center justify-between mb-4">
               <h4 class="font-headline text-lg font-bold text-secondary">Marchés reçus</h4>
@@ -118,7 +118,7 @@
             </div>
           </div>
 
-          <div class="lg:col-span-1 bg-surface-container-lowest rounded-2xl p-6 shadow-[0_4px_12px_rgba(26,46,68,0.03)] border border-outline-variant/10">
+          <div class="chart-span-2 lg:col-span-1 bg-surface-container-lowest rounded-2xl p-6 shadow-[0_4px_12px_rgba(26,46,68,0.03)] border border-outline-variant/10">
             <div class="flex items-center justify-between mb-4">
               <h4 class="font-headline text-lg font-bold text-secondary">Top 3 fournisseurs</h4>
               <span class="text-xs text-slate-500">Par attribution</span>

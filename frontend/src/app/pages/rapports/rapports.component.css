@@ -1,1 +1,14 @@
 /* Styles spécifiques à la page Rapports */
+
+/* Mise en page forcée en 2 colonnes pour l'export PDF (voir exportPdf()) */
+.pdf-export-mode .kpi-grid,
+.pdf-export-mode .charts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr) !important;
+}
+
+.pdf-export-mode .chart-span-2,
+.pdf-export-mode .kpi-span-2 {
+  grid-column: span 2 !important;
+}
+
