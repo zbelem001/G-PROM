@@ -17,4 +17,6 @@ export class CreateMarcheDto {
   DatePrevReception?: string;
   Statut?: string;
   BudgetEstimatif?: number;
+  PV_ouverture?: string;
+  PV_attribution?: string;
 }

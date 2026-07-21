@@ -55,6 +55,8 @@ export interface Marche {
   DatePrevReception?: string;
   Statut?: string;
   BudgetEstimatif?: number;
+  PV_ouverture?: string;
+  PV_attribution?: string;
 }
 
 export interface Fournisseur {
@@ -227,6 +229,8 @@ function normalizeMarcheResponse(raw: any): Marche {
     DatePrevReception: raw.DatePrevReception ?? raw.dateprevreception ?? raw.date_prev_reception,
     Statut: raw.Statut ?? raw.statut,
     BudgetEstimatif: raw.BudgetEstimatif ?? raw.budgetestimatif ?? raw.budget_estimatif ?? 0,
+    PV_ouverture: raw.PV_ouverture ?? raw.pv_ouverture ?? undefined,
+    PV_attribution: raw.PV_attribution ?? raw.pv_attribution ?? undefined,
   } as Marche;
 }
 

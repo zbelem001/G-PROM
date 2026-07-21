@@ -47,12 +47,16 @@ import {
 const SCT_MEMBER_SLOTS = 4;
 
 const DOC_TYPES: { key: keyof ApiDocument; label: string }[] = [
-  { key: 'PV_ouverture', label: "PV d'ouverture des offres" },
   { key: 'Contrat', label: 'Contrat' },
   { key: 'FED', label: "Fichier d'Engagement des Dépenses (FED)" },
   { key: 'BonCommande', label: 'Bon de commande' },
   { key: 'OrdreService', label: "Ordre de service" },
   { key: 'PV_reception_tech', label: 'PV de réception technique' },
+];
+
+const MARCHE_DOC_TYPES: { key: 'PV_ouverture' | 'PV_attribution'; label: string }[] = [
+  { key: 'PV_ouverture', label: "PV d'ouverture des offres" },
+  { key: 'PV_attribution', label: "PV d'attribution" },
 ];
 
 interface MarketLot {
@@ -176,6 +180,9 @@ export class DetailsMarchesComponent implements OnInit {
   pendingAnalyseDoc: File | null = null;
   pendingAnalyseDocName = '';
   readonly DOC_TYPES = DOC_TYPES;
+  readonly MARCHE_DOC_TYPES = MARCHE_DOC_TYPES;
+  uploadingMarcheDocField: string | null = null;
+  marcheDocError = '';
 
   // Analyse Form State
   analyses: Analyse[] = [];
@@ -729,7 +736,34 @@ export class DetailsMarchesComponent implements OnInit {
 
   getAnalyseDocUrl(numbLot: string): string | undefined {
     const doc = this.documents.find((d) => d.numbLot === numbLot);
-    return doc?.RapportAnalyse || undefined;
+    const val = doc?.RapportAnalyse;
+    return typeof val === 'string' && val.startsWith('http') ? val : undefined;
+  }
+
+  getMarcheDocUrl(field: 'PV_ouverture' | 'PV_attribution'): string | undefined {
+    const val = this.market?.[field];
+    return typeof val === 'string' && val.startsWith('http') ? val : undefined;
+  }
+
+  async onMarcheDocFileSelected(event: Event, field: 'PV_ouverture' | 'PV_attribution') {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file || this.uploadingMarcheDocField || !this.market) return;
+
+    this.uploadingMarcheDocField = field;
+    this.marcheDocError = '';
+
+    try {
+      const url = await uploadFile(file);
+      const updated = await updateMarche(this.market.numbMarche, { [field]: url });
+      this.market = { ...this.market, ...updated };
+    } catch (error: any) {
+      this.marcheDocError = error?.message || 'Erreur lors du téléversement.';
+    } finally {
+      this.uploadingMarcheDocField = null;
+      input.value = '';
+      this.cd.detectChanges();
+    }
   }
 
   openDocument(url: string | undefined): void {
@@ -916,7 +950,8 @@ export class DetailsMarchesComponent implements OnInit {
   getAvenantDocUrl(avenant: ApiAvenant): string | undefined {
     const lotId = this.getLotIdForSoumission(avenant.idSoumissionAttribuee);
     if (!lotId) return undefined;
-    return this.documents.find((d) => d.numbLot === lotId)?.Avenant || undefined;
+    const val = this.documents.find((d) => d.numbLot === lotId)?.Avenant;
+    return typeof val === 'string' && val.startsWith('http') ? val : undefined;
   }
 
   onPendingAvenantDocSelected(event: Event) {

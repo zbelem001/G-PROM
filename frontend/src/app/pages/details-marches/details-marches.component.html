@@ -193,6 +193,48 @@
                   </div>
                 </form>
               </div>
+              <div class="bg-surface-container-lowest rounded-[16px] p-6 shadow-[0_2px_12px_rgba(26,46,68,0.02)] flex-1">
+                <h3 class="font-headline font-bold text-lg text-secondary mb-4 flex items-center gap-2">
+                  <span class="material-symbols-outlined text-[20px]">description</span>
+                  Documents du marché
+                </h3>
+                <div class="space-y-3">
+                  <div *ngFor="let docType of MARCHE_DOC_TYPES" class="rounded-[14px] bg-surface p-3">
+                    <div class="flex items-center justify-between mb-2">
+                      <p class="text-sm font-medium text-on-surface">{{ docType.label }}</p>
+                      <span class="text-[10px] px-2.5 py-0.5 rounded-full font-medium"
+                            [class]="getMarcheDocUrl(docType.key) ? 'bg-green-50 text-green-700' : 'bg-surface-container text-on-surface-variant'">
+                        {{ getMarcheDocUrl(docType.key) ? 'Présent' : 'Absent' }}
+                      </span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <button *ngIf="getMarcheDocUrl(docType.key)" type="button"
+                         (click)="openDocument(getMarcheDocUrl(docType.key))"
+                         class="text-xs text-[#039CD3] underline truncate flex-1 min-w-0 flex items-center gap-1 hover:text-[#0277a8] transition-colors">
+                        <span class="material-symbols-outlined text-[14px] shrink-0">open_in_new</span>
+                        Ouvrir le document
+                      </button>
+                      <span *ngIf="!getMarcheDocUrl(docType.key)" class="text-xs text-on-surface-variant flex-1">Aucun document</span>
+                      <label *ngIf="uploadingMarcheDocField !== docType.key" [for]="'marcheDoc_' + docType.key"
+                             class="cursor-pointer text-xs font-medium text-white bg-[#76d3c8] hover:bg-[#43a399] px-3 py-1.5 rounded-[8px] transition-colors shrink-0 whitespace-nowrap select-none"
+                             [class.opacity-50]="!!uploadingMarcheDocField && uploadingMarcheDocField !== docType.key"
+                             [class.pointer-events-none]="!!uploadingMarcheDocField && uploadingMarcheDocField !== docType.key">
+                        {{ getMarcheDocUrl(docType.key) ? 'Remplacer' : 'Uploader' }}
+                      </label>
+                      <span *ngIf="uploadingMarcheDocField === docType.key" class="text-xs text-[#43a399] flex items-center gap-1 shrink-0">
+                        <span class="w-3 h-3 border-2 border-[#43a399]/30 border-t-[#43a399] rounded-full animate-spin inline-block"></span>
+                        Envoi...
+                      </span>
+                      <input [id]="'marcheDoc_' + docType.key" type="file"
+                             accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg"
+                             class="hidden"
+                             (change)="onMarcheDocFileSelected($event, docType.key)"
+                             [disabled]="!!uploadingMarcheDocField" />
+                    </div>
+                  </div>
+                </div>
+                <p *ngIf="marcheDocError" class="text-xs text-red-600 mt-2">{{ marcheDocError }}</p>
+              </div>
             </div>
           </div>
 
