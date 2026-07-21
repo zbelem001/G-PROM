@@ -23,6 +23,10 @@ export class FournisseursComponent implements OnInit {
   currentPage = 1;
   pageSize = 10;
 
+  searchQuery = '';
+  filterStatut = '';
+  showStatutDropdown = false;
+
   showEditFournisseur = false;
   editingFournisseur: Partial<Fournisseur> = {};
   isUpdating = false;
@@ -59,8 +63,23 @@ export class FournisseursComponent implements OnInit {
     this.loadFournisseurs();
   }
 
+  get filteredFournisseurs(): Fournisseur[] {
+    const q = this.searchQuery.toLowerCase().trim();
+    return this.fournisseurs.filter((f) => {
+      if (q) {
+        const haystack = [f.RaisonSocial, f.DomaineActivite, f.Ville, f.Email]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase();
+        if (!haystack.includes(q)) return false;
+      }
+      if (this.filterStatut && (f.Statut || 'Externe') !== this.filterStatut) return false;
+      return true;
+    });
+  }
+
   get sortedFournisseurs(): Fournisseur[] {
-    return [...this.fournisseurs].sort((a, b) => {
+    return [...this.filteredFournisseurs].sort((a, b) => {
       const aDate = a.dateAjout ? Date.parse(a.dateAjout) : 0;
       const bDate = b.dateAjout ? Date.parse(b.dateAjout) : 0;
       if (aDate !== bDate) {
@@ -76,7 +95,31 @@ export class FournisseursComponent implements OnInit {
   }
 
   get totalPages(): number {
-    return Math.max(1, Math.ceil(this.fournisseurs.length / this.pageSize));
+    return Math.max(1, Math.ceil(this.filteredFournisseurs.length / this.pageSize));
+  }
+
+  get uniqueStatuts(): string[] {
+    return [...new Set(this.fournisseurs.map((f) => f.Statut || 'Externe'))];
+  }
+
+  onSearch(): void {
+    this.currentPage = 1;
+  }
+
+  toggleStatutDropdown(event: Event): void {
+    event.stopPropagation();
+    this.showStatutDropdown = !this.showStatutDropdown;
+  }
+
+  setFilterStatut(statut: string): void {
+    this.filterStatut = statut;
+    this.currentPage = 1;
+    this.showStatutDropdown = false;
+    this.cd.detectChanges();
+  }
+
+  closeDropdowns(): void {
+    this.showStatutDropdown = false;
   }
 
   get pageNumbers(): number[] {
@@ -103,11 +146,11 @@ export class FournisseursComponent implements OnInit {
   }
 
   get displayStart(): number {
-    return Math.min((this.currentPage - 1) * this.pageSize + 1, this.fournisseurs.length || 1);
+    return Math.min((this.currentPage - 1) * this.pageSize + 1, this.filteredFournisseurs.length || 1);
   }
 
   get displayEnd(): number {
-    return Math.min(this.currentPage * this.pageSize, this.fournisseurs.length);
+    return Math.min(this.currentPage * this.pageSize, this.filteredFournisseurs.length);
   }
 
   async loadFournisseurs() {

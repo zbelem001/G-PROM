@@ -1,4 +1,4 @@
-<div class="bg-surface font-body text-on-surface min-h-screen flex overflow-hidden">
+<div class="bg-surface font-body text-on-surface min-h-screen flex overflow-hidden" (click)="closeDropdowns()">
   <app-menu></app-menu>
   <main class="flex-1 ml-[240px] flex flex-col h-screen overflow-hidden bg-surface relative">
     <app-header></app-header>
@@ -25,14 +25,28 @@
           <div class="flex items-center gap-3">
             <div class="relative">
               <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
-              <input class="pl-9 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-300 w-56" placeholder="Rechercher..." type="text" />
+              <input [(ngModel)]="searchQuery" (ngModelChange)="onSearch()"
+                class="pl-9 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-300 w-56"
+                placeholder="Rechercher..." type="text" />
             </div>
-            <button class="flex items-center gap-1.5 px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-500 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors">
-              <span class="material-symbols-outlined text-[16px]">filter_list</span>
-              Filtres
-            </button>
+            <div class="relative">
+              <button type="button" (click)="toggleStatutDropdown($event)"
+                class="flex items-center gap-1.5 px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-500 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+                [class.bg-slate-50]="filterStatut">
+                <span class="material-symbols-outlined text-[16px]">filter_list</span>
+                {{ filterStatut || 'Filtres' }}
+                <span class="material-symbols-outlined text-[14px]">{{ showStatutDropdown ? 'expand_less' : 'expand_more' }}</span>
+              </button>
+              <div *ngIf="showStatutDropdown" (click)="$event.stopPropagation()"
+                class="absolute top-full left-0 mt-1 z-20 bg-white rounded-lg shadow-[0_8px_24px_rgba(26,46,68,0.12)] border border-slate-100 min-w-[160px] overflow-hidden">
+                <button type="button" (click)="setFilterStatut('')"
+                  class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 transition-colors" [class.font-bold]="!filterStatut">Tous</button>
+                <button type="button" *ngFor="let s of uniqueStatuts" (click)="setFilterStatut(s)"
+                  class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 transition-colors" [class.font-bold]="filterStatut === s">{{ s }}</button>
+              </div>
+            </div>
           </div>
-          <span class="text-[11px] text-slate-400 font-medium">{{ displayStart }}–{{ displayEnd }} sur {{ fournisseurs.length }}</span>
+          <span class="text-[11px] text-slate-400 font-medium">{{ displayStart }}–{{ displayEnd }} sur {{ filteredFournisseurs.length }}</span>
         </div>
 
         <!-- Tableau -->
@@ -53,8 +67,10 @@
               <tr *ngIf="loading">
                 <td colspan="7" class="px-6 py-10 text-center text-sm text-slate-400">Chargement…</td>
               </tr>
-              <tr *ngIf="!loading && fournisseurs.length === 0">
-                <td colspan="7" class="px-6 py-10 text-center text-sm text-slate-400">Aucun fournisseur trouvé.</td>
+              <tr *ngIf="!loading && filteredFournisseurs.length === 0">
+                <td colspan="7" class="px-6 py-10 text-center text-sm text-slate-400">
+                  {{ fournisseurs.length === 0 ? 'Aucun fournisseur trouvé.' : 'Aucun résultat pour ces critères.' }}
+                </td>
               </tr>
               <tr *ngFor="let fournisseur of displayedFournisseurs"
                   [routerLink]="['/fournisseurs/details']"
