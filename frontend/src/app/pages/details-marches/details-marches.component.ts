@@ -344,7 +344,7 @@ export class DetailsMarchesComponent implements OnInit {
       this.editingLot = null;
       this.showAddLot = false;
       this.isSavingLot = false;
-      this.cd.detectChanges();
+      this.cd.markForCheck();
       if (this.market) {
         this.loadMarcheDetails(this.market.numbMarche).catch((e) =>
           console.error('[DetailsMarches] reload after saveLot failed', e)
@@ -355,7 +355,7 @@ export class DetailsMarchesComponent implements OnInit {
       console.error('[DetailsMarches] saveLot failed', error);
     } finally {
       this.isSavingLot = false;
-      this.cd.detectChanges();
+      this.cd.markForCheck();
     }
   }
 
@@ -364,7 +364,7 @@ export class DetailsMarchesComponent implements OnInit {
     try {
       await deleteLot(lot.id);
       this.lots = this.lots.filter((l) => l.id !== lot.id);
-      this.cd.detectChanges();
+      this.cd.markForCheck();
       if (this.market) {
         this.loadMarcheDetails(this.market.numbMarche).catch((e) =>
           console.error('[DetailsMarches] reload after removeLot failed', e)
@@ -440,7 +440,7 @@ export class DetailsMarchesComponent implements OnInit {
       this.isSavingConsultation = false;
       this.showConsultationDrawer = false;
       this.editingConsultation = null;
-      this.cd.detectChanges();
+      this.cd.markForCheck();
 
       if (this.market) {
         this.loadMarcheDetails(this.market.numbMarche).catch((e) =>
@@ -451,7 +451,7 @@ export class DetailsMarchesComponent implements OnInit {
       this.consultationErrorMessage = error?.message || "Erreur lors de l'enregistrement de la consultation.";
       console.error('[DetailsMarches] addConsultation failed', error);
       this.isSavingConsultation = false;
-      this.cd.detectChanges();
+      this.cd.markForCheck();
     }
   }
 
@@ -465,7 +465,7 @@ export class DetailsMarchesComponent implements OnInit {
       this.consultations = this.consultations.filter(
         (c) => !(c.lotId === consultation.lotId && c.fournisseur.id === consultation.fournisseur.id)
       );
-      this.cd.detectChanges();
+      this.cd.markForCheck();
       if (this.market) {
         this.loadMarcheDetails(this.market.numbMarche).catch((e) =>
           console.error('[DetailsMarches] reload after deleteConsultation failed', e)
@@ -555,7 +555,7 @@ export class DetailsMarchesComponent implements OnInit {
       this.isSavingSoumission = false;
       this.editingSoumissionId = '';
       this.showSoumissionDrawer = false;
-      this.cd.detectChanges();
+      this.cd.markForCheck();
 
       // Recharger les données en arrière-plan
       if (this.market) {
@@ -567,7 +567,7 @@ export class DetailsMarchesComponent implements OnInit {
       this.soumissionErrorMessage = error?.message || 'Erreur lors de l enregistrement de la soumission.';
       console.error('[DetailsMarches] addSoumission failed', error);
       this.isSavingSoumission = false;
-      this.cd.detectChanges();
+      this.cd.markForCheck();
     }
   }
 
@@ -579,7 +579,7 @@ export class DetailsMarchesComponent implements OnInit {
     try {
       await deleteSoumission(submission.id);
       this.submissions = this.submissions.filter((s: Submission) => s.id !== submission.id);
-      this.cd.detectChanges();
+      this.cd.markForCheck();
       if (this.market) {
         this.loadMarcheDetails(this.market.numbMarche).catch((e) =>
           console.error('[DetailsMarches] reload after deleteSoumission failed', e)
@@ -724,7 +724,7 @@ export class DetailsMarchesComponent implements OnInit {
 
       this.isSavingAnalyse = false;
       this.showAnalyseDrawer = false;
-      this.cd.detectChanges();
+      this.cd.markForCheck();
       if (this.market) {
         this.loadMarcheDetails(this.market.numbMarche).catch((e) =>
           console.error('[DetailsMarches] reload after saveAnalyse failed', e)
@@ -734,7 +734,7 @@ export class DetailsMarchesComponent implements OnInit {
       this.analyseErrorMessage = error?.message || "Impossible d'enregistrer l'analyse.";
       console.error('[DetailsMarches] saveAnalyse failed', error);
       this.isSavingAnalyse = false;
-      this.cd.detectChanges();
+      this.cd.markForCheck();
     }
   }
 
@@ -775,7 +775,7 @@ export class DetailsMarchesComponent implements OnInit {
     } finally {
       this.uploadingMarcheDocField = null;
       input.value = '';
-      this.cd.detectChanges();
+      this.cd.markForCheck();
     }
   }
 
@@ -808,7 +808,7 @@ export class DetailsMarchesComponent implements OnInit {
     } finally {
       this.uploadingAnalyseDocLot = '';
       input.value = '';
-      this.cd.detectChanges();
+      this.cd.markForCheck();
     }
   }
 
@@ -876,7 +876,7 @@ export class DetailsMarchesComponent implements OnInit {
       console.error('[DetailsMarches] saveAttribution failed', error);
     } finally {
       this.isSavingAttribution = false;
-      this.cd.detectChanges();
+      this.cd.markForCheck();
     }
   }
 
@@ -952,7 +952,7 @@ export class DetailsMarchesComponent implements OnInit {
       this.avenantErrorMessage = error?.message || "Impossible d'enregistrer l'avenant.";
     } finally {
       this.isSavingAvenant = false;
-      this.cd.detectChanges();
+      this.cd.markForCheck();
     }
   }
 
@@ -1001,7 +1001,7 @@ export class DetailsMarchesComponent implements OnInit {
     } finally {
       this.uploadingAvenantDocId = null;
       input.value = '';
-      this.cd.detectChanges();
+      this.cd.markForCheck();
     }
   }
 
@@ -1010,7 +1010,7 @@ export class DetailsMarchesComponent implements OnInit {
     try {
       await deleteAvenant(idAvenant);
       this.avenants = this.avenants.filter((a) => a.idAvenant !== idAvenant);
-      this.cd.detectChanges();
+      this.cd.markForCheck();
     } catch (error: any) {
       alert(error?.message || "Impossible de supprimer l'avenant.");
     }
@@ -1071,7 +1071,7 @@ export class DetailsMarchesComponent implements OnInit {
       this.docSaveError = error?.message || 'Erreur lors de la sauvegarde.';
     } finally {
       this.isSavingDoc = false;
-      this.cd.detectChanges();
+      this.cd.markForCheck();
     }
   }
 
@@ -1097,7 +1097,7 @@ export class DetailsMarchesComponent implements OnInit {
     } finally {
       this.uploadingDocField = '';
       input.value = '';
-      this.cd.detectChanges();
+      this.cd.markForCheck();
     }
   }
 
@@ -1133,7 +1133,7 @@ export class DetailsMarchesComponent implements OnInit {
         loadedId = id;
         this.loadMarcheDetails(id);
       }
-      this.cd.detectChanges();
+      this.cd.markForCheck();
     });
   }
 
@@ -1142,12 +1142,12 @@ export class DetailsMarchesComponent implements OnInit {
     this.errorMessage = '';
     try {
       this.market = await getMarcheDetails(numbMarche);
-      this.cd.detectChanges();
+      this.cd.markForCheck();
     } catch (error: any) {
       console.error('[DetailsMarches] getMarcheDetails failed', error);
       this.errorMessage = error?.message || 'Impossible de charger les informations du marché.';
       this.loadingMarket = false;
-      this.cd.detectChanges();
+      this.cd.markForCheck();
       return;
     }
 
@@ -1279,12 +1279,12 @@ export class DetailsMarchesComponent implements OnInit {
         this.latestSubmission = null;
       }
 
-      this.cd.detectChanges();
+      this.cd.markForCheck();
     } catch (error: any) {
       console.error('[DetailsMarches] getLots/getSoumissions/getFournisseurs failed', error);
     } finally {
       this.loadingMarket = false;
-      this.cd.detectChanges();
+      this.cd.markForCheck();
     }
   }
 
@@ -1340,7 +1340,7 @@ export class DetailsMarchesComponent implements OnInit {
       console.error('[DetailsMarches] addSctMember failed', error);
     } finally {
       this.isSavingSctMember = false;
-      this.cd.detectChanges();
+      this.cd.markForCheck();
     }
   }
 

@@ -165,7 +165,7 @@ export class FournisseursComponent implements OnInit {
       this.errorMessage = error?.message || 'Impossible de charger les fournisseurs.';
     } finally {
       this.loading = false;
-      this.cd.detectChanges();
+      this.cd.markForCheck();
     }
   }
 
@@ -206,7 +206,7 @@ export class FournisseursComponent implements OnInit {
       this.errorMessage = error?.message || 'Impossible de créer le fournisseur.';
     } finally {
       this.submitting = false;
-      this.cd.detectChanges();
+      this.cd.markForCheck();
     }
   }
 
@@ -261,7 +261,7 @@ export class FournisseursComponent implements OnInit {
       this.errorMessage = error?.message || 'Impossible de modifier le fournisseur.';
     } finally {
       this.isUpdating = false;
-      this.cd.detectChanges();
+      this.cd.markForCheck();
     }
   }
 
@@ -296,7 +296,7 @@ export class FournisseursComponent implements OnInit {
       this.errorMessage = error?.message || 'Impossible de supprimer le fournisseur.';
     } finally {
       this.isDeleting = false;
-      this.cd.detectChanges();
+      this.cd.markForCheck();
     }
   }
 }
