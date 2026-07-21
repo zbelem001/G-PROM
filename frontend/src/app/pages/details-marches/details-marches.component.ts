@@ -264,6 +264,19 @@ export class DetailsMarchesComponent implements OnInit {
     return `LOT ${String(nextNumber).padStart(3, '0')}`;
   }
 
+  get nextContractNumero(): string {
+    const year = new Date().getFullYear();
+    const pattern = new RegExp(`^SAM-${year}-0*(\\d+)`, 'i');
+    const numbers = this.allLots
+      .map((lot) => {
+        const match = pattern.exec(lot.numbContrat || '');
+        return match ? Number(match[1]) : 0;
+      })
+      .filter((value) => value > 0);
+    const nextNumber = numbers.length > 0 ? Math.max(...numbers) + 1 : 1;
+    return `SAM-${year}-${String(nextNumber).padStart(3, '0')}`;
+  }
+
   toggleAddLot(lot?: MarketLot) {
     this.showAddLot = !this.showAddLot;
     this.isSavingLot = false;
@@ -280,7 +293,7 @@ export class DetailsMarchesComponent implements OnInit {
         this.newLotNumero = this.nextLotNumero;
         this.newLotNumbMarche = this.market?.numbMarche ?? '';
         this.newLotDescription = '';
-        this.newLotContract = '';
+        this.newLotContract = this.nextContractNumero;
       }
     } else {
       this.editingLot = null;
