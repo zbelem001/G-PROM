@@ -151,6 +151,8 @@ export class DetailsMarchesComponent implements OnInit {
   newConsultationDate = '';
   isSavingConsultation = false;
   consultationErrorMessage = '';
+  consultationFournisseurSearch = '';
+  showConsultationFournisseurDropdown = false;
 
   // Soumission Form State
   editingSoumissionId = '';
@@ -379,21 +381,46 @@ export class DetailsMarchesComponent implements OnInit {
     this.showConsultationDrawer = !this.showConsultationDrawer;
     this.consultationErrorMessage = '';
     this.isSavingConsultation = false;
+    this.showConsultationFournisseurDropdown = false;
     if (this.showConsultationDrawer) {
       if (consultation) {
         this.editingConsultation = consultation;
         this.newConsultationLot = consultation.lotId;
         this.newConsultationFournisseurId = Number(consultation.fournisseur.id);
         this.newConsultationDate = consultation.date !== '—' ? consultation.date : new Date().toISOString().split('T')[0];
+        this.consultationFournisseurSearch = consultation.fournisseur.nom;
       } else {
         this.editingConsultation = null;
         this.newConsultationLot = '';
         this.newConsultationFournisseurId = 0;
         this.newConsultationDate = new Date().toISOString().split('T')[0];
+        this.consultationFournisseurSearch = '';
       }
     } else {
       this.editingConsultation = null;
     }
+  }
+
+  get sortedAvailableFournisseurs(): Fournisseur[] {
+    return [...this.availableFournisseurs].sort((a, b) => b.idFournisseur - a.idFournisseur);
+  }
+
+  get filteredConsultationFournisseurs(): Fournisseur[] {
+    const q = this.consultationFournisseurSearch.trim().toLowerCase();
+    const list = this.sortedAvailableFournisseurs;
+    if (!q) return list;
+    return list.filter((f) => f.RaisonSocial.toLowerCase().includes(q));
+  }
+
+  onConsultationFournisseurSearchChange() {
+    this.newConsultationFournisseurId = 0;
+    this.showConsultationFournisseurDropdown = true;
+  }
+
+  selectConsultationFournisseur(f: Fournisseur) {
+    this.newConsultationFournisseurId = f.idFournisseur;
+    this.consultationFournisseurSearch = f.RaisonSocial;
+    this.showConsultationFournisseurDropdown = false;
   }
 
   async addConsultation() {

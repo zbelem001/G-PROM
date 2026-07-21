@@ -132,29 +132,6 @@
             </div>
             <div class="flex flex-col gap-1">
               <div class="bg-surface-container-lowest rounded-[16px] p-6 shadow-[0_2px_12px_rgba(26,46,68,0.02)] flex-1">
-                <h3 class="font-headline font-bold text-lg text-secondary mb-6 flex items-center gap-2">
-                  <span class="material-symbols-outlined text-[20px]">calendar_month</span>
-                  Chronologie
-                </h3>
-                <div class="relative pl-4 border-l-2 border-surface-variant space-y-6">
-                  <div class="relative">
-                    <div class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-primary-fixed-dim outline outline-4 outline-surface-container-lowest"></div>
-                    <p class="text-xs text-on-surface-variant mb-0.5">Date de lancement</p>
-                    <p class="text-sm font-medium text-on-surface">12 Septembre 2023</p>
-                  </div>
-                  <div class="relative">
-                    <div class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-primary-fixed-dim outline outline-4 outline-surface-container-lowest"></div>
-                    <p class="text-xs text-on-surface-variant mb-0.5">Date limite de dépôt</p>
-                    <p class="text-sm font-medium text-on-surface">15 Octobre 2023</p>
-                  </div>
-                  <div class="relative">
-                    <div class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-surface-variant outline outline-4 outline-surface-container-lowest"></div>
-                    <p class="text-xs text-on-surface-variant mb-0.5">Date d'attribution prévue</p>
-                    <p class="text-sm font-medium text-on-surface-variant">05 Novembre 2023</p>
-                  </div>
-                </div>
-              </div>
-              <div class="bg-surface-container-lowest rounded-[16px] p-6 shadow-[0_2px_12px_rgba(26,46,68,0.02)] flex-1">
                 <h3 class="font-headline font-bold text-lg text-secondary mb-4 flex items-center gap-2">
                   <span class="material-symbols-outlined text-[20px]">groups</span>
                   Membres SCT
@@ -957,7 +934,7 @@
       </footer>
     </aside>
       <div *ngIf="showConsultationDrawer" class="fixed inset-0 z-40 bg-slate-950/20 backdrop-blur-sm" (click)="toggleConsultationDrawer()"></div>
-      <aside *ngIf="showConsultationDrawer" class="fixed right-0 top-0 z-50 h-screen w-full sm:w-[480px] bg-white shadow-[-8px_0_24px_rgba(0,0,0,0.08)] flex flex-col overflow-hidden">
+      <aside *ngIf="showConsultationDrawer" (click)="showConsultationFournisseurDropdown = false" class="fixed right-0 top-0 z-50 h-screen w-full sm:w-[480px] bg-white shadow-[-8px_0_24px_rgba(0,0,0,0.08)] flex flex-col overflow-hidden">
         <div class="px-8 pt-8 pb-5 border-b border-slate-100 shrink-0">
           <div class="flex items-center justify-between mb-4">
             <button type="button" (click)="toggleConsultationDrawer()" class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center transition-colors">
@@ -993,13 +970,26 @@
                 <option *ngFor="let lot of lots" [value]="lot.id">{{ lot.nomLot }} - {{ lot.description }}</option>
               </select>
             </div>
-            <div>
+            <div class="relative">
               <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Fournisseur <span class="text-red-500">*</span></label>
-              <select name="idFournisseur" [(ngModel)]="newConsultationFournisseurId" required
-                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
-                <option [value]="0" disabled>Sélectionner un fournisseur...</option>
-                <option *ngFor="let f of availableFournisseurs" [value]="f.idFournisseur">{{ f.RaisonSocial }}</option>
-              </select>
+              <input type="text" name="fournisseurSearch" autocomplete="off"
+                [(ngModel)]="consultationFournisseurSearch"
+                (ngModelChange)="onConsultationFournisseurSearchChange()"
+                (focus)="showConsultationFournisseurDropdown = true"
+                (click)="$event.stopPropagation()"
+                placeholder="Rechercher un fournisseur..."
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors" />
+              <div *ngIf="showConsultationFournisseurDropdown"
+                class="absolute z-10 mt-1 w-full max-h-56 overflow-y-auto bg-white border border-slate-200 rounded-lg shadow-lg py-1"
+                (click)="$event.stopPropagation()">
+                <button *ngFor="let f of filteredConsultationFournisseurs" type="button"
+                  (click)="selectConsultationFournisseur(f)"
+                  class="w-full text-left px-3.5 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors"
+                  [class.bg-slate-50]="f.idFournisseur === newConsultationFournisseurId">
+                  {{ f.RaisonSocial }}
+                </button>
+                <p *ngIf="filteredConsultationFournisseurs.length === 0" class="px-3.5 py-2 text-xs text-slate-400">Aucun fournisseur trouvé.</p>
+              </div>
             </div>
           </ng-template>
           <div>
