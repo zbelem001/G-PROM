@@ -7,8 +7,14 @@
     <button class="p-2 hover:bg-[#f3f3f5] dark:hover:bg-slate-800 rounded-lg transition-colors">
       <span class="material-symbols-outlined text-slate-500">help_outline</span>
     </button>
-    <div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center border-[0.5px] border-outline-variant/20 ml-2">
-      <span class="font-headline font-bold text-on-secondary-container text-xs">U</span>
+    <div class="flex items-center gap-2 ml-2" [title]="displayName ? displayName + (role ? ' — ' + role : '') : ''">
+      <div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center border-[0.5px] border-outline-variant/20 shrink-0">
+        <span class="font-headline font-bold text-on-secondary-container text-xs">{{ initials }}</span>
+      </div>
+      <div *ngIf="displayName" class="hidden md:flex flex-col leading-tight">
+        <span class="text-xs font-bold text-[#1a2e44] dark:text-[#76d3c8]">{{ displayName }}</span>
+        <span class="text-[10px] font-medium text-slate-400">{{ role }}</span>
+      </div>
     </div>
   </div>
 </header>

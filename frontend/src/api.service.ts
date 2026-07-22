@@ -1,5 +1,11 @@
 const API_BASE_URL = 'http://localhost:3000';
 
+function authHeaders(): Record<string, string> {
+  if (typeof window === 'undefined') return {};
+  const token = window.localStorage.getItem('gprom_token');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     cache: 'no-store',
@@ -7,6 +13,7 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
       'Content-Type': 'application/json',
       'Cache-Control': 'no-cache',
       'Pragma': 'no-cache',
+      ...authHeaders(),
       ...(init.headers || {}),
     },
     ...init,

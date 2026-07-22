@@ -1,5 +1,11 @@
 const API_BASE_URL = 'http://localhost:3000';
 
+function authHeaders(): Record<string, string> {
+  if (typeof window === 'undefined') return {};
+  const token = window.localStorage.getItem('gprom_token');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
   const url = `${API_BASE_URL}${path}`;
   console.debug('[API] request start', url, init);
@@ -8,6 +14,7 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
     const response = await fetch(url, {
       headers: {
         'Content-Type': 'application/json',
+        ...authHeaders(),
         ...(init.headers || {}),
       },
       ...init,
