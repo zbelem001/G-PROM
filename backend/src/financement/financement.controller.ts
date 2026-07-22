@@ -1,8 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { FinancementService } from './financement.service';
 import { CreateFinancementDto } from './dto/create-financement.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { AdminGuard } from '../auth/admin.guard';
 
 @Controller('financements')
+@UseGuards(JwtAuthGuard, AdminGuard)
 export class FinancementController {
   constructor(private readonly financementService: FinancementService) {}
 

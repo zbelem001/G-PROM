@@ -1,8 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { BailleurService } from './bailleur.service';
 import { CreateBailleurDto } from './dto/create-bailleur.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { AdminGuard } from '../auth/admin.guard';
 
 @Controller('bailleurs')
+@UseGuards(JwtAuthGuard, AdminGuard)
 export class BailleurController {
   constructor(private readonly bailleurService: BailleurService) {}
 
