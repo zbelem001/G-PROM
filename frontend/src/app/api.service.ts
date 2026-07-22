@@ -609,6 +609,8 @@ export interface AuthUser {
   nom?: string | null;
   role?: string;
   statut?: string;
+  datecreation?: string;
+  dernierlogin?: string | null;
 }
 
 export interface LoginResponse {
@@ -621,4 +623,41 @@ export async function login(identifiant: string, motDePasse: string): Promise<Lo
     method: 'POST',
     body: JSON.stringify({ identifiant, motDePasse }),
   });
+}
+
+export interface CreateUtilisateurPayload {
+  nomUtilisateur: string;
+  motDePasse: string;
+  email: string;
+  prenom?: string;
+  nom?: string;
+  role?: string;
+  statut?: string;
+}
+
+export async function getUtilisateurs(): Promise<AuthUser[]> {
+  return request<AuthUser[]>('/utilisateurs');
+}
+
+export async function createUtilisateur(payload: CreateUtilisateurPayload): Promise<AuthUser> {
+  const response = await request<any>('/utilisateurs', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+  return Array.isArray(response) ? response[0] : response;
+}
+
+export async function updateUtilisateur(
+  idUtilisateur: number,
+  payload: Partial<CreateUtilisateurPayload>,
+): Promise<AuthUser> {
+  const response = await request<any>(`/utilisateurs/${idUtilisateur}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  });
+  return Array.isArray(response) ? response[0] : response;
+}
+
+export async function deleteUtilisateur(idUtilisateur: number): Promise<void> {
+  await request(`/utilisateurs/${idUtilisateur}`, { method: 'DELETE' });
 }

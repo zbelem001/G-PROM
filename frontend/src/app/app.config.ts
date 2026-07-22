@@ -10,6 +10,7 @@ import { DetailsFournisseursComponent } from './pages/details-fournisseurs/detai
 import { RapportsComponent } from './pages/rapports/rapports.component';
 import { ConnexionComponent } from './pages/connexion/connexion.component';
 import { BailleursFinancementsComponent } from './pages/admin/bailleurs-financements/bailleurs-financements.component';
+import { UtilisateursComponent } from './pages/admin/utilisateurs/utilisateurs.component';
 
 const routes: Route[] = [
   { path: '', component: ConnexionComponent, pathMatch: 'full' },
@@ -23,6 +24,7 @@ const routes: Route[] = [
   { path: 'rapports', component: RapportsComponent },
   { path: 'admin', redirectTo: 'admin/bailleurs-financements', pathMatch: 'full' },
   { path: 'admin/bailleurs-financements', component: BailleursFinancementsComponent },
+  { path: 'admin/utilisateurs', component: UtilisateursComponent },
 ];
 
 export const appConfig: ApplicationConfig = {

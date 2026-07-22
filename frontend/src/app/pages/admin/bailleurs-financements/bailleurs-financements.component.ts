@@ -68,13 +68,13 @@ export class BailleursFinancementsComponent implements OnInit {
         this.bailleurs = bailleurs;
         this.financements = financements;
         this.loading = false;
-        this.cd.detectChanges();
+        this.cd.markForCheck();
       });
     } catch (error: any) {
       this.ngZone.run(() => {
         this.errorMessage = error?.message || 'Impossible de charger les bailleurs et financements.';
         this.loading = false;
-        this.cd.detectChanges();
+        this.cd.markForCheck();
       });
     }
   }
@@ -122,7 +122,7 @@ export class BailleursFinancementsComponent implements OnInit {
           this.editingBailleur = null;
           this.bailleurNameInput = '';
           this.isSavingBailleur = false;
-          this.cd.detectChanges();
+          this.cd.markForCheck();
         });
       } else {
         const created = await createBailleur(name);
@@ -131,14 +131,14 @@ export class BailleursFinancementsComponent implements OnInit {
           this.showBailleurModal = false;
           this.bailleurNameInput = '';
           this.isSavingBailleur = false;
-          this.cd.detectChanges();
+          this.cd.markForCheck();
         });
       }
     } catch (error: any) {
       this.ngZone.run(() => {
         this.errorMessage = error?.message || "Impossible d'enregistrer le bailleur.";
         this.isSavingBailleur = false;
-        this.cd.detectChanges();
+        this.cd.markForCheck();
       });
     }
   }
@@ -166,13 +166,13 @@ export class BailleursFinancementsComponent implements OnInit {
         this.financements = this.financements.filter((f) => f.idBailleur !== bailleur.idBailleur);
         this.confirmDeleteBailleur = null;
         this.isDeletingBailleur = false;
-        this.cd.detectChanges();
+        this.cd.markForCheck();
       });
     } catch (error: any) {
       this.ngZone.run(() => {
         this.errorMessage = error?.message || 'Impossible de supprimer le bailleur.';
         this.isDeletingBailleur = false;
-        this.cd.detectChanges();
+        this.cd.markForCheck();
       });
     }
   }
@@ -190,13 +190,13 @@ export class BailleursFinancementsComponent implements OnInit {
         this.financements = [...this.financements, created];
         this.newFinancementNameByBailleur[idBailleur] = '';
         this.savingFinancementForBailleur = null;
-        this.cd.detectChanges();
+        this.cd.markForCheck();
       });
     } catch (error: any) {
       this.ngZone.run(() => {
         this.errorMessage = error?.message || "Impossible d'ajouter le financement.";
         this.savingFinancementForBailleur = null;
-        this.cd.detectChanges();
+        this.cd.markForCheck();
       });
     }
   }
@@ -227,13 +227,13 @@ export class BailleursFinancementsComponent implements OnInit {
         this.editingFinancementId = null;
         this.editingFinancementName = '';
         this.savingFinancementEdit = false;
-        this.cd.detectChanges();
+        this.cd.markForCheck();
       });
     } catch (error: any) {
       this.ngZone.run(() => {
         this.errorMessage = error?.message || 'Impossible de modifier le financement.';
         this.savingFinancementEdit = false;
-        this.cd.detectChanges();
+        this.cd.markForCheck();
       });
     }
   }
@@ -259,13 +259,13 @@ export class BailleursFinancementsComponent implements OnInit {
         this.financements = this.financements.filter((f) => f.idFinancement !== financement.idFinancement);
         this.confirmDeleteFinancement = null;
         this.isDeletingFinancement = false;
-        this.cd.detectChanges();
+        this.cd.markForCheck();
       });
     } catch (error: any) {
       this.ngZone.run(() => {
         this.errorMessage = error?.message || 'Impossible de supprimer le financement.';
         this.isDeletingFinancement = false;
-        this.cd.detectChanges();
+        this.cd.markForCheck();
       });
     }
   }
