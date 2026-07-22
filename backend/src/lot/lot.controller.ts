@@ -1,7 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { LotService } from './lot.service';
 import { CreateLotDto } from './dto/create-lot.dto';
 
+@UseGuards(JwtAuthGuard)
 @Controller('lots')
 export class LotController {
   constructor(private readonly lotService: LotService) {}

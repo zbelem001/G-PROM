@@ -1,7 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CreateMarcheDto } from './dto/create-marche.dto';
 import { MarcheService } from './marche.service';
 
+@UseGuards(JwtAuthGuard)
 @Controller('marches')
 export class MarcheController {
   constructor(private readonly marcheService: MarcheService) {}

@@ -1,7 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AvenantService } from './avenant.service';
 import { CreateAvenantDto } from './dto/create-avenant.dto';
 
+@UseGuards(JwtAuthGuard)
 @Controller('avenants')
 export class AvenantController {
   constructor(private readonly avenantService: AvenantService) {}

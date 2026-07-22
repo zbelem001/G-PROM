@@ -1,7 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AttributaireService } from './attributaire.service';
 import { CreateAttributaireDto } from './dto/create-attributaire.dto';
 
+@UseGuards(JwtAuthGuard)
 @Controller('attributaires')
 export class AttributaireController {
   constructor(private readonly attributaireService: AttributaireService) {}

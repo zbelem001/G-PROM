@@ -1,7 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AnalyseService } from './analyse.service';
 import { CreateAnalyseDto } from './dto/create-analyse.dto';
 
+@UseGuards(JwtAuthGuard)
 @Controller('analyses')
 export class AnalyseController {
   constructor(private readonly analyseService: AnalyseService) {}
