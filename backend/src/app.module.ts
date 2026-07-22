@@ -12,6 +12,7 @@ import { AttributaireModule } from './attributaire/attributaire.module';
 import { AvenantModule } from './avenant/avenant.module';
 import { DocumentModule } from './document/document.module';
 import { UtilisateurModule } from './utilisateur/utilisateur.module';
+import { AuthModule } from './auth/auth.module';
 import { UploadModule } from './upload/upload.module';
 import { BailleurModule } from './bailleur/bailleur.module';
 import { FinancementModule } from './financement/financement.module';
@@ -32,6 +33,7 @@ import { FinancementModule } from './financement/financement.module';
     AvenantModule,
     DocumentModule,
     UtilisateurModule,
+    AuthModule,
     UploadModule,
     BailleurModule,
     FinancementModule,

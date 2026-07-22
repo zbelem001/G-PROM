@@ -1,59 +1,88 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import * as bcrypt from 'bcrypt';
 import { SupabaseService } from '../supabase/supabase.service';
 import { CreateUtilisateurDto } from './dto/create-utilisateur.dto';
+
+const SALT_ROUNDS = 10;
 
 @Injectable()
 export class UtilisateurService {
   constructor(private readonly supabaseService: SupabaseService) {}
 
+  private normalizeKeys(dto: object): Record<string, unknown> {
+    return Object.entries(dto).reduce((normalized, [key, value]) => {
+      const lowerKey = key.replace(/([A-Z])/g, (match) => match.toLowerCase());
+      normalized[lowerKey] = value;
+      return normalized;
+    }, {} as Record<string, unknown>);
+  }
+
+  private sanitize<T extends { motdepasse?: unknown }>(user: T): Omit<T, 'motdepasse'> {
+    const { motdepasse, ...rest } = user;
+    return rest;
+  }
+
   async create(createUtilisateurDto: CreateUtilisateurDto) {
+    const payload = this.normalizeKeys(createUtilisateurDto);
+    if (typeof payload.motdepasse === 'string') {
+      payload.motdepasse = await bcrypt.hash(payload.motdepasse, SALT_ROUNDS);
+    }
+
     const { data, error } = await this.supabaseService.client
       .from('Utilisateur')
-      .insert([createUtilisateurDto]);
+      .insert([payload])
+      .select();
     if (error) {
-      throw new Error(error.message);
+      throw new InternalServerErrorException(error.message);
     }
-    return data;
+    return (data ?? []).map((row) => this.sanitize(row));
   }
 
   async findAll() {
     const { data, error } = await this.supabaseService.client.from('Utilisateur').select('*');
     if (error) {
-      throw new Error(error.message);
+      throw new InternalServerErrorException(error.message);
     }
-    return data;
+    return (data ?? []).map((row) => this.sanitize(row));
   }
 
   async findOne(idUtilisateur: number) {
     const { data, error } = await this.supabaseService.client
       .from('Utilisateur')
       .select('*')
-      .eq('idUtilisateur', idUtilisateur)
+      .eq('idutilisateur', idUtilisateur)
       .single();
     if (error) {
-      throw new Error(error.message);
+      throw new InternalServerErrorException(error.message);
     }
-    return data;
+    return this.sanitize(data);
   }
 
   async update(idUtilisateur: number, updateUtilisateurDto: Partial<CreateUtilisateurDto>) {
+    const payload = this.normalizeKeys(updateUtilisateurDto);
+    if (typeof payload.motdepasse === 'string') {
+      payload.motdepasse = await bcrypt.hash(payload.motdepasse, SALT_ROUNDS);
+    }
+
     const { data, error } = await this.supabaseService.client
       .from('Utilisateur')
-      .update(updateUtilisateurDto)
-      .eq('idUtilisateur', idUtilisateur);
+      .update(payload)
+      .eq('idutilisateur', idUtilisateur)
+      .select()
+      .single();
     if (error) {
-      throw new Error(error.message);
+      throw new InternalServerErrorException(error.message);
     }
-    return data;
+    return this.sanitize(data);
   }
 
   async remove(idUtilisateur: number) {
     const { data, error } = await this.supabaseService.client
       .from('Utilisateur')
       .delete()
-      .eq('idUtilisateur', idUtilisateur);
+      .eq('idutilisateur', idUtilisateur);
     if (error) {
-      throw new Error(error.message);
+      throw new InternalServerErrorException(error.message);
     }
     return data;
   }
