@@ -37,6 +37,13 @@
       <span class="material-symbols-outlined">archive</span>
       <span class="text-sm">Archives</span>
     </a>
+    <ng-container *ngIf="isAdmin">
+      <div class="border-t border-slate-100 my-2 mx-6"></div>
+      <a href="/admin" (click)="navigate('/admin',$event)" routerLink="/admin" routerLinkActive="text-white bg-[#1a2e44] no-hover" [routerLinkActiveOptions]="{ exact: false }" class="flex items-center gap-3 px-6 py-3 text-slate-700 font-bold hover:text-slate-900 hover:bg-slate-100 rounded-[12px] transition-all duration-200 scale-95 active:scale-100 transition-transform">
+        <span class="material-symbols-outlined">admin_panel_settings</span>
+        <span class="text-sm">Administration</span>
+      </a>
+    </ng-container>
   </nav>
   <div class="px-6 mt-auto pt-3">
     <div class="flex items-center justify-center -mt-2">

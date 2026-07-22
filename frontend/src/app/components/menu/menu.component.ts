@@ -12,12 +12,23 @@ import { filter } from 'rxjs/operators';
 })
 export class MenuComponent {
   currentUrl = '';
+  isAdmin = false;
 
   constructor(private router: Router) {
     this.currentUrl = this.router.url;
     this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe((event) => {
       this.currentUrl = (event as NavigationEnd).urlAfterRedirects;
     });
+
+    if (typeof window !== 'undefined') {
+      try {
+        const raw = window.localStorage.getItem('gprom_user');
+        const user = raw ? JSON.parse(raw) : null;
+        this.isAdmin = user?.role === 'admin';
+      } catch {
+        this.isAdmin = false;
+      }
+    }
   }
 
   navigate(path: string, event: Event) {
