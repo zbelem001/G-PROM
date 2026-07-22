@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { clearSession } from '../../../session';
 
 @Component({
   standalone: true,
@@ -27,10 +28,7 @@ export class AdminMenuComponent {
 
   logout(event: Event) {
     event.preventDefault();
-    if (typeof window !== 'undefined') {
-      window.localStorage.removeItem('gprom_token');
-      window.localStorage.removeItem('gprom_user');
-    }
+    clearSession();
     this.router.navigateByUrl('/connexion');
   }
 }

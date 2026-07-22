@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { login } from '../../api.service';
+import { setSession } from '../../../session';
 
 @Component({
   standalone: true,
@@ -26,10 +27,7 @@ export class ConnexionComponent {
     this.submitting = true;
     try {
       const { access_token, user } = await login(this.identifiant.trim(), this.motDePasse);
-      if (typeof window !== 'undefined') {
-        window.localStorage.setItem('gprom_token', access_token);
-        window.localStorage.setItem('gprom_user', JSON.stringify(user));
-      }
+      setSession(access_token, user);
       this.router.navigate(['/dashboard']);
     } catch (error: any) {
       this.errorMessage = this.extractErrorMessage(error);

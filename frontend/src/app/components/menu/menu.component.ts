@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { clearSession, isAdmin as checkIsAdmin } from '../../../session';
 
 @Component({
   standalone: true,
@@ -12,23 +13,13 @@ import { filter } from 'rxjs/operators';
 })
 export class MenuComponent {
   currentUrl = '';
-  isAdmin = false;
+  isAdmin = checkIsAdmin();
 
   constructor(private router: Router) {
     this.currentUrl = this.router.url;
     this.router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe((event) => {
       this.currentUrl = (event as NavigationEnd).urlAfterRedirects;
     });
-
-    if (typeof window !== 'undefined') {
-      try {
-        const raw = window.localStorage.getItem('gprom_user');
-        const user = raw ? JSON.parse(raw) : null;
-        this.isAdmin = user?.role === 'admin';
-      } catch {
-        this.isAdmin = false;
-      }
-    }
   }
 
   navigate(path: string, event: Event) {
@@ -39,10 +30,7 @@ export class MenuComponent {
 
   logout(event: Event) {
     event.preventDefault();
-    if (typeof window !== 'undefined') {
-      window.localStorage.removeItem('gprom_token');
-      window.localStorage.removeItem('gprom_user');
-    }
+    clearSession();
     this.router.navigateByUrl('/connexion');
   }
 
