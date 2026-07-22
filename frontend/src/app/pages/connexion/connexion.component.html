@@ -3,6 +3,7 @@
     <div class="text-center mb-10"></div>
 
     <div class="bg-surface-container-lowest rounded-none shadow-[0_6px_24px_rgba(26,46,68,0.08)] p-10 border-4 border-transparent color-frame">
+      <p *ngIf="errorMessage" class="mb-4 text-sm text-white bg-error inline-block px-3 py-2 rounded-md">{{ errorMessage }}</p>
       <form class="space-y-6" method="POST" (submit)="onSubmit($event)">
         <div>
           <label class="block text-sm font-bold text-[#1a2e44] mb-2 tracking-tight" for="username">Identifiant</label>
@@ -14,7 +15,8 @@
               class="block w-full pl-10 pr-3 py-3 bg-surface-container-highest border-none rounded-[10px] text-on-surface placeholder-outline focus:ring-2 focus:ring-on-primary-container/20 focus:bg-surface-container-lowest transition-all duration-200"
               id="username"
               name="username"
-              placeholder="Nom d'utilisateur"
+              [(ngModel)]="identifiant"
+              placeholder="Nom d'utilisateur ou email"
               required
               type="text"
             />
@@ -31,6 +33,7 @@
               class="block w-full pl-10 pr-3 py-3 bg-surface-container-highest border-none rounded-[10px] text-on-surface placeholder-outline focus:ring-2 focus:ring-on-primary-container/20 focus:bg-surface-container-lowest transition-all duration-200"
               id="password"
               name="password"
+              [(ngModel)]="motDePasse"
               placeholder="••••••••"
               required
               type="password"
@@ -55,10 +58,12 @@
 
         <div>
           <button
-            class="liquid-gradient w-full flex justify-center py-3.5 px-4 rounded-[10px] text-[#1a2e44] font-bold text-md shadow-md hover:shadow-lg active:scale-95 transition-all duration-300"
+            class="liquid-gradient w-full flex justify-center items-center gap-2 py-3.5 px-4 rounded-[10px] text-[#1a2e44] font-bold text-md shadow-md hover:shadow-lg active:scale-95 transition-all duration-300 disabled:opacity-60"
             type="submit"
+            [disabled]="submitting"
           >
-            Connexion
+            <span *ngIf="submitting" class="h-4 w-4 rounded-full border-2 border-[#1a2e44] border-t-transparent animate-spin"></span>
+            {{ submitting ? 'Connexion...' : 'Connexion' }}
           </button>
         </div>
       </form>

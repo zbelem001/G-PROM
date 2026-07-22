@@ -26,6 +26,15 @@ export class MenuComponent {
     this.router.navigateByUrl(path);
   }
 
+  logout(event: Event) {
+    event.preventDefault();
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem('gprom_token');
+      window.localStorage.removeItem('gprom_user');
+    }
+    this.router.navigateByUrl('/connexion');
+  }
+
   isDetailsRoute(section: 'marches' | 'fournisseurs'): boolean {
     if (section === 'marches') {
       return this.currentUrl.startsWith('/marches/details');

@@ -600,3 +600,25 @@ export async function updateFinancement(idFinancement: number, nomFinancement: s
 export async function deleteFinancement(idFinancement: number): Promise<void> {
   await request(`/financements/${idFinancement}`, { method: 'DELETE' });
 }
+
+export interface AuthUser {
+  idutilisateur: number;
+  nomutilisateur: string;
+  email: string;
+  prenom?: string | null;
+  nom?: string | null;
+  role?: string;
+  statut?: string;
+}
+
+export interface LoginResponse {
+  access_token: string;
+  user: AuthUser;
+}
+
+export async function login(identifiant: string, motDePasse: string): Promise<LoginResponse> {
+  return request<LoginResponse>('/auth/login', {
+    method: 'POST',
+    body: JSON.stringify({ identifiant, motDePasse }),
+  });
+}

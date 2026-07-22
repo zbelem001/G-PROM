@@ -43,7 +43,7 @@
       <img src="/2ielogo.png" alt="2iE logo" class="h-24 w-auto object-contain logo-jump" />
     </div>
     <div class="mt-4">
-      <a routerLink="/connexion" class="block w-full text-center py-3 rounded-[14px] bg-[#f8f9fb] text-slate-700 font-bold border border-slate-200 hover:bg-[#e9eff7] transition-colors duration-200">
+      <a href="/connexion" (click)="logout($event)" class="block w-full text-center py-3 rounded-[14px] bg-[#f8f9fb] text-slate-700 font-bold border border-slate-200 hover:bg-[#e9eff7] transition-colors duration-200">
         <span class="material-symbols-outlined align-middle mr-2">logout</span>
         Déconnexion
       </a>
