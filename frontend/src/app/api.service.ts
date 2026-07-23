@@ -52,6 +52,7 @@ export interface Marche {
   NatureOuverture?: string;
   DateEnregistrement?: string;
   Financement?: string;
+  IdFinancement?: number;
   ModePassation?: string;
   Demandeur?: string;
   Observation?: string;
@@ -228,6 +229,7 @@ function normalizeMarcheResponse(raw: any): Marche {
     NatureOuverture: raw.NatureOuverture ?? raw.natureouverture ?? raw.nature_ouverture,
     DateEnregistrement: raw.DateEnregistrement ?? raw.dateenregistrement ?? raw.date_enregistrement,
     Financement: raw.Financement ?? raw.financement,
+    IdFinancement: raw.IdFinancement ?? raw.idfinancement ?? undefined,
     ModePassation: raw.ModePassation ?? raw.modepassation ?? raw.mode_passation,
     Demandeur: raw.Demandeur ?? raw.demandeur,
     Observation: raw.Observation ?? raw.observation,

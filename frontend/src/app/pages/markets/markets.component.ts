@@ -4,7 +4,17 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { HeaderComponent } from '../../components/header/header.component';
 import { MenuComponent } from '../../components/menu/menu.component';
-import { createMarche, deleteMarche, getMarches, Marche, updateMarche } from '../../api.service';
+import {
+  Bailleur,
+  createMarche,
+  deleteMarche,
+  Financement,
+  getBailleurs,
+  getFinancements,
+  getMarches,
+  Marche,
+  updateMarche,
+} from '../../api.service';
 
 @Component({
   standalone: true,
@@ -26,6 +36,8 @@ export class MarketsComponent implements OnInit {
   ];
 
   marches: Marche[] = [];
+  bailleurs: Bailleur[] = [];
+  financements: Financement[] = [];
   loading = false;
   submitting = false;
   isUpdating = false;
@@ -35,10 +47,12 @@ export class MarketsComponent implements OnInit {
   // Add
   showAddMarket = false;
   newMarche: Partial<Marche> = this.defaultNewMarche();
+  newMarcheBailleurId: number | null = null;
 
   // Edit
   showEditMarket = false;
   editingMarche: Partial<Marche> = {};
+  editMarcheBailleurId: number | null = null;
 
   // Delete
   confirmDeleteMarcheId: string | null = null;
@@ -134,6 +148,18 @@ export class MarketsComponent implements OnInit {
     return [...new Set(this.marches.map((m) => m.Financement).filter(Boolean))] as string[];
   }
 
+  get financementsForNewBailleur(): Financement[] {
+    return this.newMarcheBailleurId
+      ? this.financements.filter((f) => f.idBailleur === this.newMarcheBailleurId)
+      : [];
+  }
+
+  get financementsForEditBailleur(): Financement[] {
+    return this.editMarcheBailleurId
+      ? this.financements.filter((f) => f.idBailleur === this.editMarcheBailleurId)
+      : [];
+  }
+
   get displayStart(): number {
     return this.filteredMarches.length === 0 ? 0 : (this.currentPage - 1) * this.pageSize + 1;
   }
@@ -160,11 +186,13 @@ export class MarketsComponent implements OnInit {
     this.errorMessage = '';
     this.marches = [];
     try {
-      const raw = await getMarches();
+      const [raw, bailleurs, financements] = await Promise.all([getMarches(), getBailleurs(), getFinancements()]);
       this.ngZone.run(() => {
         this.marches = raw.sort((a, b) =>
           new Date(b.DateEnregistrement ?? 0).getTime() - new Date(a.DateEnregistrement ?? 0).getTime()
         );
+        this.bailleurs = bailleurs;
+        this.financements = financements;
         this.loading = false;
         this.cd.markForCheck();
       });
@@ -229,7 +257,18 @@ export class MarketsComponent implements OnInit {
     if (this.showAddMarket) {
       this.errorMessage = '';
       this.newMarche.numbMarche = this.nextMarcheNumero;
+      this.newMarcheBailleurId = null;
     }
+  }
+
+  onNewBailleurChange() {
+    this.newMarche.IdFinancement = undefined;
+    this.newMarche.Financement = undefined;
+  }
+
+  onNewFinancementChange() {
+    const financement = this.financements.find((f) => f.idFinancement === this.newMarche.IdFinancement);
+    this.newMarche.Financement = financement?.nomFinancement;
   }
 
   async submitAddMarket(event: Event) {
@@ -245,6 +284,7 @@ export class MarketsComponent implements OnInit {
         }
         this.showAddMarket = false;
         this.newMarche = this.defaultNewMarche();
+        this.newMarcheBailleurId = null;
         this.submitting = false;
         this.cd.markForCheck();
       });
@@ -262,14 +302,27 @@ export class MarketsComponent implements OnInit {
   openEditMarche(marche: Marche, event: Event) {
     event.stopPropagation();
     this.editingMarche = { ...marche };
+    const financement = this.financements.find((f) => f.idFinancement === marche.IdFinancement);
+    this.editMarcheBailleurId = financement?.idBailleur ?? null;
     this.showEditMarket = true;
     this.errorMessage = '';
     this.cd.detectChanges();
   }
 
+  onEditBailleurChange() {
+    this.editingMarche.IdFinancement = undefined;
+    this.editingMarche.Financement = undefined;
+  }
+
+  onEditFinancementChange() {
+    const financement = this.financements.find((f) => f.idFinancement === this.editingMarche.IdFinancement);
+    this.editingMarche.Financement = financement?.nomFinancement;
+  }
+
   closeEditMarket() {
     this.showEditMarket = false;
     this.editingMarche = {};
+    this.editMarcheBailleurId = null;
   }
 
   async submitEditMarket(event: Event) {

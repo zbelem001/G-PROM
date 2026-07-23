@@ -186,15 +186,25 @@
           </div>
           <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
-              <label class="text-sm font-semibold text-secondary ml-1">Source de financement</label>
-              <input [(ngModel)]="editingMarche.Financement" name="editFinancement" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" type="text" />
+              <label class="text-sm font-semibold text-secondary ml-1">Bailleur</label>
+              <select [(ngModel)]="editMarcheBailleurId" (ngModelChange)="onEditBailleurChange()" name="editBailleur" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none appearance-none">
+                <option [ngValue]="null" disabled>Sélectionner un bailleur...</option>
+                <option *ngFor="let b of bailleurs" [ngValue]="b.idBailleur">{{ b.nomBailleur }}</option>
+              </select>
             </div>
+            <div class="space-y-2">
+              <label class="text-sm font-semibold text-secondary ml-1">Financement</label>
+              <select [(ngModel)]="editingMarche.IdFinancement" (ngModelChange)="onEditFinancementChange()" name="editIdFinancement" [disabled]="!editMarcheBailleurId" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none appearance-none disabled:opacity-50">
+                <option [ngValue]="undefined" disabled>{{ editMarcheBailleurId ? 'Sélectionner un financement...' : 'Choisir un bailleur d\'abord' }}</option>
+                <option *ngFor="let f of financementsForEditBailleur" [ngValue]="f.idFinancement">{{ f.nomFinancement }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="text-sm font-semibold text-secondary ml-1">Budget estimatif</label>
               <input [(ngModel)]="editingMarche.BudgetEstimatif" name="editBudget" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" min="0" type="number" />
             </div>
-          </div>
-          <div class="grid grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="text-sm font-semibold text-secondary ml-1">Devise</label>
               <select [(ngModel)]="editingMarche.Devise" name="editDevise" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none appearance-none">
@@ -341,19 +351,30 @@
           <div class="space-y-4">
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Source de financement</label>
-                <input [(ngModel)]="newMarche.Financement" name="financement" type="text"
-                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
-                  placeholder="Ex: Fonds Propres" />
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Bailleur <span class="text-red-500">*</span></label>
+                <select [(ngModel)]="newMarcheBailleurId" (ngModelChange)="onNewBailleurChange()" name="bailleur" required
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
+                  <option [ngValue]="null" disabled>Sélectionner un bailleur...</option>
+                  <option *ngFor="let b of bailleurs" [ngValue]="b.idBailleur">{{ b.nomBailleur }}</option>
+                </select>
               </div>
+              <div>
+                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Financement <span class="text-red-500">*</span></label>
+                <select [(ngModel)]="newMarche.IdFinancement" (ngModelChange)="onNewFinancementChange()" name="idFinancement" required
+                  [disabled]="!newMarcheBailleurId"
+                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors disabled:opacity-50">
+                  <option [ngValue]="undefined" disabled>{{ newMarcheBailleurId ? 'Sélectionner un financement...' : 'Choisir un bailleur d\'abord' }}</option>
+                  <option *ngFor="let f of financementsForNewBailleur" [ngValue]="f.idFinancement">{{ f.nomFinancement }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Budget estimatif</label>
                 <input [(ngModel)]="newMarche.BudgetEstimatif" name="budgetEstimatif" min="0" type="number"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
                   placeholder="45 000 000" />
               </div>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Devise</label>
                 <select [(ngModel)]="newMarche.Devise" name="devise"
@@ -363,19 +384,21 @@
                   <option value="USD">USD</option>
                 </select>
               </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Nature d'ouverture</label>
                 <input [(ngModel)]="newMarche.NatureOuverture" name="natureOuverture" type="text"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
                   placeholder="Ex: Ouverture publique" />
               </div>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Date d'enregistrement</label>
                 <input [(ngModel)]="newMarche.DateEnregistrement" name="dateEnregistrement" type="date"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors" />
               </div>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Date prévisionnelle réception</label>
                 <input [(ngModel)]="newMarche.DatePrevReception" name="datePrevReception" type="date"
