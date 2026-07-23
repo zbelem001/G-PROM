@@ -100,8 +100,9 @@
                   <button (click)="openEditMarche(marche, $event)" class="p-1.5 text-outline hover:text-secondary hover:bg-secondary-fixed/50 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 mr-1">
                     <span class="material-symbols-outlined text-[20px]">edit</span>
                   </button>
-                  <button (click)="$event.stopPropagation()" title="Archiver" class="p-1.5 text-outline hover:text-secondary hover:bg-secondary-fixed/50 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 mr-1">
-                    <span class="material-symbols-outlined text-[20px]">archive</span>
+                  <button (click)="archiveMarche(marche, $event)" [disabled]="archivingMarcheId === marche.numbMarche" title="Archiver" class="p-1.5 text-outline hover:text-secondary hover:bg-secondary-fixed/50 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 mr-1 disabled:opacity-50">
+                    <span *ngIf="archivingMarcheId !== marche.numbMarche" class="material-symbols-outlined text-[20px]">archive</span>
+                    <span *ngIf="archivingMarcheId === marche.numbMarche" class="w-[20px] h-[20px] block rounded-full border-2 border-outline/30 border-t-outline animate-spin"></span>
                   </button>
                   <button (click)="openDeleteConfirm(marche.numbMarche, $event)" class="p-1.5 text-outline hover:text-error hover:bg-error/10 rounded-md transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
                     <span class="material-symbols-outlined text-[20px]">delete</span>

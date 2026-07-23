@@ -43,6 +43,9 @@ export class MarketsComponent implements OnInit {
   // Delete
   confirmDeleteMarcheId: string | null = null;
 
+  // Archive
+  archivingMarcheId: string | null = null;
+
   // Search & filters
   searchQuery = '';
   filterStatut = '';
@@ -82,6 +85,7 @@ export class MarketsComponent implements OnInit {
   get filteredMarches(): Marche[] {
     const q = this.searchQuery.toLowerCase().trim();
     return this.marches.filter((m) => {
+      if (m.EstArchive) return false;
       if (q && !m.numbMarche.toLowerCase().includes(q) && !(m.Description ?? '').toLowerCase().includes(q)) return false;
       if (this.filterStatut && m.Statut !== this.filterStatut) return false;
       if (this.filterFinancement && m.Financement !== this.filterFinancement) return false;
@@ -322,6 +326,34 @@ export class MarketsComponent implements OnInit {
       this.ngZone.run(() => {
         this.errorMessage = error?.message || 'Impossible de supprimer le marché.';
         this.isDeleting = false;
+        this.cd.markForCheck();
+      });
+    }
+  }
+
+  // ── Archivage ─────────────────────────────────────────────────────────────
+
+  async archiveMarche(marche: Marche, event: Event) {
+    event.stopPropagation();
+    if (this.archivingMarcheId) return;
+    this.archivingMarcheId = marche.numbMarche;
+    this.errorMessage = '';
+    try {
+      const updated = await updateMarche(marche.numbMarche, {
+        EstArchive: true,
+        DateArchivage: new Date().toISOString(),
+      });
+      this.ngZone.run(() => {
+        const idx = this.marches.findIndex((m) => m.numbMarche === updated.numbMarche);
+        if (idx !== -1) this.marches[idx] = updated;
+        this.archivingMarcheId = null;
+        if (this.currentPage > this.totalPages) this.currentPage = this.totalPages;
+        this.cd.markForCheck();
+      });
+    } catch (error: any) {
+      this.ngZone.run(() => {
+        this.errorMessage = error?.message || "Impossible d'archiver le marché.";
+        this.archivingMarcheId = null;
         this.cd.markForCheck();
       });
     }

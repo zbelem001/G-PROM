@@ -8,6 +8,7 @@ import { SuivieMarchesComponent } from './pages/suivie-marches/suivie-marches.co
 import { FournisseursComponent } from './pages/fournisseurs/fournisseurs.component';
 import { DetailsFournisseursComponent } from './pages/details-fournisseurs/details-fournisseurs.component';
 import { RapportsComponent } from './pages/rapports/rapports.component';
+import { ArchivesComponent } from './pages/archives/archives.component';
 import { ConnexionComponent } from './pages/connexion/connexion.component';
 import { BailleursFinancementsComponent } from './pages/admin/bailleurs-financements/bailleurs-financements.component';
 import { UtilisateursComponent } from './pages/admin/utilisateurs/utilisateurs.component';
@@ -24,6 +25,7 @@ const routes: Route[] = [
   { path: 'fournisseurs', component: FournisseursComponent, canActivate: [authGuard] },
   { path: 'fournisseurs/details', component: DetailsFournisseursComponent, canActivate: [authGuard] },
   { path: 'rapports', component: RapportsComponent, canActivate: [authGuard] },
+  { path: 'archives', component: ArchivesComponent, canActivate: [authGuard] },
   { path: 'admin', redirectTo: 'admin/bailleurs-financements', pathMatch: 'full' },
   {
     path: 'admin/bailleurs-financements',

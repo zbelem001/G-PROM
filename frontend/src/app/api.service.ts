@@ -65,6 +65,8 @@ export interface Marche {
   BudgetEstimatif?: number;
   PV_ouverture?: string;
   PV_attribution?: string;
+  EstArchive?: boolean;
+  DateArchivage?: string;
 }
 
 export interface Fournisseur {
@@ -239,6 +241,8 @@ function normalizeMarcheResponse(raw: any): Marche {
     BudgetEstimatif: raw.BudgetEstimatif ?? raw.budgetestimatif ?? raw.budget_estimatif ?? 0,
     PV_ouverture: raw.PV_ouverture ?? raw.pv_ouverture ?? undefined,
     PV_attribution: raw.PV_attribution ?? raw.pv_attribution ?? undefined,
+    EstArchive: raw.EstArchive ?? raw.estarchive ?? false,
+    DateArchivage: raw.DateArchivage ?? raw.datearchivage ?? undefined,
   } as Marche;
 }
 
