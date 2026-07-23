@@ -669,3 +669,15 @@ export async function updateUtilisateur(
 export async function deleteUtilisateur(idUtilisateur: number): Promise<void> {
   await request(`/utilisateurs/${idUtilisateur}`, { method: 'DELETE' });
 }
+
+export interface HistoriqueConnexion {
+  id: number;
+  idutilisateur: number;
+  dateconnexion: string;
+  ipaddress?: string | null;
+  useragent?: string | null;
+}
+
+export async function getHistoriqueConnexions(): Promise<HistoriqueConnexion[]> {
+  return request<HistoriqueConnexion[]>('/historique-connexions');
+}

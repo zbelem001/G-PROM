@@ -8,7 +8,9 @@ import {
   createUtilisateur,
   CreateUtilisateurPayload,
   deleteUtilisateur,
+  getHistoriqueConnexions,
   getUtilisateurs,
+  HistoriqueConnexion,
   updateUtilisateur,
 } from '../../../api.service';
 
@@ -37,6 +39,7 @@ function emptyForm(): UtilisateurForm {
 })
 export class UtilisateursComponent implements OnInit {
   utilisateurs: AuthUser[] = [];
+  historique: HistoriqueConnexion[] = [];
   loading = false;
   errorMessage = '';
 
@@ -63,9 +66,10 @@ export class UtilisateursComponent implements OnInit {
     this.loading = true;
     this.errorMessage = '';
     try {
-      const utilisateurs = await getUtilisateurs();
+      const [utilisateurs, historique] = await Promise.all([getUtilisateurs(), getHistoriqueConnexions()]);
       this.ngZone.run(() => {
         this.utilisateurs = utilisateurs;
+        this.historique = historique;
         this.loading = false;
         this.cd.markForCheck();
       });
@@ -76,6 +80,28 @@ export class UtilisateursComponent implements OnInit {
         this.cd.markForCheck();
       });
     }
+  }
+
+  // ── Historique de connexions ────────────────────────────────────────────
+
+  userLabel(idutilisateur: number): string {
+    const user = this.utilisateurs.find((u) => u.idutilisateur === idutilisateur);
+    return user ? this.displayName(user) : `Utilisateur #${idutilisateur}`;
+  }
+
+  userEmail(idutilisateur: number): string {
+    return this.utilisateurs.find((u) => u.idutilisateur === idutilisateur)?.email ?? '—';
+  }
+
+  formatDateTime(date: string | null | undefined): string {
+    if (!date) return '—';
+    return new Date(date).toLocaleString('fr-FR', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
   }
 
   // ── Stats ────────────────────────────────────────────────────────────────
