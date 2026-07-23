@@ -6,6 +6,7 @@ export class CreateMarcheDto {
   NatureOuverture?: string;
   DateEnregistrement?: string;
   Financement?: string;
+  IdFinancement?: number;
   ModePassation?: string;
   Demandeur?: string;
   Observation?: string;
