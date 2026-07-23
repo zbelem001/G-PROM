@@ -19,4 +19,6 @@ export class CreateMarcheDto {
   BudgetEstimatif?: number;
   PV_ouverture?: string;
   PV_attribution?: string;
+  EstArchive?: boolean;
+  DateArchivage?: string;
 }
