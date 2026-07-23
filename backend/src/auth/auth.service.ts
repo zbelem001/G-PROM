@@ -2,15 +2,19 @@ import { Injectable, InternalServerErrorException, UnauthorizedException } from 
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import { SupabaseService } from '../supabase/supabase.service';
+import { HistoriqueConnexionService } from '../historique-connexion/historique-connexion.service';
 import { LoginDto } from './dto/login.dto';
 
 const SALT_ROUNDS = 10;
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly supabaseService: SupabaseService) {}
+  constructor(
+    private readonly supabaseService: SupabaseService,
+    private readonly historiqueConnexionService: HistoriqueConnexionService,
+  ) {}
 
-  async login({ identifiant, motDePasse }: LoginDto) {
+  async login({ identifiant, motDePasse }: LoginDto, ipaddress: string | null, useragent: string | null) {
     if (!identifiant?.trim() || !motDePasse) {
       throw new UnauthorizedException('Identifiant et mot de passe requis.');
     }
@@ -33,6 +37,8 @@ export class AuthService {
       .from('Utilisateur')
       .update({ dernierlogin: new Date().toISOString() })
       .eq('idutilisateur', user.idutilisateur);
+
+    await this.historiqueConnexionService.record(user.idutilisateur, ipaddress, useragent);
 
     const secret = process.env.JWT_SECRET;
     if (!secret) {
