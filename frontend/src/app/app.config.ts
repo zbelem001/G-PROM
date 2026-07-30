@@ -11,6 +11,7 @@ import { ArchivesComponent } from './pages/archives/archives.component';
 import { ConnexionComponent } from './pages/connexion/connexion.component';
 import { BailleursFinancementsComponent } from './pages/admin/bailleurs-financements/bailleurs-financements.component';
 import { UtilisateursComponent } from './pages/admin/utilisateurs/utilisateurs.component';
+import { ListesParametrablesComponent } from './pages/admin/listes-parametrables/listes-parametrables.component';
 import { authGuard } from './guards/auth.guard';
 import { adminGuard } from './guards/admin.guard';
 
@@ -31,6 +32,11 @@ const routes: Route[] = [
     canActivate: [authGuard, adminGuard],
   },
   { path: 'admin/utilisateurs', component: UtilisateursComponent, canActivate: [authGuard, adminGuard] },
+  {
+    path: 'admin/listes-parametrables',
+    component: ListesParametrablesComponent,
+    canActivate: [authGuard, adminGuard],
+  },
 ];
 
 export const appConfig: ApplicationConfig = {

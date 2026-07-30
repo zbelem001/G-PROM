@@ -12,7 +12,9 @@ import {
   getBailleurs,
   getFinancements,
   getMarches,
+  getOptionsMarche,
   Marche,
+  OptionMarche,
   updateMarche,
 } from '../../api.service';
 
@@ -24,20 +26,10 @@ import {
   styleUrls: ['./markets.component.css'],
 })
 export class MarketsComponent implements OnInit {
-  departements = [
-    'Académiques',
-    'Génie Civil et Bâtiments Travaux Publics (GC-BTP)',
-    "Génie de l'Eau, de l'Assainissement et des Aménagements Hydro-agricoles (GEAAH)",
-    'Génie Électrique, Énergétique et Industriel (GEEI)',
-    "Sciences et Techniques de l'Ingénieur (STI)",
-    'Sciences Humaines, Sociales et Managériales (SHSM)',
-    'Formation Professionnelle en Ligne',
-    'IA',
-  ];
-
   marches: Marche[] = [];
   bailleurs: Bailleur[] = [];
   financements: Financement[] = [];
+  optionsMarche: OptionMarche[] = [];
   loading = false;
   submitting = false;
   isUpdating = false;
@@ -160,6 +152,29 @@ export class MarketsComponent implements OnInit {
       : [];
   }
 
+  get natureOuvertureOptions(): OptionMarche[] {
+    return this.optionsMarche.filter((o) => o.categorie === 'nature_ouverture');
+  }
+
+  get demandeurOptions(): OptionMarche[] {
+    return this.optionsMarche.filter((o) => o.categorie === 'demandeur');
+  }
+
+  get responsableSuiviOptions(): OptionMarche[] {
+    return this.optionsMarche.filter((o) => o.categorie === 'responsable_suivi');
+  }
+
+  private resolveOptionId(categorie: OptionMarche['categorie'], valeur: string | undefined): number | undefined {
+    if (!valeur) return undefined;
+    return this.optionsMarche.find((o) => o.categorie === categorie && o.valeur === valeur)?.id;
+  }
+
+  private resolveMarcheOptionIds(marche: Partial<Marche>): void {
+    marche.IdNatureOuverture = this.resolveOptionId('nature_ouverture', marche.NatureOuverture);
+    marche.IdDemandeur = this.resolveOptionId('demandeur', marche.Demandeur);
+    marche.IdResponsableSuivi = this.resolveOptionId('responsable_suivi', marche.ResponsableSuivi);
+  }
+
   get displayStart(): number {
     return this.filteredMarches.length === 0 ? 0 : (this.currentPage - 1) * this.pageSize + 1;
   }
@@ -186,13 +201,19 @@ export class MarketsComponent implements OnInit {
     this.errorMessage = '';
     this.marches = [];
     try {
-      const [raw, bailleurs, financements] = await Promise.all([getMarches(), getBailleurs(), getFinancements()]);
+      const [raw, bailleurs, financements, optionsMarche] = await Promise.all([
+        getMarches(),
+        getBailleurs(),
+        getFinancements(),
+        getOptionsMarche(),
+      ]);
       this.ngZone.run(() => {
         this.marches = raw.sort((a, b) =>
           new Date(b.DateEnregistrement ?? 0).getTime() - new Date(a.DateEnregistrement ?? 0).getTime()
         );
         this.bailleurs = bailleurs;
         this.financements = financements;
+        this.optionsMarche = optionsMarche;
         this.loading = false;
         this.cd.markForCheck();
       });
@@ -276,6 +297,7 @@ export class MarketsComponent implements OnInit {
     this.errorMessage = '';
     this.submitting = true;
     try {
+      this.resolveMarcheOptionIds(this.newMarche);
       const added = await createMarche(this.newMarche);
       this.ngZone.run(() => {
         if (Array.isArray(added) && added.length > 0) {
@@ -331,6 +353,7 @@ export class MarketsComponent implements OnInit {
     this.errorMessage = '';
     this.isUpdating = true;
     try {
+      this.resolveMarcheOptionIds(this.editingMarche);
       const updated = await updateMarche(this.editingMarche.numbMarche, this.editingMarche as Record<string, unknown>);
       this.ngZone.run(() => {
         const idx = this.marches.findIndex((m) => m.numbMarche === updated.numbMarche);

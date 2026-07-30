@@ -1,0 +1,53 @@
+<div class="bg-surface font-body text-on-surface min-h-screen flex overflow-hidden">
+  <app-admin-menu></app-admin-menu>
+  <main class="flex-1 ml-[240px] flex flex-col h-screen overflow-hidden bg-surface relative">
+    <app-header></app-header>
+    <div class="flex-1 pt-24 px-8 pb-8 overflow-auto">
+
+      <div class="flex items-center justify-between mb-6 pt-2">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900 uppercase tracking-wide">Listes paramétrables</h1>
+          <p class="text-sm text-slate-400 mt-0.5">Gérez le contenu des listes déroulantes utilisées dans le formulaire de marché.</p>
+        </div>
+      </div>
+
+      <p *ngIf="errorMessage" class="mb-4 text-sm text-red-600">{{ errorMessage }}</p>
+
+      <div *ngIf="loading" class="bg-white rounded-xl border border-slate-100 px-6 py-10 text-center text-sm text-slate-400">Chargement…</div>
+
+      <div *ngIf="!loading" class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <div *ngFor="let cat of categories" class="bg-white rounded-xl border border-slate-100 overflow-hidden flex flex-col">
+          <div class="px-5 py-4 border-b border-slate-100">
+            <p class="text-sm font-semibold text-slate-900">{{ cat.titre }}</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">{{ cat.description }}</p>
+          </div>
+
+          <div class="px-5 py-4 space-y-2 flex-1">
+            <div *ngFor="let option of optionsFor(cat.categorie)" class="flex items-center justify-between gap-2 bg-slate-50 rounded-lg px-3 py-2">
+              <span class="text-sm text-slate-700 truncate">{{ option.valeur }}</span>
+              <button type="button" (click)="removeValue(option)" [disabled]="deletingId === option.id"
+                class="p-1 text-slate-400 hover:text-red-500 transition-colors rounded shrink-0 disabled:opacity-50">
+                <span class="material-symbols-outlined text-[16px]">{{ deletingId === option.id ? 'hourglass_empty' : 'delete' }}</span>
+              </button>
+            </div>
+            <p *ngIf="optionsFor(cat.categorie).length === 0" class="text-xs text-slate-400 italic px-1">
+              Aucune valeur pour le moment.
+            </p>
+          </div>
+
+          <div class="px-5 py-4 border-t border-slate-100 flex items-center gap-2">
+            <input type="text" [(ngModel)]="newValueByCategorie[cat.categorie]" [name]="'newValue_' + cat.categorie"
+                   placeholder="Nouvelle valeur..."
+                   class="flex-1 min-w-0 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                   (keyup.enter)="addValue(cat.categorie)" />
+            <button type="button" (click)="addValue(cat.categorie)" [disabled]="savingCategorie === cat.categorie"
+                    class="shrink-0 p-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors disabled:opacity-50">
+              <span *ngIf="savingCategorie !== cat.categorie" class="material-symbols-outlined text-[18px]">add</span>
+              <span *ngIf="savingCategorie === cat.categorie" class="w-[18px] h-[18px] block rounded-full border-2 border-slate-400 border-t-transparent animate-spin"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

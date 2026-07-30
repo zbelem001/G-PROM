@@ -50,13 +50,16 @@ export interface Marche {
   NombreLot: number;
   Devise?: 'XOF' | 'EUR' | 'USD';
   NatureOuverture?: string;
+  IdNatureOuverture?: number;
   DateEnregistrement?: string;
   Financement?: string;
   IdFinancement?: number;
   ModePassation?: string;
   Demandeur?: string;
+  IdDemandeur?: number;
   Observation?: string;
   ResponsableSuivi?: string;
+  IdResponsableSuivi?: number;
   SCT_person1?: string;
   SCT_person2?: string;
   SCT_person3?: string;
@@ -227,13 +230,16 @@ function normalizeMarcheResponse(raw: any): Marche {
     NombreLot: raw.NombreLot ?? raw.nombrelot ?? raw.nombre_lot ?? 0,
     Devise: raw.Devise ?? raw.devise ?? 'XOF',
     NatureOuverture: raw.NatureOuverture ?? raw.natureouverture ?? raw.nature_ouverture,
+    IdNatureOuverture: raw.IdNatureOuverture ?? raw.idnatureouverture ?? undefined,
     DateEnregistrement: raw.DateEnregistrement ?? raw.dateenregistrement ?? raw.date_enregistrement,
     Financement: raw.Financement ?? raw.financement,
     IdFinancement: raw.IdFinancement ?? raw.idfinancement ?? undefined,
     ModePassation: raw.ModePassation ?? raw.modepassation ?? raw.mode_passation,
     Demandeur: raw.Demandeur ?? raw.demandeur,
+    IdDemandeur: raw.IdDemandeur ?? raw.iddemandeur ?? undefined,
     Observation: raw.Observation ?? raw.observation,
     ResponsableSuivi: raw.ResponsableSuivi ?? raw.responsablesuivi ?? raw.responsable_suivi,
+    IdResponsableSuivi: raw.IdResponsableSuivi ?? raw.idresponsablesuivi ?? undefined,
     SCT_person1: raw.SCT_person1 ?? raw.sct_person1,
     SCT_person2: raw.SCT_person2 ?? raw.sct_person2,
     SCT_person3: raw.SCT_person3 ?? raw.sct_person3,
@@ -686,4 +692,28 @@ export interface HistoriqueConnexion {
 
 export async function getHistoriqueConnexions(): Promise<HistoriqueConnexion[]> {
   return request<HistoriqueConnexion[]>('/historique-connexions');
+}
+
+export type OptionMarcheCategorie = 'nature_ouverture' | 'demandeur' | 'responsable_suivi';
+
+export interface OptionMarche {
+  id: number;
+  categorie: OptionMarcheCategorie;
+  valeur: string;
+}
+
+export async function getOptionsMarche(categorie?: OptionMarcheCategorie): Promise<OptionMarche[]> {
+  const query = categorie ? `?categorie=${categorie}` : '';
+  return request<OptionMarche[]>(`/options-marche${query}`);
+}
+
+export async function createOptionMarche(categorie: OptionMarcheCategorie, valeur: string): Promise<OptionMarche> {
+  return request<OptionMarche>('/options-marche', {
+    method: 'POST',
+    body: JSON.stringify({ categorie, valeur }),
+  });
+}
+
+export async function deleteOptionMarche(id: number): Promise<void> {
+  await request(`/options-marche/${id}`, { method: 'DELETE' });
 }
