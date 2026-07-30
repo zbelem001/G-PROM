@@ -17,6 +17,7 @@ import { UploadModule } from './upload/upload.module';
 import { BailleurModule } from './bailleur/bailleur.module';
 import { FinancementModule } from './financement/financement.module';
 import { HistoriqueConnexionModule } from './historique-connexion/historique-connexion.module';
+import { OptionMarcheModule } from './option-marche/option-marche.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { HistoriqueConnexionModule } from './historique-connexion/historique-con
     BailleurModule,
     FinancementModule,
     HistoriqueConnexionModule,
+    OptionMarcheModule,
   ],
   controllers: [AppController],
   providers: [AppService],
