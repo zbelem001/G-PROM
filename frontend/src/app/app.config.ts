@@ -4,7 +4,6 @@ import { provideRouter, Route } from '@angular/router';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { MarketsComponent } from './pages/markets/markets.component';
 import { DetailsMarchesComponent } from './pages/details-marches/details-marches.component';
-import { SuivieMarchesComponent } from './pages/suivie-marches/suivie-marches.component';
 import { FournisseursComponent } from './pages/fournisseurs/fournisseurs.component';
 import { DetailsFournisseursComponent } from './pages/details-fournisseurs/details-fournisseurs.component';
 import { RapportsComponent } from './pages/rapports/rapports.component';
@@ -21,7 +20,6 @@ const routes: Route[] = [
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
   { path: 'marches', component: MarketsComponent, canActivate: [authGuard] },
   { path: 'marches/details', component: DetailsMarchesComponent, canActivate: [authGuard] },
-  { path: 'suivie-marches', component: SuivieMarchesComponent, canActivate: [authGuard] },
   { path: 'fournisseurs', component: FournisseursComponent, canActivate: [authGuard] },
   { path: 'fournisseurs/details', component: DetailsFournisseursComponent, canActivate: [authGuard] },
   { path: 'rapports', component: RapportsComponent, canActivate: [authGuard] },
