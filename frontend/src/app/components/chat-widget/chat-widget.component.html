@@ -1,0 +1,43 @@
+<div class="fixed bottom-6 right-6 z-[100] font-['Manrope']">
+  <div *ngIf="open" class="mb-3 w-[340px] h-[440px] bg-white rounded-2xl shadow-[0_12px_32px_rgba(26,46,68,0.18)] border border-slate-100 flex flex-col overflow-hidden">
+    <div class="px-4 py-3 bg-[#1a2e44] text-white flex items-center justify-between shrink-0">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-[18px]">smart_toy</span>
+        <span class="text-sm font-bold">Assistant G-PROM</span>
+      </div>
+      <button type="button" (click)="toggle()" class="text-white/70 hover:text-white transition-colors">
+        <span class="material-symbols-outlined text-[18px]">close</span>
+      </button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto px-3 py-3 space-y-2 bg-slate-50">
+      <div *ngFor="let m of messages" class="flex" [ngClass]="m.role === 'user' ? 'justify-end' : 'justify-start'">
+        <div class="max-w-[85%] rounded-xl px-3 py-2 text-sm whitespace-pre-wrap"
+             [ngClass]="m.role === 'user' ? 'bg-[#039CD3] text-white' : (m.error ? 'bg-red-50 text-red-700' : 'bg-white text-slate-700 border border-slate-100')">
+          {{ m.content }}
+        </div>
+      </div>
+      <div *ngIf="sending" class="flex justify-start">
+        <div class="bg-white border border-slate-100 rounded-xl px-3 py-2 text-sm text-slate-400">
+          <span class="w-3 h-3 inline-block rounded-full border-2 border-slate-300 border-t-transparent animate-spin align-middle mr-1"></span>
+          Réflexion…
+        </div>
+      </div>
+    </div>
+
+    <div class="px-3 py-3 border-t border-slate-100 flex items-center gap-2 shrink-0">
+      <input type="text" [(ngModel)]="draft" (keyup.enter)="send()" [disabled]="sending"
+             placeholder="Posez une question..."
+             class="flex-1 min-w-0 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors disabled:opacity-50" />
+      <button type="button" (click)="send()" [disabled]="sending || !draft.trim()"
+              class="shrink-0 p-2 rounded-lg bg-[#039CD3] text-white hover:bg-[#0387b8] transition-colors disabled:opacity-50">
+        <span class="material-symbols-outlined text-[18px]">send</span>
+      </button>
+    </div>
+  </div>
+
+  <button type="button" (click)="toggle()"
+          class="w-14 h-14 rounded-full bg-[#1a2e44] text-white shadow-[0_8px_20px_rgba(26,46,68,0.3)] flex items-center justify-center hover:scale-105 active:scale-95 transition-transform">
+    <span class="material-symbols-outlined text-[26px]">{{ open ? 'expand_more' : 'smart_toy' }}</span>
+  </button>
+</div>

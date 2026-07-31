@@ -736,3 +736,16 @@ export async function getAuditLog(table?: string, recordId?: string): Promise<Au
   const query = params.toString() ? `?${params.toString()}` : '';
   return request<AuditLogEntry[]>(`/audit-log${query}`);
 }
+
+export interface ChatHistoryItem {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+export async function sendChatMessage(message: string, history: ChatHistoryItem[]): Promise<string> {
+  const response = await request<{ reply: string }>('/chat', {
+    method: 'POST',
+    body: JSON.stringify({ message, history }),
+  });
+  return response.reply;
+}
