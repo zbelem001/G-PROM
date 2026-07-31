@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
+import { AuditService } from '../audit/audit.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
 
 function normalizeDocPayload(dto: Partial<CreateDocumentDto>): Record<string, unknown> {
@@ -20,16 +21,20 @@ function normalizeDocPayload(dto: Partial<CreateDocumentDto>): Record<string, un
 
 @Injectable()
 export class DocumentService {
-  constructor(private readonly supabaseService: SupabaseService) {}
+  constructor(
+    private readonly supabaseService: SupabaseService,
+    private readonly auditService: AuditService,
+  ) {}
 
-  async create(createDocumentDto: CreateDocumentDto) {
-    const payload = normalizeDocPayload(createDocumentDto);
+  async create(createDocumentDto: CreateDocumentDto, userEmail?: string) {
+    const payload = this.auditService.stampCreate(normalizeDocPayload(createDocumentDto), userEmail);
     const { data, error } = await this.supabaseService.client
       .from('Document')
       .insert([payload])
       .select()
       .single();
     if (error) throw new BadRequestException(error.message);
+    await this.auditService.log('Document', (payload.numblot as string) ?? '', 'CREATE', userEmail, null, data);
     return data;
   }
 
@@ -49,8 +54,9 @@ export class DocumentService {
     return data;
   }
 
-  async update(numbLot: string, updateDocumentDto: Partial<CreateDocumentDto>) {
-    const payload = normalizeDocPayload(updateDocumentDto);
+  async update(numbLot: string, updateDocumentDto: Partial<CreateDocumentDto>, userEmail?: string) {
+    const existing = await this.supabaseService.client.from('Document').select('*').eq('numblot', numbLot).maybeSingle();
+    const payload = this.auditService.stampUpdate(normalizeDocPayload(updateDocumentDto), userEmail);
     delete payload.numblot;
     const { data, error } = await this.supabaseService.client
       .from('Document')
@@ -59,26 +65,34 @@ export class DocumentService {
       .select()
       .single();
     if (error) throw new BadRequestException(error.message);
+    await this.auditService.log('Document', numbLot, 'UPDATE', userEmail, existing.data, data);
     return data;
   }
 
-  async upsert(numbLot: string, updateDocumentDto: Partial<CreateDocumentDto>) {
-    const payload = normalizeDocPayload({ numbLot, ...updateDocumentDto });
+  async upsert(numbLot: string, updateDocumentDto: Partial<CreateDocumentDto>, userEmail?: string) {
+    const existing = await this.supabaseService.client.from('Document').select('*').eq('numblot', numbLot).maybeSingle();
+    const basePayload = normalizeDocPayload({ numbLot, ...updateDocumentDto });
+    const payload = existing.data
+      ? this.auditService.stampUpdate(basePayload, userEmail)
+      : this.auditService.stampCreate(basePayload, userEmail);
     const { data, error } = await this.supabaseService.client
       .from('Document')
       .upsert(payload, { onConflict: 'numblot' })
       .select()
       .single();
     if (error) throw new BadRequestException(error.message);
+    await this.auditService.log('Document', numbLot, existing.data ? 'UPDATE' : 'CREATE', userEmail, existing.data, data);
     return data;
   }
 
-  async remove(numbLot: string) {
+  async remove(numbLot: string, userEmail?: string) {
+    const existing = await this.supabaseService.client.from('Document').select('*').eq('numblot', numbLot).maybeSingle();
     const { data, error } = await this.supabaseService.client
       .from('Document')
       .delete()
       .eq('numblot', numbLot);
     if (error) throw new Error(error.message);
+    await this.auditService.log('Document', numbLot, 'DELETE', userEmail, existing.data, null);
     return data;
   }
 }

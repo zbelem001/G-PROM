@@ -3,6 +3,8 @@ import { OptionMarcheService } from './option-marche.service';
 import { CreateOptionMarcheDto } from './dto/create-option-marche.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AdminGuard } from '../auth/admin.guard';
+import { CurrentUser } from '../auth/current-user.decorator';
+import type { AuthenticatedUser } from '../auth/jwt-auth.guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('options-marche')
@@ -16,13 +18,13 @@ export class OptionMarcheController {
 
   @UseGuards(AdminGuard)
   @Post()
-  create(@Body() dto: CreateOptionMarcheDto) {
-    return this.optionMarcheService.create(dto);
+  create(@Body() dto: CreateOptionMarcheDto, @CurrentUser() user?: AuthenticatedUser) {
+    return this.optionMarcheService.create(dto, user?.email);
   }
 
   @UseGuards(AdminGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.optionMarcheService.remove(Number(id));
+  remove(@Param('id') id: string, @CurrentUser() user?: AuthenticatedUser) {
+    return this.optionMarcheService.remove(Number(id), user?.email);
   }
 }

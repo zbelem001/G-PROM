@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
+import { AuditService } from '../audit/audit.service';
 import { CreateAttributaireDto } from './dto/create-attributaire.dto';
 
 function normalizePayload(dto: Partial<CreateAttributaireDto>): Record<string, unknown> {
@@ -16,16 +17,20 @@ function normalizePayload(dto: Partial<CreateAttributaireDto>): Record<string, u
 
 @Injectable()
 export class AttributaireService {
-  constructor(private readonly supabaseService: SupabaseService) {}
+  constructor(
+    private readonly supabaseService: SupabaseService,
+    private readonly auditService: AuditService,
+  ) {}
 
-  async create(createAttributaireDto: CreateAttributaireDto) {
-    const payload = normalizePayload(createAttributaireDto);
+  async create(createAttributaireDto: CreateAttributaireDto, userEmail?: string) {
+    const payload = this.auditService.stampCreate(normalizePayload(createAttributaireDto), userEmail);
     const { data, error } = await this.supabaseService.client
       .from('Attributaire')
       .insert([payload])
       .select()
       .single();
     if (error) throw new BadRequestException(error.message);
+    await this.auditService.log('Attributaire', (payload.idsoumissionattribuee as string) ?? '', 'CREATE', userEmail, null, data);
     return data;
   }
 
@@ -45,8 +50,13 @@ export class AttributaireService {
     return data;
   }
 
-  async update(idSoumissionAttribuee: string, updateAttributaireDto: Partial<CreateAttributaireDto>) {
-    const payload = normalizePayload(updateAttributaireDto);
+  async update(idSoumissionAttribuee: string, updateAttributaireDto: Partial<CreateAttributaireDto>, userEmail?: string) {
+    const existing = await this.supabaseService.client
+      .from('Attributaire')
+      .select('*')
+      .eq('idsoumissionattribuee', idSoumissionAttribuee)
+      .maybeSingle();
+    const payload = this.auditService.stampUpdate(normalizePayload(updateAttributaireDto), userEmail);
     delete payload.idsoumissionattribuee;
     const { data, error } = await this.supabaseService.client
       .from('Attributaire')
@@ -55,15 +65,22 @@ export class AttributaireService {
       .select()
       .single();
     if (error) throw new BadRequestException(error.message);
+    await this.auditService.log('Attributaire', idSoumissionAttribuee, 'UPDATE', userEmail, existing.data, data);
     return data;
   }
 
-  async remove(idSoumissionAttribuee: string) {
+  async remove(idSoumissionAttribuee: string, userEmail?: string) {
+    const existing = await this.supabaseService.client
+      .from('Attributaire')
+      .select('*')
+      .eq('idsoumissionattribuee', idSoumissionAttribuee)
+      .maybeSingle();
     const { data, error } = await this.supabaseService.client
       .from('Attributaire')
       .delete()
       .eq('idsoumissionattribuee', idSoumissionAttribuee);
     if (error) throw new Error(error.message);
+    await this.auditService.log('Attributaire', idSoumissionAttribuee, 'DELETE', userEmail, existing.data, null);
     return data;
   }
 }

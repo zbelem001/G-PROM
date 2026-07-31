@@ -3,6 +3,8 @@ import { UtilisateurService } from './utilisateur.service';
 import { CreateUtilisateurDto } from './dto/create-utilisateur.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AdminGuard } from '../auth/admin.guard';
+import { CurrentUser } from '../auth/current-user.decorator';
+import type { AuthenticatedUser } from '../auth/jwt-auth.guard';
 
 @Controller('utilisateurs')
 @UseGuards(JwtAuthGuard, AdminGuard)
@@ -10,8 +12,8 @@ export class UtilisateurController {
   constructor(private readonly utilisateurService: UtilisateurService) {}
 
   @Post()
-  create(@Body() createUtilisateurDto: CreateUtilisateurDto) {
-    return this.utilisateurService.create(createUtilisateurDto);
+  create(@Body() createUtilisateurDto: CreateUtilisateurDto, @CurrentUser() user?: AuthenticatedUser) {
+    return this.utilisateurService.create(createUtilisateurDto, user?.email);
   }
 
   @Get()
@@ -25,12 +27,16 @@ export class UtilisateurController {
   }
 
   @Patch(':idUtilisateur')
-  update(@Param('idUtilisateur') idUtilisateur: string, @Body() updateUtilisateurDto: Partial<CreateUtilisateurDto>) {
-    return this.utilisateurService.update(Number(idUtilisateur), updateUtilisateurDto);
+  update(
+    @Param('idUtilisateur') idUtilisateur: string,
+    @Body() updateUtilisateurDto: Partial<CreateUtilisateurDto>,
+    @CurrentUser() user?: AuthenticatedUser,
+  ) {
+    return this.utilisateurService.update(Number(idUtilisateur), updateUtilisateurDto, user?.email);
   }
 
   @Delete(':idUtilisateur')
-  remove(@Param('idUtilisateur') idUtilisateur: string) {
-    return this.utilisateurService.remove(Number(idUtilisateur));
+  remove(@Param('idUtilisateur') idUtilisateur: string, @CurrentUser() user?: AuthenticatedUser) {
+    return this.utilisateurService.remove(Number(idUtilisateur), user?.email);
   }
 }

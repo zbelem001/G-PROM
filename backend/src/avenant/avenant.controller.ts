@@ -1,5 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { CurrentUser } from '../auth/current-user.decorator';
+import type { AuthenticatedUser } from '../auth/jwt-auth.guard';
 import { AvenantService } from './avenant.service';
 import { CreateAvenantDto } from './dto/create-avenant.dto';
 
@@ -9,8 +11,8 @@ export class AvenantController {
   constructor(private readonly avenantService: AvenantService) {}
 
   @Post()
-  create(@Body() createAvenantDto: CreateAvenantDto) {
-    return this.avenantService.create(createAvenantDto);
+  create(@Body() createAvenantDto: CreateAvenantDto, @CurrentUser() user?: AuthenticatedUser) {
+    return this.avenantService.create(createAvenantDto, user?.email);
   }
 
   @Get()
@@ -24,12 +26,16 @@ export class AvenantController {
   }
 
   @Patch(':idAvenant')
-  update(@Param('idAvenant') idAvenant: string, @Body() updateAvenantDto: Partial<CreateAvenantDto>) {
-    return this.avenantService.update(Number(idAvenant), updateAvenantDto);
+  update(
+    @Param('idAvenant') idAvenant: string,
+    @Body() updateAvenantDto: Partial<CreateAvenantDto>,
+    @CurrentUser() user?: AuthenticatedUser,
+  ) {
+    return this.avenantService.update(Number(idAvenant), updateAvenantDto, user?.email);
   }
 
   @Delete(':idAvenant')
-  remove(@Param('idAvenant') idAvenant: string) {
-    return this.avenantService.remove(Number(idAvenant));
+  remove(@Param('idAvenant') idAvenant: string, @CurrentUser() user?: AuthenticatedUser) {
+    return this.avenantService.remove(Number(idAvenant), user?.email);
   }
 }

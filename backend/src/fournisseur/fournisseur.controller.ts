@@ -1,5 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { CurrentUser } from '../auth/current-user.decorator';
+import type { AuthenticatedUser } from '../auth/jwt-auth.guard';
 import { FournisseurService } from './fournisseur.service';
 import { CreateFournisseurDto } from './dto/create-fournisseur.dto';
 
@@ -9,8 +11,8 @@ export class FournisseurController {
   constructor(private readonly fournisseurService: FournisseurService) {}
 
   @Post()
-  create(@Body() createFournisseurDto: CreateFournisseurDto) {
-    return this.fournisseurService.create(createFournisseurDto);
+  create(@Body() createFournisseurDto: CreateFournisseurDto, @CurrentUser() user?: AuthenticatedUser) {
+    return this.fournisseurService.create(createFournisseurDto, user?.email);
   }
 
   @Get()
@@ -29,12 +31,16 @@ export class FournisseurController {
   }
 
   @Patch(':idFournisseur')
-  update(@Param('idFournisseur') idFournisseur: string, @Body() updateFournisseurDto: Partial<CreateFournisseurDto>) {
-    return this.fournisseurService.update(Number(idFournisseur), updateFournisseurDto);
+  update(
+    @Param('idFournisseur') idFournisseur: string,
+    @Body() updateFournisseurDto: Partial<CreateFournisseurDto>,
+    @CurrentUser() user?: AuthenticatedUser,
+  ) {
+    return this.fournisseurService.update(Number(idFournisseur), updateFournisseurDto, user?.email);
   }
 
   @Delete(':idFournisseur')
-  remove(@Param('idFournisseur') idFournisseur: string) {
-    return this.fournisseurService.remove(Number(idFournisseur));
+  remove(@Param('idFournisseur') idFournisseur: string, @CurrentUser() user?: AuthenticatedUser) {
+    return this.fournisseurService.remove(Number(idFournisseur), user?.email);
   }
 }

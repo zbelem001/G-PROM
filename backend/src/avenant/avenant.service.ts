@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
+import { AuditService } from '../audit/audit.service';
 import { CreateAvenantDto } from './dto/create-avenant.dto';
 
 function normalizeKeys(dto: object): Record<string, unknown> {
@@ -12,16 +13,20 @@ function normalizeKeys(dto: object): Record<string, unknown> {
 
 @Injectable()
 export class AvenantService {
-  constructor(private readonly supabaseService: SupabaseService) {}
+  constructor(
+    private readonly supabaseService: SupabaseService,
+    private readonly auditService: AuditService,
+  ) {}
 
-  async create(createAvenantDto: CreateAvenantDto) {
-    const payload = normalizeKeys(createAvenantDto);
+  async create(createAvenantDto: CreateAvenantDto, userEmail?: string) {
+    const payload = this.auditService.stampCreate(normalizeKeys(createAvenantDto), userEmail);
     const { data, error } = await this.supabaseService.client
       .from('Avenant')
       .insert([payload])
       .select()
       .single();
     if (error) throw new Error(error.message);
+    await this.auditService.log('Avenant', data?.idavenant ?? '', 'CREATE', userEmail, null, data);
     return data;
   }
 
@@ -41,8 +46,9 @@ export class AvenantService {
     return data;
   }
 
-  async update(idAvenant: number, updateAvenantDto: Partial<CreateAvenantDto>) {
-    const payload = normalizeKeys(updateAvenantDto);
+  async update(idAvenant: number, updateAvenantDto: Partial<CreateAvenantDto>, userEmail?: string) {
+    const existing = await this.supabaseService.client.from('Avenant').select('*').eq('idavenant', idAvenant).maybeSingle();
+    const payload = this.auditService.stampUpdate(normalizeKeys(updateAvenantDto), userEmail);
     const { data, error } = await this.supabaseService.client
       .from('Avenant')
       .update(payload)
@@ -50,15 +56,18 @@ export class AvenantService {
       .select()
       .single();
     if (error) throw new Error(error.message);
+    await this.auditService.log('Avenant', idAvenant, 'UPDATE', userEmail, existing.data, data);
     return data;
   }
 
-  async remove(idAvenant: number) {
+  async remove(idAvenant: number, userEmail?: string) {
+    const existing = await this.supabaseService.client.from('Avenant').select('*').eq('idavenant', idAvenant).maybeSingle();
     const { data, error } = await this.supabaseService.client
       .from('Avenant')
       .delete()
       .eq('idavenant', idAvenant);
     if (error) throw new Error(error.message);
+    await this.auditService.log('Avenant', idAvenant, 'DELETE', userEmail, existing.data, null);
     return data;
   }
 }

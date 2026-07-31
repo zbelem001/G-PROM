@@ -1,5 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { CurrentUser } from '../auth/current-user.decorator';
+import type { AuthenticatedUser } from '../auth/jwt-auth.guard';
 import { DocumentService } from './document.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
 
@@ -9,8 +11,8 @@ export class DocumentController {
   constructor(private readonly documentService: DocumentService) {}
 
   @Post()
-  create(@Body() createDocumentDto: CreateDocumentDto) {
-    return this.documentService.create(createDocumentDto);
+  create(@Body() createDocumentDto: CreateDocumentDto, @CurrentUser() user?: AuthenticatedUser) {
+    return this.documentService.create(createDocumentDto, user?.email);
   }
 
   @Get()
@@ -24,17 +26,25 @@ export class DocumentController {
   }
 
   @Put(':numbLot')
-  upsert(@Param('numbLot') numbLot: string, @Body() updateDocumentDto: Partial<CreateDocumentDto>) {
-    return this.documentService.upsert(numbLot, updateDocumentDto);
+  upsert(
+    @Param('numbLot') numbLot: string,
+    @Body() updateDocumentDto: Partial<CreateDocumentDto>,
+    @CurrentUser() user?: AuthenticatedUser,
+  ) {
+    return this.documentService.upsert(numbLot, updateDocumentDto, user?.email);
   }
 
   @Patch(':numbLot')
-  update(@Param('numbLot') numbLot: string, @Body() updateDocumentDto: Partial<CreateDocumentDto>) {
-    return this.documentService.update(numbLot, updateDocumentDto);
+  update(
+    @Param('numbLot') numbLot: string,
+    @Body() updateDocumentDto: Partial<CreateDocumentDto>,
+    @CurrentUser() user?: AuthenticatedUser,
+  ) {
+    return this.documentService.update(numbLot, updateDocumentDto, user?.email);
   }
 
   @Delete(':numbLot')
-  remove(@Param('numbLot') numbLot: string) {
-    return this.documentService.remove(numbLot);
+  remove(@Param('numbLot') numbLot: string, @CurrentUser() user?: AuthenticatedUser) {
+    return this.documentService.remove(numbLot, user?.email);
   }
 }

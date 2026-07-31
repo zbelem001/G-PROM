@@ -1,5 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { CurrentUser } from '../auth/current-user.decorator';
+import type { AuthenticatedUser } from '../auth/jwt-auth.guard';
 import { ConsultationService } from './consultation.service';
 import { CreateConsultationDto } from './dto/create-consultation.dto';
 
@@ -9,8 +11,8 @@ export class ConsultationController {
   constructor(private readonly consultationService: ConsultationService) {}
 
   @Post()
-  create(@Body() createConsultationDto: CreateConsultationDto) {
-    return this.consultationService.create(createConsultationDto);
+  create(@Body() createConsultationDto: CreateConsultationDto, @CurrentUser() user?: AuthenticatedUser) {
+    return this.consultationService.create(createConsultationDto, user?.email);
   }
 
   @Get()
@@ -28,12 +30,13 @@ export class ConsultationController {
     @Param('numbLot') numbLot: string,
     @Param('idFournisseur') idFournisseur: string,
     @Body() updateConsultationDto: Partial<CreateConsultationDto>,
+    @CurrentUser() user?: AuthenticatedUser,
   ) {
-    return this.consultationService.update(numbLot, Number(idFournisseur), updateConsultationDto);
+    return this.consultationService.update(numbLot, Number(idFournisseur), updateConsultationDto, user?.email);
   }
 
   @Delete(':numbLot/:idFournisseur')
-  remove(@Param('numbLot') numbLot: string, @Param('idFournisseur') idFournisseur: string) {
-    return this.consultationService.remove(numbLot, Number(idFournisseur));
+  remove(@Param('numbLot') numbLot: string, @Param('idFournisseur') idFournisseur: string, @CurrentUser() user?: AuthenticatedUser) {
+    return this.consultationService.remove(numbLot, Number(idFournisseur), user?.email);
   }
 }

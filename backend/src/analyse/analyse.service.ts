@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
+import { AuditService } from '../audit/audit.service';
 import { CreateAnalyseDto } from './dto/create-analyse.dto';
 
 function normalizePayload(dto: Partial<CreateAnalyseDto>): Record<string, unknown> {
@@ -14,10 +15,13 @@ function normalizePayload(dto: Partial<CreateAnalyseDto>): Record<string, unknow
 
 @Injectable()
 export class AnalyseService {
-  constructor(private readonly supabaseService: SupabaseService) {}
+  constructor(
+    private readonly supabaseService: SupabaseService,
+    private readonly auditService: AuditService,
+  ) {}
 
-  async create(createAnalyseDto: CreateAnalyseDto) {
-    const payload = normalizePayload(createAnalyseDto);
+  async create(createAnalyseDto: CreateAnalyseDto, userEmail?: string) {
+    const payload = this.auditService.stampCreate(normalizePayload(createAnalyseDto), userEmail);
     const { data, error } = await this.supabaseService.client
       .from('Analyse')
       .insert([payload])
@@ -25,6 +29,7 @@ export class AnalyseService {
     if (error) {
       throw new BadRequestException(error.message);
     }
+    await this.auditService.log('Analyse', (payload.numblot as string) ?? '', 'CREATE', userEmail, null, data?.[0]);
     return data;
   }
 
@@ -48,8 +53,9 @@ export class AnalyseService {
     return data;
   }
 
-  async update(numbLot: string, updateAnalyseDto: Partial<CreateAnalyseDto>) {
-    const payload = normalizePayload(updateAnalyseDto);
+  async update(numbLot: string, updateAnalyseDto: Partial<CreateAnalyseDto>, userEmail?: string) {
+    const existing = await this.supabaseService.client.from('Analyse').select('*').eq('numblot', numbLot).maybeSingle();
+    const payload = this.auditService.stampUpdate(normalizePayload(updateAnalyseDto), userEmail);
     delete payload.numblot;
     const { data, error } = await this.supabaseService.client
       .from('Analyse')
@@ -60,10 +66,12 @@ export class AnalyseService {
     if (error) {
       throw new BadRequestException(error.message);
     }
+    await this.auditService.log('Analyse', numbLot, 'UPDATE', userEmail, existing.data, data);
     return data;
   }
 
-  async remove(numbLot: string) {
+  async remove(numbLot: string, userEmail?: string) {
+    const existing = await this.supabaseService.client.from('Analyse').select('*').eq('numblot', numbLot).maybeSingle();
     const { data, error } = await this.supabaseService.client
       .from('Analyse')
       .delete()
@@ -71,6 +79,7 @@ export class AnalyseService {
     if (error) {
       throw new Error(error.message);
     }
+    await this.auditService.log('Analyse', numbLot, 'DELETE', userEmail, existing.data, null);
     return data;
   }
 }

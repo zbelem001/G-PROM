@@ -1,12 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
+import { AuditService } from '../audit/audit.service';
 import { CreateConsultationDto } from './dto/create-consultation.dto';
 
 @Injectable()
 export class ConsultationService {
-  constructor(private readonly supabaseService: SupabaseService) {}
+  constructor(
+    private readonly supabaseService: SupabaseService,
+    private readonly auditService: AuditService,
+  ) {}
 
-  async create(createConsultationDto: CreateConsultationDto) {
+  async create(createConsultationDto: CreateConsultationDto, userEmail?: string) {
     // Determine the exact keys sent from frontend
     // Use fallback to handle both CamelCase and lowercase incoming properties
     const numbLot = createConsultationDto.numbLot || (createConsultationDto as any).numblot;
@@ -14,15 +18,18 @@ export class ConsultationService {
     const DateConsultation = createConsultationDto.DateConsultation || (createConsultationDto as any).dateconsultation;
 
     // Supabase columns are lowercase: numblot, idfournisseur, dateconsultation
-    const payload = {
-      numblot: String(numbLot),
-      idfournisseur: Number(idFournisseur),
-      dateconsultation: DateConsultation || new Date().toISOString().split('T')[0]
-    };
+    const payload = this.auditService.stampCreate(
+      {
+        numblot: String(numbLot),
+        idfournisseur: Number(idFournisseur),
+        dateconsultation: DateConsultation || new Date().toISOString().split('T')[0],
+      },
+      userEmail,
+    );
 
     console.log('[ConsultationService] Final payload for Supabase:', payload);
 
-    if (!payload.numblot || isNaN(payload.idfournisseur)) {
+    if (!payload.numblot || isNaN(payload.idfournisseur as number)) {
       throw new Error(`Invalid data: numblot=${payload.numblot}, idfournisseur=${payload.idfournisseur}`);
     }
 
@@ -35,6 +42,7 @@ export class ConsultationService {
       console.error('[ConsultationService] Supabase insert error:', error);
       throw new Error(`Supabase error [${error.code}]: ${error.message}`);
     }
+    await this.auditService.log('Consultation', `${payload.numblot}/${payload.idfournisseur}`, 'CREATE', userEmail, null, data?.[0]);
     return data;
   }
 
@@ -59,11 +67,19 @@ export class ConsultationService {
     return data;
   }
 
-  async update(numbLot: string, idFournisseur: number, updateConsultationDto: Partial<CreateConsultationDto>) {
-    const payload: any = {};
-    if (updateConsultationDto.numbLot) payload.numblot = updateConsultationDto.numbLot;
-    if (updateConsultationDto.idFournisseur) payload.idfournisseur = updateConsultationDto.idFournisseur;
-    if (updateConsultationDto.DateConsultation) payload.dateconsultation = updateConsultationDto.DateConsultation;
+  async update(numbLot: string, idFournisseur: number, updateConsultationDto: Partial<CreateConsultationDto>, userEmail?: string) {
+    const existing = await this.supabaseService.client
+      .from('Consultation')
+      .select('*')
+      .eq('numblot', numbLot)
+      .eq('idfournisseur', idFournisseur)
+      .maybeSingle();
+
+    const rawPayload: any = {};
+    if (updateConsultationDto.numbLot) rawPayload.numblot = updateConsultationDto.numbLot;
+    if (updateConsultationDto.idFournisseur) rawPayload.idfournisseur = updateConsultationDto.idFournisseur;
+    if (updateConsultationDto.DateConsultation) rawPayload.dateconsultation = updateConsultationDto.DateConsultation;
+    const payload = this.auditService.stampUpdate(rawPayload, userEmail);
 
     const { data, error } = await this.supabaseService.client
       .from('Consultation')
@@ -75,10 +91,18 @@ export class ConsultationService {
     if (error) {
       throw new Error(error.message);
     }
+    await this.auditService.log('Consultation', `${numbLot}/${idFournisseur}`, 'UPDATE', userEmail, existing.data, data?.[0]);
     return data;
   }
 
-  async remove(numbLot: string, idFournisseur: number) {
+  async remove(numbLot: string, idFournisseur: number, userEmail?: string) {
+    const existing = await this.supabaseService.client
+      .from('Consultation')
+      .select('*')
+      .eq('numblot', numbLot)
+      .eq('idfournisseur', idFournisseur)
+      .maybeSingle();
+
     const { data, error } = await this.supabaseService.client
       .from('Consultation')
       .delete()
@@ -87,6 +111,7 @@ export class ConsultationService {
     if (error) {
       throw new Error(error.message);
     }
+    await this.auditService.log('Consultation', `${numbLot}/${idFournisseur}`, 'DELETE', userEmail, existing.data, null);
     return data;
   }
 }

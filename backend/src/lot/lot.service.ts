@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
+import { AuditService } from '../audit/audit.service';
 import { CreateLotDto } from './dto/create-lot.dto';
 
 function generateLotId(): string {
@@ -29,9 +30,12 @@ function normalizeUpdateLotPayload(lot: Partial<CreateLotDto>): Record<string, u
 
 @Injectable()
 export class LotService {
-  constructor(private readonly supabaseService: SupabaseService) {}
+  constructor(
+    private readonly supabaseService: SupabaseService,
+    private readonly auditService: AuditService,
+  ) {}
 
-  async create(createLotDto: CreateLotDto) {
+  async create(createLotDto: CreateLotDto, userEmail?: string) {
     // Check uniqueness within the same market (not globally)
     const { data: existingLot, error: existsError } = await this.supabaseService.client
       .from('Lot')
@@ -64,11 +68,12 @@ export class LotService {
       attempts++;
     }
 
-    const payload = normalizeLotPayload(createLotDto, numblot);
+    const payload = this.auditService.stampCreate(normalizeLotPayload(createLotDto, numblot), userEmail);
     const { data, error } = await this.supabaseService.client.from('Lot').insert([payload]).select();
     if (error) {
       throw new BadRequestException(error.message);
     }
+    await this.auditService.log('Lot', numblot, 'CREATE', userEmail, null, data?.[0]);
     return data;
   }
 
@@ -93,8 +98,9 @@ export class LotService {
     return data;
   }
 
-  async update(numbLot: string, updateLotDto: Partial<CreateLotDto>) {
-    const payload = normalizeUpdateLotPayload(updateLotDto);
+  async update(numbLot: string, updateLotDto: Partial<CreateLotDto>, userEmail?: string) {
+    const existing = await this.supabaseService.client.from('Lot').select('*').eq('numblot', numbLot).maybeSingle();
+    const payload = this.auditService.stampUpdate(normalizeUpdateLotPayload(updateLotDto), userEmail);
     const { data, error } = await this.supabaseService.client
       .from('Lot')
       .update(payload)
@@ -103,10 +109,12 @@ export class LotService {
     if (error) {
       throw new BadRequestException(error.message);
     }
+    await this.auditService.log('Lot', numbLot, 'UPDATE', userEmail, existing.data, payload);
     return data;
   }
 
-  async remove(numbLot: string) {
+  async remove(numbLot: string, userEmail?: string) {
+    const existing = await this.supabaseService.client.from('Lot').select('*').eq('numblot', numbLot).maybeSingle();
     const { data, error } = await this.supabaseService.client
       .from('Lot')
       .delete()
@@ -115,6 +123,7 @@ export class LotService {
     if (error) {
       throw new Error(error.message);
     }
+    await this.auditService.log('Lot', numbLot, 'DELETE', userEmail, existing.data, null);
     return data;
   }
 }

@@ -1,10 +1,14 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
+import { AuditService } from '../audit/audit.service';
 import { CreateMarcheDto } from './dto/create-marche.dto';
 
 @Injectable()
 export class MarcheService {
-  constructor(private readonly supabaseService: SupabaseService) {}
+  constructor(
+    private readonly supabaseService: SupabaseService,
+    private readonly auditService: AuditService,
+  ) {}
 
   private normalizeKeys(dto: object): Record<string, unknown> {
     return Object.entries(dto).reduce((normalized, [key, value]) => {
@@ -14,8 +18,8 @@ export class MarcheService {
     }, {} as Record<string, unknown>);
   }
 
-  async create(createMarcheDto: CreateMarcheDto) {
-    const payload = this.normalizeKeys(createMarcheDto);
+  async create(createMarcheDto: CreateMarcheDto, userEmail?: string) {
+    const payload = this.auditService.stampCreate(this.normalizeKeys(createMarcheDto), userEmail);
 
     try {
       const { data, error } = await this.supabaseService.client
@@ -28,6 +32,8 @@ export class MarcheService {
         throw new InternalServerErrorException(error.message);
       }
 
+      const created = data?.[0];
+      await this.auditService.log('Marche', created?.numbmarche ?? '', 'CREATE', userEmail, null, created);
       return data;
     } catch (error: any) {
       console.error('MarcheService.create error:', error?.message ?? error);
@@ -57,8 +63,9 @@ export class MarcheService {
     return data;
   }
 
-  async update(numbMarche: string, updateMarcheDto: Partial<CreateMarcheDto>) {
-    const payload = this.normalizeKeys(updateMarcheDto);
+  async update(numbMarche: string, updateMarcheDto: Partial<CreateMarcheDto>, userEmail?: string) {
+    const existing = await this.supabaseService.client.from('Marche').select('*').eq('numbmarche', numbMarche).maybeSingle();
+    const payload = this.auditService.stampUpdate(this.normalizeKeys(updateMarcheDto), userEmail);
     const { data, error } = await this.supabaseService.client
       .from('Marche')
       .update(payload)
@@ -70,10 +77,12 @@ export class MarcheService {
       throw new Error(error.message);
     }
 
+    await this.auditService.log('Marche', numbMarche, 'UPDATE', userEmail, existing.data, data);
     return data;
   }
 
-  async remove(numbMarche: string) {
+  async remove(numbMarche: string, userEmail?: string) {
+    const existing = await this.supabaseService.client.from('Marche').select('*').eq('numbmarche', numbMarche).maybeSingle();
     const { data, error } = await this.supabaseService.client
       .from('Marche')
       .delete()
@@ -83,6 +92,7 @@ export class MarcheService {
       throw new Error(error.message);
     }
 
+    await this.auditService.log('Marche', numbMarche, 'DELETE', userEmail, existing.data, null);
     return data;
   }
 }

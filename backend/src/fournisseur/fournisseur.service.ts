@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
+import { AuditService } from '../audit/audit.service';
 import { CreateFournisseurDto } from './dto/create-fournisseur.dto';
 
 @Injectable()
 export class FournisseurService {
-  constructor(private readonly supabaseService: SupabaseService) {}
+  constructor(
+    private readonly supabaseService: SupabaseService,
+    private readonly auditService: AuditService,
+  ) {}
 
   private normalizeKeys(dto: object): Record<string, unknown> {
     return Object.entries(dto).reduce((normalized, [key, value]) => {
@@ -14,8 +18,8 @@ export class FournisseurService {
     }, {} as Record<string, unknown>);
   }
 
-  async create(createFournisseurDto: CreateFournisseurDto) {
-    const payload = this.normalizeKeys(createFournisseurDto);
+  async create(createFournisseurDto: CreateFournisseurDto, userEmail?: string) {
+    const payload = this.auditService.stampCreate(this.normalizeKeys(createFournisseurDto), userEmail);
     const { data, error } = await this.supabaseService.client
       .from('Fournisseur')
       .insert([payload])
@@ -24,6 +28,7 @@ export class FournisseurService {
     if (error) {
       throw new Error(error.message);
     }
+    await this.auditService.log('Fournisseur', data?.idfournisseur ?? '', 'CREATE', userEmail, null, data);
     return this.normalizeFournisseur(data);
   }
 
@@ -143,8 +148,9 @@ export class FournisseurService {
     };
   }
 
-  async update(idFournisseur: number, updateFournisseurDto: Partial<CreateFournisseurDto>) {
-    const payload = this.normalizeKeys(updateFournisseurDto);
+  async update(idFournisseur: number, updateFournisseurDto: Partial<CreateFournisseurDto>, userEmail?: string) {
+    const existing = await this.supabaseService.client.from('Fournisseur').select('*').eq('idfournisseur', idFournisseur).maybeSingle();
+    const payload = this.auditService.stampUpdate(this.normalizeKeys(updateFournisseurDto), userEmail);
     const { data, error } = await this.supabaseService.client
       .from('Fournisseur')
       .update(payload)
@@ -154,10 +160,12 @@ export class FournisseurService {
     if (error) {
       throw new Error(error.message);
     }
+    await this.auditService.log('Fournisseur', idFournisseur, 'UPDATE', userEmail, existing.data, data);
     return this.normalizeFournisseur(data);
   }
 
-  async remove(idFournisseur: number) {
+  async remove(idFournisseur: number, userEmail?: string) {
+    const existing = await this.supabaseService.client.from('Fournisseur').select('*').eq('idfournisseur', idFournisseur).maybeSingle();
     const { data, error } = await this.supabaseService.client
       .from('Fournisseur')
       .delete()
@@ -165,6 +173,7 @@ export class FournisseurService {
     if (error) {
       throw new Error(error.message);
     }
+    await this.auditService.log('Fournisseur', idFournisseur, 'DELETE', userEmail, existing.data, null);
     return data;
   }
 }

@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
+import { AuditService } from '../audit/audit.service';
 import { CreateFinancementDto } from './dto/create-financement.dto';
 
 @Injectable()
 export class FinancementService {
-  constructor(private readonly supabaseService: SupabaseService) {}
+  constructor(
+    private readonly supabaseService: SupabaseService,
+    private readonly auditService: AuditService,
+  ) {}
 
   private normalizeKeys(dto: object): Record<string, unknown> {
     return Object.entries(dto).reduce((normalized, [key, value]) => {
@@ -23,8 +27,8 @@ export class FinancementService {
     };
   }
 
-  async create(createFinancementDto: CreateFinancementDto) {
-    const payload = this.normalizeKeys(createFinancementDto);
+  async create(createFinancementDto: CreateFinancementDto, userEmail?: string) {
+    const payload = this.auditService.stampCreate(this.normalizeKeys(createFinancementDto), userEmail);
     const { data, error } = await this.supabaseService.client
       .from('Financement')
       .insert([payload])
@@ -33,6 +37,7 @@ export class FinancementService {
     if (error) {
       throw new Error(error.message);
     }
+    await this.auditService.log('Financement', data?.idfinancement ?? '', 'CREATE', userEmail, null, data);
     return this.normalizeFinancement(data);
   }
 
@@ -60,8 +65,9 @@ export class FinancementService {
     return this.normalizeFinancement(data);
   }
 
-  async update(idFinancement: number, updateFinancementDto: Partial<CreateFinancementDto>) {
-    const payload = this.normalizeKeys(updateFinancementDto);
+  async update(idFinancement: number, updateFinancementDto: Partial<CreateFinancementDto>, userEmail?: string) {
+    const existing = await this.supabaseService.client.from('Financement').select('*').eq('idfinancement', idFinancement).maybeSingle();
+    const payload = this.auditService.stampUpdate(this.normalizeKeys(updateFinancementDto), userEmail);
     const { data, error } = await this.supabaseService.client
       .from('Financement')
       .update(payload)
@@ -71,14 +77,17 @@ export class FinancementService {
     if (error) {
       throw new Error(error.message);
     }
+    await this.auditService.log('Financement', idFinancement, 'UPDATE', userEmail, existing.data, data);
     return this.normalizeFinancement(data);
   }
 
-  async remove(idFinancement: number) {
+  async remove(idFinancement: number, userEmail?: string) {
+    const existing = await this.supabaseService.client.from('Financement').select('*').eq('idfinancement', idFinancement).maybeSingle();
     const { error } = await this.supabaseService.client.from('Financement').delete().eq('idfinancement', idFinancement);
     if (error) {
       throw new Error(error.message);
     }
+    await this.auditService.log('Financement', idFinancement, 'DELETE', userEmail, existing.data, null);
     return { success: true };
   }
 }

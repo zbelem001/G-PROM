@@ -18,6 +18,7 @@ import { BailleurModule } from './bailleur/bailleur.module';
 import { FinancementModule } from './financement/financement.module';
 import { HistoriqueConnexionModule } from './historique-connexion/historique-connexion.module';
 import { OptionMarcheModule } from './option-marche/option-marche.module';
+import { AuditModule } from './audit/audit.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { OptionMarcheModule } from './option-marche/option-marche.module';
       isGlobal: true,
       envFilePath: ['.env', 'test/.env'],
     }),
+    AuditModule,
     MarcheModule,
     LotModule,
     FournisseurModule,
