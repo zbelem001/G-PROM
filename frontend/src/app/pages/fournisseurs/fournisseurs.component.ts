@@ -4,12 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { HeaderComponent } from '../../components/header/header.component';
 import { MenuComponent } from '../../components/menu/menu.component';
+import { FieldGroupDirective } from '../../directives/field-group.directive';
 import { createFournisseur, deleteFournisseur, Fournisseur, getFournisseurs, updateFournisseur } from '../../../api.service';
 
 @Component({
   standalone: true,
   selector: 'app-fournisseurs',
-  imports: [CommonModule, FormsModule, HeaderComponent, MenuComponent, RouterModule],
+  imports: [CommonModule, FormsModule, HeaderComponent, MenuComponent, RouterModule, FieldGroupDirective],
   templateUrl: './fournisseurs.component.html',
   styleUrls: ['./fournisseurs.component.css'],
 })

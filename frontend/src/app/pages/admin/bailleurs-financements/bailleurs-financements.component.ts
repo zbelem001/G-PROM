@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../../../components/header/header.component';
 import { AdminMenuComponent } from '../../../components/admin-menu/admin-menu.component';
+import { FieldGroupDirective } from '../../../directives/field-group.directive';
 import {
   Bailleur,
   createBailleur,
@@ -19,7 +20,7 @@ import {
 @Component({
   standalone: true,
   selector: 'app-admin-bailleurs-financements',
-  imports: [CommonModule, FormsModule, HeaderComponent, AdminMenuComponent],
+  imports: [CommonModule, FormsModule, HeaderComponent, AdminMenuComponent, FieldGroupDirective],
   templateUrl: './bailleurs-financements.component.html',
   styleUrls: ['./bailleurs-financements.component.css'],
 })

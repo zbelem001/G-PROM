@@ -102,7 +102,7 @@
           <p class="text-sm text-slate-400 mt-1">{{ editingBailleur ? 'Renommez ce bailleur.' : 'Ex : Banque Mondiale, Union Européenne, 2iE...' }}</p>
         </div>
         <form (ngSubmit)="submitBailleur($event)" class="flex flex-col gap-4">
-          <div>
+          <div appFieldGroup>
             <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Nom du bailleur</label>
             <input type="text" [(ngModel)]="bailleurNameInput" name="bailleurName" required autofocus
                    class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"

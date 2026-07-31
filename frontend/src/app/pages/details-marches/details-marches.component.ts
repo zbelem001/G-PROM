@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../../components/header/header.component';
 import { MenuComponent } from '../../components/menu/menu.component';
+import { FieldGroupDirective } from '../../directives/field-group.directive';
 import {
   createLot,
   updateLot,
@@ -119,7 +120,7 @@ interface Consultation {
 @Component({
   standalone: true,
   selector: 'app-details-marches',
-  imports: [CommonModule, FormsModule, HeaderComponent, MenuComponent],
+  imports: [CommonModule, FormsModule, HeaderComponent, MenuComponent, FieldGroupDirective],
   templateUrl: './details-marches.component.html',
   styleUrls: ['./details-marches.component.css'],
 })

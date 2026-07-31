@@ -196,14 +196,14 @@
         <div>
           <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Général</p>
           <div class="space-y-4">
-            <div>
+            <div appFieldGroup>
               <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Raison sociale <span class="text-red-500">*</span></label>
               <input name="raisonSocial" [(ngModel)]="newFournisseur.RaisonSocial"
                 class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
                 placeholder="Nom de l'entreprise" type="text" />
             </div>
             <div class="grid grid-cols-2 gap-4">
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Forme juridique</label>
                 <select name="formeJuridique" [(ngModel)]="newFournisseur.FormeJuridique"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
@@ -214,7 +214,7 @@
                   <option value="Autre">Autre</option>
                 </select>
               </div>
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Statut</label>
                 <select name="statut" [(ngModel)]="newFournisseur.Statut"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
@@ -223,7 +223,7 @@
                 </select>
               </div>
             </div>
-            <div>
+            <div appFieldGroup>
               <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Domaine d'activité</label>
               <input name="domaineActivite" [(ngModel)]="newFournisseur.DomaineActivite"
                 class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
@@ -236,26 +236,26 @@
         <div>
           <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Adresse</p>
           <div class="space-y-4">
-            <div>
+            <div appFieldGroup>
               <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Adresse géographique</label>
               <input name="adresseGeo" [(ngModel)]="newFournisseur.AdresseGeo"
                 class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
                 placeholder="Rue, Quartier..." type="text" />
             </div>
-            <div>
+            <div appFieldGroup>
               <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Adresse postale</label>
               <input name="adressePost" [(ngModel)]="newFournisseur.AdressePost"
                 class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
                 placeholder="01 BP 0000..." type="text" />
             </div>
             <div class="grid grid-cols-2 gap-4">
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Ville</label>
                 <input name="ville" [(ngModel)]="newFournisseur.Ville"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
                   placeholder="Ville" type="text" />
               </div>
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Pays</label>
                 <select name="pays" [(ngModel)]="newFournisseur.Pays"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
@@ -286,26 +286,26 @@
           <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Contacts</p>
           <div class="space-y-4">
             <div class="grid grid-cols-2 gap-4">
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Téléphone 1 <span class="text-red-500">*</span></label>
                 <input name="telephone1" [(ngModel)]="newFournisseur.Telephone1"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
                   placeholder="+226..." type="tel" />
               </div>
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Téléphone 2</label>
                 <input name="telephone2" [(ngModel)]="newFournisseur.Telephone2"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
                   placeholder="Optionnel" type="tel" />
               </div>
             </div>
-            <div>
+            <div appFieldGroup>
               <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Email <span class="text-red-500">*</span></label>
               <input name="email" [(ngModel)]="newFournisseur.Email"
                 class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
                 placeholder="contact@entreprise.com" type="email" />
             </div>
-            <div>
+            <div appFieldGroup>
               <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Site web</label>
               <input name="siteWeb" [(ngModel)]="newFournisseur.SiteWeb"
                 class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
@@ -319,7 +319,7 @@
           <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Références légales</p>
           <div class="space-y-4">
             <div class="grid grid-cols-2 gap-4">
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Dispose IFU</label>
                 <select name="disposeIFU" [(ngModel)]="newFournisseur.DisposeIFU"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
@@ -327,7 +327,7 @@
                   <option [ngValue]="true">Oui</option>
                 </select>
               </div>
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Numéro IFU</label>
                 <input name="numIFU" [(ngModel)]="newFournisseur.numIFU"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
@@ -335,7 +335,7 @@
               </div>
             </div>
             <div class="grid grid-cols-2 gap-4">
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Dispose RCCM</label>
                 <select name="disposeRCCM" [(ngModel)]="newFournisseur.DisposeRCCM"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
@@ -343,7 +343,7 @@
                   <option [ngValue]="true">Oui</option>
                 </select>
               </div>
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Numéro RCCM</label>
                 <input name="numRCCM" [(ngModel)]="newFournisseur.numRCCM"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
@@ -358,13 +358,13 @@
           <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Contact représentant</p>
           <div class="space-y-4">
             <div class="grid grid-cols-2 gap-4">
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Nom &amp; Prénom</label>
                 <input name="nomPrenomRepr" [(ngModel)]="newFournisseur.NomPrenomRepr"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
                   placeholder="Nom du représentant" type="text" />
               </div>
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Fonction</label>
                 <input name="fonctionRepr" [(ngModel)]="newFournisseur.FonctionRepr"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
@@ -372,13 +372,13 @@
               </div>
             </div>
             <div class="grid grid-cols-2 gap-4">
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Téléphone</label>
                 <input name="telephone1Repr" [(ngModel)]="newFournisseur.Telephone1Repr"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
                   placeholder="Téléphone" type="tel" />
               </div>
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Email</label>
                 <input name="emailRepr" [(ngModel)]="newFournisseur.EmailRepr"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
@@ -431,14 +431,14 @@
         <div>
           <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Général</p>
           <div class="space-y-4">
-            <div>
+            <div appFieldGroup>
               <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Raison sociale <span class="text-red-500">*</span></label>
               <input name="editRaisonSocial" [(ngModel)]="editingFournisseur.RaisonSocial"
                 class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
                 placeholder="Nom de l'entreprise" type="text" />
             </div>
             <div class="grid grid-cols-2 gap-4">
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Forme juridique</label>
                 <select name="editFormeJuridique" [(ngModel)]="editingFournisseur.FormeJuridique"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
@@ -449,7 +449,7 @@
                   <option value="Autre">Autre</option>
                 </select>
               </div>
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Statut</label>
                 <select name="editStatut" [(ngModel)]="editingFournisseur.Statut"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
@@ -458,7 +458,7 @@
                 </select>
               </div>
             </div>
-            <div>
+            <div appFieldGroup>
               <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Domaine d'activité</label>
               <input name="editDomaineActivite" [(ngModel)]="editingFournisseur.DomaineActivite"
                 class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
@@ -471,26 +471,26 @@
         <div>
           <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Adresse</p>
           <div class="space-y-4">
-            <div>
+            <div appFieldGroup>
               <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Adresse géographique</label>
               <input name="editAdresseGeo" [(ngModel)]="editingFournisseur.AdresseGeo"
                 class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
                 placeholder="Rue, Quartier..." type="text" />
             </div>
-            <div>
+            <div appFieldGroup>
               <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Adresse postale</label>
               <input name="editAdressePost" [(ngModel)]="editingFournisseur.AdressePost"
                 class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
                 placeholder="01 BP 0000..." type="text" />
             </div>
             <div class="grid grid-cols-2 gap-4">
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Ville</label>
                 <input name="editVille" [(ngModel)]="editingFournisseur.Ville"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
                   placeholder="Ville" type="text" />
               </div>
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Pays</label>
                 <select name="editPays" [(ngModel)]="editingFournisseur.Pays"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
@@ -521,26 +521,26 @@
           <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Contacts</p>
           <div class="space-y-4">
             <div class="grid grid-cols-2 gap-4">
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Téléphone 1 <span class="text-red-500">*</span></label>
                 <input name="editTelephone1" [(ngModel)]="editingFournisseur.Telephone1"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
                   placeholder="+226..." type="tel" />
               </div>
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Téléphone 2</label>
                 <input name="editTelephone2" [(ngModel)]="editingFournisseur.Telephone2"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
                   placeholder="Optionnel" type="tel" />
               </div>
             </div>
-            <div>
+            <div appFieldGroup>
               <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Email <span class="text-red-500">*</span></label>
               <input name="editEmail" [(ngModel)]="editingFournisseur.Email"
                 class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
                 placeholder="contact@entreprise.com" type="email" />
             </div>
-            <div>
+            <div appFieldGroup>
               <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Site web</label>
               <input name="editSiteWeb" [(ngModel)]="editingFournisseur.SiteWeb"
                 class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
@@ -554,7 +554,7 @@
           <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Références légales</p>
           <div class="space-y-4">
             <div class="grid grid-cols-2 gap-4">
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Dispose IFU</label>
                 <select name="editDisposeIFU" [(ngModel)]="editingFournisseur.DisposeIFU"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
@@ -562,7 +562,7 @@
                   <option [ngValue]="true">Oui</option>
                 </select>
               </div>
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Numéro IFU</label>
                 <input name="editNumIFU" [(ngModel)]="editingFournisseur.numIFU"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
@@ -570,7 +570,7 @@
               </div>
             </div>
             <div class="grid grid-cols-2 gap-4">
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Dispose RCCM</label>
                 <select name="editDisposeRCCM" [(ngModel)]="editingFournisseur.DisposeRCCM"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
@@ -578,7 +578,7 @@
                   <option [ngValue]="true">Oui</option>
                 </select>
               </div>
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Numéro RCCM</label>
                 <input name="editNumRCCM" [(ngModel)]="editingFournisseur.numRCCM"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
@@ -593,13 +593,13 @@
           <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Contact représentant</p>
           <div class="space-y-4">
             <div class="grid grid-cols-2 gap-4">
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Nom &amp; Prénom</label>
                 <input name="editNomPrenomRepr" [(ngModel)]="editingFournisseur.NomPrenomRepr"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
                   placeholder="Nom du représentant" type="text" />
               </div>
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Fonction</label>
                 <input name="editFonctionRepr" [(ngModel)]="editingFournisseur.FonctionRepr"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
@@ -607,13 +607,13 @@
               </div>
             </div>
             <div class="grid grid-cols-2 gap-4">
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Téléphone</label>
                 <input name="editTelephone1Repr" [(ngModel)]="editingFournisseur.Telephone1Repr"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
                   placeholder="Téléphone" type="tel" />
               </div>
-              <div>
+              <div appFieldGroup>
                 <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Email</label>
                 <input name="editEmailRepr" [(ngModel)]="editingFournisseur.EmailRepr"
                   class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"

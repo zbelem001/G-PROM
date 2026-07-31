@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { HeaderComponent } from '../../components/header/header.component';
 import { MenuComponent } from '../../components/menu/menu.component';
+import { FieldGroupDirective } from '../../directives/field-group.directive';
 import {
   Bailleur,
   createMarche,
@@ -21,7 +22,7 @@ import {
 @Component({
   standalone: true,
   selector: 'app-markets',
-  imports: [CommonModule, FormsModule, HeaderComponent, MenuComponent, RouterModule],
+  imports: [CommonModule, FormsModule, HeaderComponent, MenuComponent, RouterModule, FieldGroupDirective],
   templateUrl: './markets.component.html',
   styleUrls: ['./markets.component.css'],
 })
