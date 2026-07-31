@@ -1,4 +1,4 @@
-<div class="bg-surface font-body text-on-surface min-h-screen flex overflow-hidden">
+<div class="bg-surface font-body text-on-surface min-h-screen flex overflow-hidden" (click)="closeDropdowns()">
   <app-admin-menu></app-admin-menu>
   <main class="flex-1 ml-[240px] flex flex-col h-screen overflow-hidden bg-surface relative">
     <app-header></app-header>
@@ -118,6 +118,48 @@
         </div>
 
         <div *ngIf="!loading && historique.length > 0" class="bg-white rounded-xl border border-slate-100 overflow-hidden">
+
+          <!-- Barre outils -->
+          <div class="flex items-center justify-between px-5 py-3 border-b border-slate-100 flex-wrap gap-2">
+            <div class="flex items-center gap-3">
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+                <input [(ngModel)]="historiqueSearchQuery" (ngModelChange)="onHistoriqueSearch()"
+                  class="pl-9 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-300 w-56"
+                  placeholder="Rechercher..." type="text" />
+              </div>
+              <div class="relative">
+                <button type="button" (click)="toggleHistoriqueUserDropdown($event)"
+                  class="flex items-center gap-1.5 px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-500 border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
+                  [class.bg-slate-50]="historiqueFilterUserId !== null">
+                  <span class="material-symbols-outlined text-[16px]">filter_list</span>
+                  {{ historiqueFilterUserId !== null ? userLabel(historiqueFilterUserId) : 'Tous les utilisateurs' }}
+                  <span class="material-symbols-outlined text-[14px]">{{ showHistoriqueUserDropdown ? 'expand_less' : 'expand_more' }}</span>
+                </button>
+                <div *ngIf="showHistoriqueUserDropdown" (click)="$event.stopPropagation()"
+                  class="absolute top-full left-0 mt-1 z-20 bg-white rounded-lg shadow-[0_8px_24px_rgba(26,46,68,0.12)] border border-slate-100 min-w-[200px] max-h-64 overflow-y-auto">
+                  <button type="button" (click)="setHistoriqueUserFilter(null)"
+                    class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 transition-colors" [class.font-bold]="historiqueFilterUserId === null">Tous</button>
+                  <button type="button" *ngFor="let u of historiqueUsers" (click)="setHistoriqueUserFilter(u.idutilisateur)"
+                    class="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 transition-colors" [class.font-bold]="historiqueFilterUserId === u.idutilisateur">{{ displayName(u) }}</button>
+                </div>
+              </div>
+              <div class="flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 rounded-lg">
+                <span class="material-symbols-outlined text-slate-400 text-[16px]">event</span>
+                <input type="date" [(ngModel)]="historiqueDateFrom" (ngModelChange)="onHistoriqueDateChange()"
+                  class="text-xs text-slate-600 bg-transparent focus:outline-none w-[118px]" />
+                <span class="text-slate-300 text-xs">→</span>
+                <input type="date" [(ngModel)]="historiqueDateTo" (ngModelChange)="onHistoriqueDateChange()"
+                  class="text-xs text-slate-600 bg-transparent focus:outline-none w-[118px]" />
+                <button *ngIf="historiqueHasDateFilter" type="button" (click)="clearHistoriqueDateFilter()"
+                  class="text-slate-400 hover:text-slate-700 transition-colors">
+                  <span class="material-symbols-outlined text-[16px]">close</span>
+                </button>
+              </div>
+            </div>
+            <span class="text-[11px] text-slate-400 font-medium">{{ historiqueDisplayStart }}–{{ historiqueDisplayEnd }} sur {{ filteredHistorique.length }}</span>
+          </div>
+
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="border-b border-slate-100">
@@ -128,7 +170,10 @@
               </tr>
             </thead>
             <tbody class="text-sm">
-              <tr *ngFor="let entry of historique" class="border-b border-slate-50 last:border-0 hover:bg-slate-50/60 transition-colors">
+              <tr *ngIf="filteredHistorique.length === 0">
+                <td colspan="4" class="px-5 py-10 text-center text-sm text-slate-400">Aucun résultat pour ces critères.</td>
+              </tr>
+              <tr *ngFor="let entry of displayedHistorique" class="border-b border-slate-50 last:border-0 hover:bg-slate-50/60 transition-colors">
                 <td class="px-5 py-3.5">
                   <p class="font-medium text-slate-900">{{ userLabel(entry.idutilisateur) }}</p>
                   <p class="text-[11px] text-slate-400">{{ userEmail(entry.idutilisateur) }}</p>
@@ -139,6 +184,23 @@
               </tr>
             </tbody>
           </table>
+
+          <!-- Pagination -->
+          <div *ngIf="filteredHistorique.length > 0" class="flex items-center justify-center gap-1 px-6 py-4 border-t border-slate-100">
+            <button type="button" (click)="previousHistoriquePage()" [disabled]="historiqueCurrentPage <= 1"
+              class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors disabled:opacity-30">
+              <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+            </button>
+            <button *ngFor="let page of historiquePageNumbers" type="button" (click)="setHistoriquePage(page)"
+              class="w-7 h-7 flex items-center justify-center rounded-lg text-xs font-semibold transition-colors"
+              [ngClass]="page === historiqueCurrentPage ? 'bg-primary text-white' : 'text-slate-500 hover:bg-slate-100'">
+              {{ page }}
+            </button>
+            <button type="button" (click)="nextHistoriquePage()" [disabled]="historiqueCurrentPage >= historiqueTotalPages"
+              class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors disabled:opacity-30">
+              <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -152,33 +214,33 @@
         </div>
         <form (ngSubmit)="submitForm($event)" class="flex flex-col gap-4">
           <div class="grid grid-cols-2 gap-3">
-            <div>
+            <div appFieldGroup>
               <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Prénom</label>
               <input type="text" [(ngModel)]="form.prenom" name="prenom"
                 class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
                 placeholder="Zakaria" />
             </div>
-            <div>
+            <div appFieldGroup>
               <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Nom</label>
               <input type="text" [(ngModel)]="form.nom" name="nom"
                 class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
                 placeholder="Belem" />
             </div>
           </div>
-          <div>
+          <div appFieldGroup>
             <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Nom d'utilisateur <span class="text-red-500">*</span></label>
             <input type="text" [(ngModel)]="form.nomUtilisateur" name="nomUtilisateur" required
               class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
               placeholder="zakaria.belem" />
           </div>
-          <div>
+          <div appFieldGroup>
             <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Email <span class="text-red-500">*</span></label>
             <input type="email" [(ngModel)]="form.email" name="email" required
               class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
               placeholder="prenom.nom@2ie-edu.org" />
             <p class="text-[11px] text-slate-400 mt-1">{{ emailHint }}</p>
           </div>
-          <div>
+          <div appFieldGroup>
             <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">
               {{ editingUser ? 'Nouveau mot de passe' : 'Mot de passe' }} <span *ngIf="!editingUser" class="text-red-500">*</span>
             </label>
@@ -187,7 +249,7 @@
               [placeholder]="editingUser ? 'Laisser vide pour ne pas changer' : '••••••••'" />
           </div>
           <div class="grid grid-cols-2 gap-3">
-            <div>
+            <div appFieldGroup>
               <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Rôle</label>
               <select [(ngModel)]="form.role" name="role"
                 class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
@@ -195,7 +257,7 @@
                 <option value="admin">Administrateur</option>
               </select>
             </div>
-            <div>
+            <div appFieldGroup>
               <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Statut</label>
               <select [(ngModel)]="form.statut" name="statut"
                 class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../../../components/header/header.component';
 import { AdminMenuComponent } from '../../../components/admin-menu/admin-menu.component';
+import { FieldGroupDirective } from '../../../directives/field-group.directive';
 import {
   AuthUser,
   createUtilisateur,
@@ -33,7 +34,7 @@ function emptyForm(): UtilisateurForm {
 @Component({
   standalone: true,
   selector: 'app-admin-utilisateurs',
-  imports: [CommonModule, FormsModule, HeaderComponent, AdminMenuComponent],
+  imports: [CommonModule, FormsModule, HeaderComponent, AdminMenuComponent, FieldGroupDirective],
   templateUrl: './utilisateurs.component.html',
   styleUrls: ['./utilisateurs.component.css'],
 })
@@ -42,6 +43,15 @@ export class UtilisateursComponent implements OnInit {
   historique: HistoriqueConnexion[] = [];
   loading = false;
   errorMessage = '';
+
+  // Historique de connexions — recherche / filtre / pagination
+  historiqueSearchQuery = '';
+  historiqueFilterUserId: number | null = null;
+  historiqueDateFrom = '';
+  historiqueDateTo = '';
+  showHistoriqueUserDropdown = false;
+  historiqueCurrentPage = 1;
+  readonly historiquePageSize = 10;
 
   // Ajout / édition
   showModal = false;
@@ -102,6 +112,107 @@ export class UtilisateursComponent implements OnInit {
       hour: '2-digit',
       minute: '2-digit',
     });
+  }
+
+  get filteredHistorique(): HistoriqueConnexion[] {
+    const q = this.historiqueSearchQuery.toLowerCase().trim();
+    // Date inputs are yyyy-mm-dd (local, no time) — compare against day boundaries so
+    // "to" is inclusive of the whole selected day.
+    const from = this.historiqueDateFrom ? new Date(`${this.historiqueDateFrom}T00:00:00`).getTime() : null;
+    const to = this.historiqueDateTo ? new Date(`${this.historiqueDateTo}T23:59:59.999`).getTime() : null;
+
+    return this.historique.filter((entry) => {
+      if (this.historiqueFilterUserId !== null && entry.idutilisateur !== this.historiqueFilterUserId) {
+        return false;
+      }
+      if (from !== null || to !== null) {
+        const entryTime = entry.dateconnexion ? new Date(entry.dateconnexion).getTime() : NaN;
+        if (Number.isNaN(entryTime)) return false;
+        if (from !== null && entryTime < from) return false;
+        if (to !== null && entryTime > to) return false;
+      }
+      if (q) {
+        const haystack = [this.userLabel(entry.idutilisateur), this.userEmail(entry.idutilisateur), entry.ipaddress, entry.useragent]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase();
+        if (!haystack.includes(q)) return false;
+      }
+      return true;
+    });
+  }
+
+  get displayedHistorique(): HistoriqueConnexion[] {
+    const start = (this.historiqueCurrentPage - 1) * this.historiquePageSize;
+    return this.filteredHistorique.slice(start, start + this.historiquePageSize);
+  }
+
+  get historiqueTotalPages(): number {
+    return Math.max(1, Math.ceil(this.filteredHistorique.length / this.historiquePageSize));
+  }
+
+  get historiquePageNumbers(): number[] {
+    return Array.from({ length: this.historiqueTotalPages }, (_, i) => i + 1);
+  }
+
+  get historiqueDisplayStart(): number {
+    return Math.min((this.historiqueCurrentPage - 1) * this.historiquePageSize + 1, this.filteredHistorique.length || 1);
+  }
+
+  get historiqueDisplayEnd(): number {
+    return Math.min(this.historiqueCurrentPage * this.historiquePageSize, this.filteredHistorique.length);
+  }
+
+  get historiqueUsers(): AuthUser[] {
+    const ids = new Set(this.historique.map((h) => h.idutilisateur));
+    return this.utilisateurs.filter((u) => ids.has(u.idutilisateur));
+  }
+
+  onHistoriqueSearch(): void {
+    this.historiqueCurrentPage = 1;
+  }
+
+  onHistoriqueDateChange(): void {
+    this.historiqueCurrentPage = 1;
+  }
+
+  get historiqueHasDateFilter(): boolean {
+    return !!this.historiqueDateFrom || !!this.historiqueDateTo;
+  }
+
+  clearHistoriqueDateFilter(): void {
+    this.historiqueDateFrom = '';
+    this.historiqueDateTo = '';
+    this.historiqueCurrentPage = 1;
+  }
+
+  toggleHistoriqueUserDropdown(event: Event): void {
+    event.stopPropagation();
+    this.showHistoriqueUserDropdown = !this.showHistoriqueUserDropdown;
+  }
+
+  setHistoriqueUserFilter(idutilisateur: number | null): void {
+    this.historiqueFilterUserId = idutilisateur;
+    this.historiqueCurrentPage = 1;
+    this.showHistoriqueUserDropdown = false;
+    this.cd.markForCheck();
+  }
+
+  setHistoriquePage(page: number): void {
+    if (page < 1 || page > this.historiqueTotalPages) return;
+    this.historiqueCurrentPage = page;
+  }
+
+  previousHistoriquePage(): void {
+    this.setHistoriquePage(this.historiqueCurrentPage - 1);
+  }
+
+  nextHistoriquePage(): void {
+    this.setHistoriquePage(this.historiqueCurrentPage + 1);
+  }
+
+  closeDropdowns(): void {
+    this.showHistoriqueUserDropdown = false;
   }
 
   // ── Stats ────────────────────────────────────────────────────────────────
