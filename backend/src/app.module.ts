@@ -19,6 +19,7 @@ import { FinancementModule } from './financement/financement.module';
 import { HistoriqueConnexionModule } from './historique-connexion/historique-connexion.module';
 import { OptionMarcheModule } from './option-marche/option-marche.module';
 import { AuditModule } from './audit/audit.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { AuditModule } from './audit/audit.module';
       envFilePath: ['.env', 'test/.env'],
     }),
     AuditModule,
+    ChatModule,
     MarcheModule,
     LotModule,
     FournisseurModule,
