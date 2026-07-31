@@ -1,0 +1,86 @@
+<div class="bg-surface font-body text-on-surface min-h-screen flex overflow-hidden">
+  <app-admin-menu></app-admin-menu>
+  <main class="flex-1 ml-[240px] flex flex-col h-screen overflow-hidden bg-surface relative">
+    <app-header></app-header>
+    <div class="flex-1 pt-24 px-8 pb-8 overflow-auto">
+
+      <div class="flex items-center justify-between mb-6 pt-2">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900 uppercase tracking-wide">Journal d'audit</h1>
+          <p class="text-sm text-slate-400 mt-0.5">Historique des créations, modifications et suppressions sur les données du marché.</p>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3 mb-4">
+        <select [(ngModel)]="selectedTable" (ngModelChange)="onFilterChange()"
+                class="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 focus:outline-none focus:border-slate-400 transition-colors">
+          <option value="">Toutes les tables</option>
+          <option *ngFor="let t of tables" [value]="t">{{ t }}</option>
+        </select>
+        <input type="text" [(ngModel)]="searchRecordId" (keyup.enter)="onFilterChange()"
+               placeholder="Rechercher un identifiant..."
+               class="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-700 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors w-64" />
+        <button type="button" (click)="onFilterChange()"
+                class="px-3 py-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors text-sm font-medium">
+          Filtrer
+        </button>
+      </div>
+
+      <p *ngIf="errorMessage" class="mb-4 text-sm text-red-600">{{ errorMessage }}</p>
+
+      <div *ngIf="loading" class="bg-white rounded-xl border border-slate-100 px-6 py-10 text-center text-sm text-slate-400">Chargement…</div>
+
+      <div *ngIf="!loading" class="bg-white rounded-xl border border-slate-100 overflow-hidden">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-slate-100 text-left text-[11px] uppercase tracking-wide text-slate-400">
+              <th class="px-4 py-3 font-medium">Date</th>
+              <th class="px-4 py-3 font-medium">Table</th>
+              <th class="px-4 py-3 font-medium">Identifiant</th>
+              <th class="px-4 py-3 font-medium">Action</th>
+              <th class="px-4 py-3 font-medium">Utilisateur</th>
+              <th class="px-4 py-3 font-medium"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let entry of entries">
+              <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors cursor-pointer" (click)="toggleDetails(entry)">
+                <td class="px-4 py-3 text-slate-600 whitespace-nowrap">{{ entry.created_at | date: 'dd/MM/yyyy HH:mm' }}</td>
+                <td class="px-4 py-3 text-slate-700 font-medium">{{ entry.table_name }}</td>
+                <td class="px-4 py-3 text-slate-500 font-mono text-xs">{{ entry.record_id }}</td>
+                <td class="px-4 py-3">
+                  <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold" [ngClass]="actionClass(entry.action)">
+                    {{ actionLabel(entry.action) }}
+                  </span>
+                </td>
+                <td class="px-4 py-3 text-slate-600">{{ entry.user_email || '—' }}</td>
+                <td class="px-4 py-3 text-right">
+                  <span class="material-symbols-outlined text-[18px] text-slate-400">
+                    {{ expandedId === entry.id ? 'expand_less' : 'expand_more' }}
+                  </span>
+                </td>
+              </tr>
+              <tr *ngIf="expandedId === entry.id" class="border-b border-slate-50 bg-slate-50/40">
+                <td colspan="6" class="px-4 py-4">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <p class="text-[11px] uppercase tracking-wide text-slate-400 font-medium mb-1">Avant</p>
+                      <pre class="text-xs bg-white border border-slate-100 rounded-lg p-3 overflow-auto max-h-64 whitespace-pre-wrap">{{ formatJson(entry.old_values) }}</pre>
+                    </div>
+                    <div>
+                      <p class="text-[11px] uppercase tracking-wide text-slate-400 font-medium mb-1">Après</p>
+                      <pre class="text-xs bg-white border border-slate-100 rounded-lg p-3 overflow-auto max-h-64 whitespace-pre-wrap">{{ formatJson(entry.new_values) }}</pre>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+            <tr *ngIf="entries.length === 0">
+              <td colspan="6" class="px-4 py-10 text-center text-sm text-slate-400 italic">Aucune entrée pour le moment.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>

@@ -12,6 +12,7 @@ import { ConnexionComponent } from './pages/connexion/connexion.component';
 import { BailleursFinancementsComponent } from './pages/admin/bailleurs-financements/bailleurs-financements.component';
 import { UtilisateursComponent } from './pages/admin/utilisateurs/utilisateurs.component';
 import { ListesParametrablesComponent } from './pages/admin/listes-parametrables/listes-parametrables.component';
+import { JournalAuditComponent } from './pages/admin/journal-audit/journal-audit.component';
 import { authGuard } from './guards/auth.guard';
 import { adminGuard } from './guards/admin.guard';
 
@@ -35,6 +36,11 @@ const routes: Route[] = [
   {
     path: 'admin/listes-parametrables',
     component: ListesParametrablesComponent,
+    canActivate: [authGuard, adminGuard],
+  },
+  {
+    path: 'admin/journal-audit',
+    component: JournalAuditComponent,
     canActivate: [authGuard, adminGuard],
   },
 ];

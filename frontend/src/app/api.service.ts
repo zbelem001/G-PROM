@@ -717,3 +717,22 @@ export async function createOptionMarche(categorie: OptionMarcheCategorie, valeu
 export async function deleteOptionMarche(id: number): Promise<void> {
   await request(`/options-marche/${id}`, { method: 'DELETE' });
 }
+
+export interface AuditLogEntry {
+  id: number;
+  table_name: string;
+  record_id: string;
+  action: 'CREATE' | 'UPDATE' | 'DELETE';
+  user_email: string | null;
+  old_values: unknown;
+  new_values: unknown;
+  created_at: string;
+}
+
+export async function getAuditLog(table?: string, recordId?: string): Promise<AuditLogEntry[]> {
+  const params = new URLSearchParams();
+  if (table) params.set('table', table);
+  if (recordId) params.set('recordId', recordId);
+  const query = params.toString() ? `?${params.toString()}` : '';
+  return request<AuditLogEntry[]>(`/audit-log${query}`);
+}
