@@ -1,0 +1,123 @@
+<main class="flex-grow flex items-center justify-center w-full px-6 py-12 bg-surface-container-low min-h-screen login-background">
+  <div class="max-w-xl w-full space-y-8">
+    <div class="text-center mb-10"></div>
+
+    <div class="bg-surface-container-lowest rounded-none shadow-[0_6px_24px_rgba(26,46,68,0.08)] p-10 border-4 border-transparent color-frame">
+
+      <!-- Indicateur d'étapes -->
+      <div class="flex items-center justify-center gap-2 mb-8">
+        <div class="w-2.5 h-2.5 rounded-full transition-colors" [ngClass]="step === 'email' ? 'bg-[#039CD3]' : 'bg-[#039CD3]/40'"></div>
+        <div class="w-2.5 h-2.5 rounded-full transition-colors" [ngClass]="step === 'code' ? 'bg-[#039CD3]' : (step === 'password' || step === 'done' ? 'bg-[#039CD3]/40' : 'bg-outline-variant/30')"></div>
+        <div class="w-2.5 h-2.5 rounded-full transition-colors" [ngClass]="step === 'password' ? 'bg-[#039CD3]' : (step === 'done' ? 'bg-[#039CD3]/40' : 'bg-outline-variant/30')"></div>
+        <div class="w-2.5 h-2.5 rounded-full transition-colors" [ngClass]="step === 'done' ? 'bg-[#039CD3]' : 'bg-outline-variant/30'"></div>
+      </div>
+
+      <p *ngIf="errorMessage" class="mb-4 text-sm text-white bg-error inline-block px-3 py-2 rounded-md">{{ errorMessage }}</p>
+
+      <!-- Étape 1 : email -->
+      <form *ngIf="step === 'email'" class="space-y-6" (submit)="submitEmail($event)">
+        <div class="text-center mb-2">
+          <h2 class="text-xl font-bold text-[#1a2e44]">Mot de passe oublié</h2>
+          <p class="text-sm text-secondary mt-1">Saisissez votre email, nous vous enverrons un code de réinitialisation.</p>
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-[#1a2e44] mb-2 tracking-tight" for="email">Email</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <span class="material-symbols-outlined text-outline-variant text-[20px]">mail</span>
+            </div>
+            <input
+              class="block w-full pl-10 pr-3 py-3 bg-surface-container-highest border-none rounded-[10px] text-on-surface placeholder-outline focus:ring-2 focus:ring-on-primary-container/20 focus:bg-surface-container-lowest transition-all duration-200"
+              id="email" name="email" [(ngModel)]="email" placeholder="prenom.nom@2ie-edu.org" required type="email" />
+          </div>
+        </div>
+        <button type="submit" [disabled]="submitting"
+          class="liquid-gradient w-full flex justify-center items-center gap-2 py-3.5 px-4 rounded-[10px] text-[#1a2e44] font-bold text-md shadow-md hover:shadow-lg active:scale-95 transition-all duration-300 disabled:opacity-60">
+          <span *ngIf="submitting" class="h-4 w-4 rounded-full border-2 border-[#1a2e44] border-t-transparent animate-spin"></span>
+          {{ submitting ? 'Envoi...' : 'Envoyer le code' }}
+        </button>
+        <p class="text-center text-sm">
+          <a class="font-medium text-secondary hover:text-[#1a2e44] transition-colors cursor-pointer" (click)="backToLogin()">Retour à la connexion</a>
+        </p>
+      </form>
+
+      <!-- Étape 2 : code -->
+      <form *ngIf="step === 'code'" class="space-y-6" (submit)="submitCode($event)">
+        <div class="text-center mb-2">
+          <h2 class="text-xl font-bold text-[#1a2e44]">Vérification</h2>
+          <p class="text-sm text-secondary mt-1">Un code a été envoyé à <span class="font-semibold">{{ email }}</span>. Saisissez-le ci-dessous.</p>
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-[#1a2e44] mb-2 tracking-tight" for="code">Code de vérification</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <span class="material-symbols-outlined text-outline-variant text-[20px]">pin</span>
+            </div>
+            <input
+              class="block w-full pl-10 pr-3 py-3 bg-surface-container-highest border-none rounded-[10px] text-on-surface placeholder-outline focus:ring-2 focus:ring-on-primary-container/20 focus:bg-surface-container-lowest transition-all duration-200 tracking-[0.3em] font-semibold"
+              id="code" name="code" [(ngModel)]="code" placeholder="000000" required maxlength="6" type="text" inputmode="numeric" />
+          </div>
+        </div>
+        <button type="submit" [disabled]="submitting"
+          class="liquid-gradient w-full flex justify-center items-center gap-2 py-3.5 px-4 rounded-[10px] text-[#1a2e44] font-bold text-md shadow-md hover:shadow-lg active:scale-95 transition-all duration-300 disabled:opacity-60">
+          <span *ngIf="submitting" class="h-4 w-4 rounded-full border-2 border-[#1a2e44] border-t-transparent animate-spin"></span>
+          {{ submitting ? 'Vérification...' : 'Vérifier le code' }}
+        </button>
+        <p class="text-center text-sm">
+          <a class="font-medium text-secondary hover:text-[#1a2e44] transition-colors cursor-pointer" (click)="resendCode()">Renvoyer le code</a>
+        </p>
+      </form>
+
+      <!-- Étape 3 : nouveau mot de passe -->
+      <form *ngIf="step === 'password'" class="space-y-6" (submit)="submitPassword($event)">
+        <div class="text-center mb-2">
+          <h2 class="text-xl font-bold text-[#1a2e44]">Nouveau mot de passe</h2>
+          <p class="text-sm text-secondary mt-1">Choisissez un nouveau mot de passe (6 caractères minimum).</p>
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-[#1a2e44] mb-2 tracking-tight" for="newPassword">Nouveau mot de passe</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <span class="material-symbols-outlined text-outline-variant text-[20px]">lock</span>
+            </div>
+            <input
+              class="block w-full pl-10 pr-3 py-3 bg-surface-container-highest border-none rounded-[10px] text-on-surface placeholder-outline focus:ring-2 focus:ring-on-primary-container/20 focus:bg-surface-container-lowest transition-all duration-200"
+              id="newPassword" name="newPassword" [(ngModel)]="newPassword" placeholder="••••••••" required minlength="6" type="password" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-bold text-[#1a2e44] mb-2 tracking-tight" for="confirmPassword">Confirmer le mot de passe</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <span class="material-symbols-outlined text-outline-variant text-[20px]">lock_reset</span>
+            </div>
+            <input
+              class="block w-full pl-10 pr-3 py-3 bg-surface-container-highest border-none rounded-[10px] text-on-surface placeholder-outline focus:ring-2 focus:ring-on-primary-container/20 focus:bg-surface-container-lowest transition-all duration-200"
+              id="confirmPassword" name="confirmPassword" [(ngModel)]="confirmPassword" placeholder="••••••••" required minlength="6" type="password" />
+          </div>
+        </div>
+        <button type="submit" [disabled]="submitting"
+          class="liquid-gradient w-full flex justify-center items-center gap-2 py-3.5 px-4 rounded-[10px] text-[#1a2e44] font-bold text-md shadow-md hover:shadow-lg active:scale-95 transition-all duration-300 disabled:opacity-60">
+          <span *ngIf="submitting" class="h-4 w-4 rounded-full border-2 border-[#1a2e44] border-t-transparent animate-spin"></span>
+          {{ submitting ? 'Enregistrement...' : 'Changer le mot de passe' }}
+        </button>
+      </form>
+
+      <!-- Étape 4 : confirmation -->
+      <div *ngIf="step === 'done'" class="text-center space-y-6">
+        <div class="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center mx-auto">
+          <span class="material-symbols-outlined text-green-600 text-[32px]">check_circle</span>
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-[#1a2e44]">Mot de passe changé !</h2>
+          <p class="text-sm text-secondary mt-1">Votre mot de passe a été réinitialisé avec succès. Vous pouvez maintenant vous connecter.</p>
+        </div>
+        <button type="button" (click)="backToLogin()"
+          class="liquid-gradient w-full flex justify-center items-center gap-2 py-3.5 px-4 rounded-[10px] text-[#1a2e44] font-bold text-md shadow-md hover:shadow-lg active:scale-95 transition-all duration-300">
+          Retour à la connexion
+        </button>
+      </div>
+
+    </div>
+  </div>
+</main>

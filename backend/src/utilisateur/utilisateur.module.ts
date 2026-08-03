@@ -8,5 +8,6 @@ import { AuditModule } from '../audit/audit.module';
   imports: [SupabaseModule, AuditModule],
   controllers: [UtilisateurController],
   providers: [UtilisateurService],
+  exports: [UtilisateurService],
 })
 export class UtilisateurModule {}
