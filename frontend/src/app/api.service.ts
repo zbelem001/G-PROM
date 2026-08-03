@@ -110,6 +110,8 @@ export interface Document {
   Avenant?: string;
   OrdreService?: string;
   PV_reception_tech?: string;
+  PV_reception_prov?: string;
+  PV_reception_def?: string;
 }
 
 export interface Soumission {
@@ -290,6 +292,45 @@ export async function deleteMarche(numbMarche: string): Promise<void> {
   await request(`/marches/${encodeURIComponent(numbMarche)}`, { method: 'DELETE' });
 }
 
+export interface Ppm {
+  numbMarche: string;
+  Description: string;
+  BudgetEstimatif?: number;
+  Devise?: 'XOF' | 'EUR' | 'USD';
+  ModePassation?: string;
+  DatePrevueLancement: string;
+  Statut?: 'Planifié' | 'Transféré';
+}
+
+function normalizePpmResponse(raw: any): Ppm {
+  return {
+    numbMarche: raw.numbMarche ?? raw.numbmarche ?? '',
+    Description: raw.Description ?? raw.description ?? '',
+    BudgetEstimatif: raw.BudgetEstimatif ?? raw.budgetestimatif ?? undefined,
+    Devise: raw.Devise ?? raw.devise ?? undefined,
+    ModePassation: raw.ModePassation ?? raw.modepassation ?? undefined,
+    DatePrevueLancement: raw.DatePrevueLancement ?? raw.dateprevuelancement ?? '',
+    Statut: raw.Statut ?? raw.statut ?? undefined,
+  };
+}
+
+export async function getPpmEntries(): Promise<Ppm[]> {
+  const data = await request<any[]>('/ppm');
+  return data.map(normalizePpmResponse);
+}
+
+export async function createPpmEntry(ppm: Partial<Ppm>): Promise<Ppm> {
+  const response = await request<any>('/ppm', {
+    method: 'POST',
+    body: JSON.stringify(ppm),
+  });
+  return normalizePpmResponse(response);
+}
+
+export async function deletePpmEntry(numbMarche: string): Promise<void> {
+  await request(`/ppm/${encodeURIComponent(numbMarche)}`, { method: 'DELETE' });
+}
+
 export async function getLots(): Promise<Lot[]> {
   const data = await request<any[]>('/lots');
   return data.map(normalizeLotResponse);
@@ -381,6 +422,8 @@ function normalizeDocumentResponse(raw: any): Document {
     Avenant: raw.Avenant ?? raw.avenant ?? undefined,
     OrdreService: raw.OrdreService ?? raw.ordreservice ?? undefined,
     PV_reception_tech: raw.PV_reception_tech ?? raw.pv_reception_tech ?? undefined,
+    PV_reception_prov: raw.PV_reception_prov ?? raw.pv_reception_prov ?? undefined,
+    PV_reception_def: raw.PV_reception_def ?? raw.pv_reception_def ?? undefined,
   };
 }
 
@@ -642,6 +685,27 @@ export async function login(identifiant: string, motDePasse: string): Promise<Lo
   return request<LoginResponse>('/auth/login', {
     method: 'POST',
     body: JSON.stringify({ identifiant, motDePasse }),
+  });
+}
+
+export async function forgotPassword(email: string): Promise<{ message: string }> {
+  return request<{ message: string }>('/auth/forgot-password', {
+    method: 'POST',
+    body: JSON.stringify({ email }),
+  });
+}
+
+export async function verifyResetCode(email: string, code: string): Promise<{ valid: boolean }> {
+  return request<{ valid: boolean }>('/auth/verify-reset-code', {
+    method: 'POST',
+    body: JSON.stringify({ email, code }),
+  });
+}
+
+export async function resetPassword(email: string, code: string, newPassword: string): Promise<{ message: string }> {
+  return request<{ message: string }>('/auth/reset-password', {
+    method: 'POST',
+    body: JSON.stringify({ email, code, newPassword }),
   });
 }
 

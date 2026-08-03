@@ -7,7 +7,6 @@ import { MenuComponent } from '../../components/menu/menu.component';
 import { FieldGroupDirective } from '../../directives/field-group.directive';
 import {
   Bailleur,
-  createMarche,
   deleteMarche,
   Financement,
   getBailleurs,
@@ -32,15 +31,9 @@ export class MarketsComponent implements OnInit {
   financements: Financement[] = [];
   optionsMarche: OptionMarche[] = [];
   loading = false;
-  submitting = false;
   isUpdating = false;
   isDeleting = false;
   errorMessage = '';
-
-  // Add
-  showAddMarket = false;
-  newMarche: Partial<Marche> = this.defaultNewMarche();
-  newMarcheBailleurId: number | null = null;
 
   // Edit
   showEditMarket = false;
@@ -66,23 +59,6 @@ export class MarketsComponent implements OnInit {
 
   constructor(private cd: ChangeDetectorRef, private router: Router, private ngZone: NgZone, private appRef: ApplicationRef) {}
 
-  private getTodayDate(): string {
-    return new Date().toISOString().slice(0, 10);
-  }
-
-  private defaultNewMarche(): Partial<Marche> {
-    return {
-      NombreLot: 1,
-      Devise: 'XOF',
-      Statut: 'À lancer',
-      NatureOuverture: 'Fournitures',
-      ModePassation: "Appel d'Offres Ouvert",
-      SCT_person1: 'N/A',
-      BudgetEstimatif: 0,
-      DateEnregistrement: this.getTodayDate(),
-    };
-  }
-
   ngOnInit() {
     this.loadMarches();
   }
@@ -103,19 +79,6 @@ export class MarketsComponent implements OnInit {
   get paginatedMarches(): Marche[] {
     const start = (this.currentPage - 1) * this.pageSize;
     return this.filteredMarches.slice(start, start + this.pageSize);
-  }
-
-  get nextMarcheNumero(): string {
-    const year = new Date().getFullYear();
-    const pattern = new RegExp(`^${year}/0*(\\d+)`);
-    const numbers = this.marches
-      .map((m) => {
-        const match = pattern.exec(m.numbMarche);
-        return match ? Number(match[1]) : 0;
-      })
-      .filter((value) => value > 0);
-    const nextNumber = numbers.length > 0 ? Math.max(...numbers) + 1 : 1;
-    return `${year}/${String(nextNumber).padStart(3, '0')}/`;
   }
 
   get totalPages(): number {
@@ -139,12 +102,6 @@ export class MarketsComponent implements OnInit {
 
   get uniqueFinancements(): string[] {
     return [...new Set(this.marches.map((m) => m.Financement).filter(Boolean))] as string[];
-  }
-
-  get financementsForNewBailleur(): Financement[] {
-    return this.newMarcheBailleurId
-      ? this.financements.filter((f) => f.idBailleur === this.newMarcheBailleurId)
-      : [];
   }
 
   get financementsForEditBailleur(): Financement[] {
@@ -189,7 +146,10 @@ export class MarketsComponent implements OnInit {
   getStatutClass(statut: string | undefined): string {
     switch (statut) {
       case 'À lancer':  return 'bg-[#FFF3CD] text-[#856404]';
+      case 'Réception': return 'bg-[#E3F2FD] text-[#0d47a1]';
+      case 'Analyse':   return 'bg-[#EDE7F6] text-[#4527A0]';
       case 'En cours':  return 'bg-[#76d3c8]/15 text-[#006a62]';
+      case 'Exécuté':   return 'bg-green-50 text-green-700';
       case 'Clôturé':   return 'bg-[#E9ECEF] text-[#6C757D]';
       default:          return 'bg-[#76d3c8]/15 text-[#006a62]';
     }
@@ -270,54 +230,6 @@ export class MarketsComponent implements OnInit {
     if (page < 1 || page > this.totalPages) return;
     this.currentPage = page;
     this.cd.detectChanges();
-  }
-
-  // ── Ajout ─────────────────────────────────────────────────────────────────
-
-  toggleAddMarket() {
-    this.showAddMarket = !this.showAddMarket;
-    if (this.showAddMarket) {
-      this.errorMessage = '';
-      this.newMarche.numbMarche = this.nextMarcheNumero;
-      this.newMarcheBailleurId = null;
-    }
-  }
-
-  onNewBailleurChange() {
-    this.newMarche.IdFinancement = undefined;
-    this.newMarche.Financement = undefined;
-  }
-
-  onNewFinancementChange() {
-    const financement = this.financements.find((f) => f.idFinancement === this.newMarche.IdFinancement);
-    this.newMarche.Financement = financement?.nomFinancement;
-  }
-
-  async submitAddMarket(event: Event) {
-    event.preventDefault();
-    this.errorMessage = '';
-    this.submitting = true;
-    try {
-      this.resolveMarcheOptionIds(this.newMarche);
-      const added = await createMarche(this.newMarche);
-      this.ngZone.run(() => {
-        if (Array.isArray(added) && added.length > 0) {
-          this.marches.unshift(added[0]);
-          this.currentPage = 1;
-        }
-        this.showAddMarket = false;
-        this.newMarche = this.defaultNewMarche();
-        this.newMarcheBailleurId = null;
-        this.submitting = false;
-        this.cd.markForCheck();
-      });
-    } catch (error: any) {
-      this.ngZone.run(() => {
-        this.errorMessage = error.message || 'Impossible de créer le marché.';
-        this.submitting = false;
-        this.cd.markForCheck();
-      });
-    }
   }
 
   // ── Édition ───────────────────────────────────────────────────────────────

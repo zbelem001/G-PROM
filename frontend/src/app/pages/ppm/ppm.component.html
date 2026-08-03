@@ -1,0 +1,142 @@
+<div class="bg-surface font-body text-on-surface min-h-screen flex overflow-hidden">
+  <app-menu></app-menu>
+  <main class="flex-1 ml-[240px] flex flex-col h-screen overflow-y-auto bg-surface relative">
+    <app-header></app-header>
+    <div class="flex-1 pt-24 px-8 py-6">
+
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="inline-block text-[18px] font-headline font-bold text-white tracking-tight mb-2 bg-[#D9B412] rounded-[12px] px-3 py-2">PLAN DE PASSATION DES MARCHÉS</h2>
+          <p class="text-sm text-on-surface-variant font-medium">Point de départ des marchés — planifiez, puis laissez le système lancer le dossier à la date prévue.</p>
+        </div>
+        <button type="button" (click)="toggleAddModal()" class="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity shrink-0">
+          <span class="material-symbols-outlined text-lg">add</span>
+          Ajouter au PPM
+        </button>
+      </div>
+
+      <p *ngIf="errorMessage" class="mb-4 text-sm text-red-600">{{ errorMessage }}</p>
+
+      <div *ngIf="loading" class="bg-white rounded-xl border border-slate-100 px-6 py-10 text-center text-sm text-slate-400">Chargement…</div>
+
+      <div *ngIf="!loading && entries.length === 0" class="bg-white rounded-xl border border-slate-100 px-6 py-10 text-center text-sm text-slate-400">
+        Aucune ligne planifiée pour le moment.
+      </div>
+
+      <div *ngIf="!loading && entries.length > 0" class="bg-white rounded-xl border border-slate-100 overflow-hidden">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="border-b border-slate-100">
+              <th class="px-5 py-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Numéro</th>
+              <th class="px-5 py-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Description</th>
+              <th class="px-5 py-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Budget estimatif</th>
+              <th class="px-5 py-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Mode de passation</th>
+              <th class="px-5 py-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Date de lancement prévue</th>
+              <th class="px-5 py-3 text-xs font-bold text-slate-400 uppercase tracking-wider">Statut</th>
+              <th class="px-5 py-3 text-xs font-bold text-slate-400 uppercase tracking-wider text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="text-sm">
+            <tr *ngFor="let entry of sortedEntries" class="border-b border-slate-50 last:border-0 hover:bg-slate-50/60 transition-colors group">
+              <td class="px-5 py-3.5 font-semibold text-slate-900">{{ entry.numbMarche }}</td>
+              <td class="px-5 py-3.5 text-slate-600 max-w-[280px] truncate" [title]="entry.Description">{{ entry.Description }}</td>
+              <td class="px-5 py-3.5 text-slate-600">{{ entry.BudgetEstimatif ? (entry.BudgetEstimatif | number) + ' ' + (entry.Devise || 'XOF') : '—' }}</td>
+              <td class="px-5 py-3.5 text-slate-600">{{ entry.ModePassation || '—' }}</td>
+              <td class="px-5 py-3.5 text-slate-600">{{ entry.DatePrevueLancement | date: 'dd/MM/yyyy' }}</td>
+              <td class="px-5 py-3.5">
+                <span class="px-2.5 py-1 rounded-full text-[11px] font-semibold" [ngClass]="getStatutClass(entry.Statut)">{{ entry.Statut || 'Planifié' }}</span>
+              </td>
+              <td class="px-5 py-3.5 text-right">
+                <button type="button" (click)="openDelete(entry)" [disabled]="entry.Statut === 'Transféré'"
+                  class="p-1.5 text-slate-400 hover:text-red-500 transition-colors rounded opacity-0 group-hover:opacity-100 focus:opacity-100 disabled:opacity-0"
+                  title="Supprimer">
+                  <span class="material-symbols-outlined text-[18px]">delete</span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Modale ajout -->
+    <div *ngIf="showAddModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 backdrop-blur-sm">
+      <div class="bg-white rounded-xl shadow-[0_20px_60px_rgba(26,46,68,0.2)] p-8 w-[460px] max-h-[90vh] overflow-y-auto flex flex-col gap-5 border border-slate-100">
+        <div>
+          <h3 class="text-lg font-bold text-slate-900">Nouvelle ligne PPM</h3>
+          <p class="text-sm text-slate-400 mt-1">Informations minimales — le dossier complet sera enrichi une fois le marché lancé.</p>
+        </div>
+        <p *ngIf="errorMessage" class="text-sm text-red-600">{{ errorMessage }}</p>
+        <form (ngSubmit)="submitAdd($event)" class="flex flex-col gap-4">
+          <div appFieldGroup>
+            <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Numéro de marché <span class="text-red-500">*</span></label>
+            <input [ngModel]="newPpm.numbMarche" (ngModelChange)="newPpm.numbMarche = $event.toUpperCase()" name="numbMarche" required type="text"
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors uppercase"
+              placeholder="Ex: 2026/003/DSI-2IE" />
+          </div>
+          <div appFieldGroup>
+            <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Description de l'objet <span class="text-red-500">*</span></label>
+            <textarea [(ngModel)]="newPpm.Description" name="description" required rows="3"
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors resize-none"
+              placeholder="Objet du marché à planifier..."></textarea>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div appFieldGroup>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Budget estimatif</label>
+              <input [(ngModel)]="newPpm.BudgetEstimatif" name="budgetEstimatif" min="0" type="number"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
+                placeholder="45 000 000" />
+            </div>
+            <div appFieldGroup>
+              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Devise</label>
+              <select [(ngModel)]="newPpm.Devise" name="devise"
+                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
+                <option value="XOF">XOF</option>
+                <option value="EUR">EUR</option>
+                <option value="USD">USD</option>
+              </select>
+            </div>
+          </div>
+          <div appFieldGroup>
+            <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Mode de passation</label>
+            <select [(ngModel)]="newPpm.ModePassation" name="modePassation"
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
+              <option value="Appel d'Offres Ouvert">Appel d'Offres Ouvert</option>
+              <option value="Appel d'Offres Restreint">Appel d'Offres Restreint</option>
+              <option value="Gré à Gré">Gré à Gré</option>
+            </select>
+          </div>
+          <div appFieldGroup>
+            <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Date de lancement prévue <span class="text-red-500">*</span></label>
+            <input [(ngModel)]="newPpm.DatePrevueLancement" name="datePrevueLancement" required type="date"
+              class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors" />
+            <p class="text-[11px] text-slate-400 mt-1">Le marché sera généré automatiquement dans "Marchés" à cette date.</p>
+          </div>
+          <div class="flex gap-3 mt-2">
+            <button type="button" (click)="toggleAddModal()" class="flex-1 rounded-lg border border-slate-200 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors">Annuler</button>
+            <button type="submit" [disabled]="submitting" class="flex-1 rounded-lg bg-primary text-white py-2.5 text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity disabled:opacity-60">
+              {{ submitting ? 'Ajout...' : 'Ajouter' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Confirmation suppression -->
+    <div *ngIf="confirmDeleteEntry" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 backdrop-blur-sm">
+      <div class="bg-white rounded-xl shadow-[0_20px_60px_rgba(26,46,68,0.2)] p-8 w-[400px] flex flex-col gap-4 border border-slate-100">
+        <h3 class="text-lg font-bold text-slate-900">Supprimer cette ligne ?</h3>
+        <p class="text-sm text-slate-500">
+          Êtes-vous sûr de vouloir supprimer <span class="font-bold text-slate-900">{{ confirmDeleteEntry.numbMarche }}</span> du plan de passation ? Cette action est irréversible.
+        </p>
+        <div class="flex gap-3 mt-2">
+          <button type="button" (click)="cancelDelete()" [disabled]="isDeleting" class="flex-1 rounded-lg border border-slate-200 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors disabled:opacity-50">Annuler</button>
+          <button type="button" (click)="confirmDeleteAction()" [disabled]="isDeleting" class="flex-1 rounded-lg bg-red-500 text-white py-2.5 text-sm font-semibold hover:bg-red-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+            <span *ngIf="isDeleting" class="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
+            {{ isDeleting ? 'Suppression...' : 'Supprimer' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

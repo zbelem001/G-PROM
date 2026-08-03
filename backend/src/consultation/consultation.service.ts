@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
 import { AuditService } from '../audit/audit.service';
+import { MarcheStatusService } from '../marche-status/marche-status.service';
 import { CreateConsultationDto } from './dto/create-consultation.dto';
 
 @Injectable()
@@ -8,6 +9,7 @@ export class ConsultationService {
   constructor(
     private readonly supabaseService: SupabaseService,
     private readonly auditService: AuditService,
+    private readonly marcheStatusService: MarcheStatusService,
   ) {}
 
   async create(createConsultationDto: CreateConsultationDto, userEmail?: string) {
@@ -16,6 +18,8 @@ export class ConsultationService {
     const numbLot = createConsultationDto.numbLot || (createConsultationDto as any).numblot;
     const idFournisseur = createConsultationDto.idFournisseur || (createConsultationDto as any).idfournisseur;
     const DateConsultation = createConsultationDto.DateConsultation || (createConsultationDto as any).dateconsultation;
+
+    await this.marcheStatusService.assertReadyForReception(String(numbLot));
 
     // Supabase columns are lowercase: numblot, idfournisseur, dateconsultation
     const payload = this.auditService.stampCreate(
@@ -43,6 +47,7 @@ export class ConsultationService {
       throw new Error(`Supabase error [${error.code}]: ${error.message}`);
     }
     await this.auditService.log('Consultation', `${payload.numblot}/${payload.idfournisseur}`, 'CREATE', userEmail, null, data?.[0]);
+    await this.marcheStatusService.advanceForLot(payload.numblot as string, 'Réception');
     return data;
   }
 

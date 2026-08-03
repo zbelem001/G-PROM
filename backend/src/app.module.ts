@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ScheduleModule } from '@nestjs/schedule';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MarcheModule } from './marche/marche.module';
@@ -20,6 +21,7 @@ import { HistoriqueConnexionModule } from './historique-connexion/historique-con
 import { OptionMarcheModule } from './option-marche/option-marche.module';
 import { AuditModule } from './audit/audit.module';
 import { ChatModule } from './chat/chat.module';
+import { PpmModule } from './ppm/ppm.module';
 
 @Module({
   imports: [
@@ -27,8 +29,10 @@ import { ChatModule } from './chat/chat.module';
       isGlobal: true,
       envFilePath: ['.env', 'test/.env'],
     }),
+    ScheduleModule.forRoot(),
     AuditModule,
     ChatModule,
+    PpmModule,
     MarcheModule,
     LotModule,
     FournisseurModule,

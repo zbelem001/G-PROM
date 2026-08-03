@@ -8,10 +8,10 @@
           <h2 class="inline-block text-[18px] font-headline font-bold text-white tracking-tight mb-2 bg-[#D9B412] rounded-[12px] px-3 py-2">GESTION DES MARCHÉS</h2>
           <p class="text-sm text-on-surface-variant font-medium">Consultez et gérez le registre des marchés publics de l'Institut.</p>
         </div>
-        <button type="button" (click)="toggleAddMarket()" class="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity">
+        <a routerLink="/ppm" class="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity">
           <span class="material-symbols-outlined text-lg">add</span>
-          Nouveau Marché
-        </button>
+          Planifier un marché (PPM)
+        </a>
       </div>
       <div class="bg-surface-container-low rounded-[16px] p-2 mb-6 flex flex-col lg:flex-row gap-2">
         <div class="flex-1 relative min-w-[250px]">
@@ -90,7 +90,7 @@
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="inline-flex items-center px-2.5 py-1 rounded-[6px] text-xs font-bold" [ngClass]="getStatutClass(marche.Statut)">{{ marche.Statut || 'En cours' }}</span>
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-[6px] text-xs font-bold" [ngClass]="getStatutClass(marche.Statut)">{{ marche.Statut || 'À lancer' }}</span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-on-surface-variant">{{ marche.DateEnregistrement || '—' }}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-right">
@@ -229,13 +229,12 @@
               <input [(ngModel)]="editingMarche.DatePrevReception" name="editDatePrevReception" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none" type="date" />
             </div>
           </div>
-          <div appFieldGroup class="space-y-2">
+          <div class="space-y-2">
             <label class="text-sm font-semibold text-secondary ml-1">Statut</label>
-            <select [(ngModel)]="editingMarche.Statut" name="editStatut" class="w-full h-12 px-4 bg-surface-container-highest border-0 rounded-[10px] focus:ring-1 focus:ring-[#039CD3]/20 focus:bg-surface-container-lowest transition-all outline-none appearance-none">
-              <option>À lancer</option>
-              <option>En cours</option>
-              <option>Clôturé</option>
-            </select>
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center px-2.5 py-1 rounded-[6px] text-xs font-bold" [ngClass]="getStatutClass(editingMarche.Statut)">{{ editingMarche.Statut || 'À lancer' }}</span>
+              <span class="text-xs text-secondary/70">Mis à jour automatiquement selon l'avancement du marché.</span>
+            </div>
           </div>
         </div>
         <div class="space-y-5">
@@ -297,168 +296,5 @@
       </div>
     </div>
 
-    <div *ngIf="showAddMarket" class="fixed inset-0 z-40 bg-slate-950/20 backdrop-blur-sm"></div>
-    <aside *ngIf="showAddMarket" class="fixed right-0 top-0 z-50 h-screen w-full sm:w-[480px] bg-white shadow-[-8px_0_24px_rgba(0,0,0,0.08)] flex flex-col overflow-hidden">
-      <div class="px-8 pt-8 pb-5 border-b border-slate-100 shrink-0">
-        <div class="flex items-center justify-between mb-4">
-          <button type="button" (click)="toggleAddMarket()" class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center transition-colors">
-            <span class="material-symbols-outlined text-slate-500 text-[18px]">close</span>
-          </button>
-          <span class="text-[9px] font-bold uppercase tracking-[0.12em] text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">Nouveau marché</span>
-        </div>
-        <h2 class="text-xl font-bold text-slate-900">Ajouter un marché</h2>
-        <p class="text-sm text-slate-400 mt-1">Renseignez les informations du marché pour ouvrir un nouveau dossier.</p>
-        <p *ngIf="errorMessage" class="mt-3 text-sm text-red-600">{{ errorMessage }}</p>
-      </div>
-      <form id="addMarketForm" (submit)="submitAddMarket($event)" class="flex-1 overflow-y-auto px-8 py-6 space-y-7">
-        <div>
-          <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Identification du marché</p>
-          <div class="space-y-4">
-            <div appFieldGroup>
-              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Numéro de marché <span class="text-red-500">*</span></label>
-              <input [ngModel]="newMarche.numbMarche" (ngModelChange)="newMarche.numbMarche = $event.toUpperCase()" name="numbMarche" required type="text"
-                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors uppercase"
-                placeholder="Ex: 2026/003/DSI-2IE" />
-              <p class="text-[11px] text-slate-400 mt-1">Année/N° générés automatiquement — complétez avec Direction demandeuse-Bailleur (ex: DSI-2IE).</p>
-            </div>
-            <div appFieldGroup>
-              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Description de l'objet <span class="text-red-500">*</span></label>
-              <textarea [(ngModel)]="newMarche.Description" name="description" required rows="3"
-                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors resize-none"
-                placeholder="Détails du marché..."></textarea>
-            </div>
-            <div appFieldGroup>
-              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Observation</label>
-              <textarea [(ngModel)]="newMarche.Observation" name="observation" rows="3"
-                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors resize-none"
-                placeholder="Saisir des observations générales..."></textarea>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-              <div appFieldGroup>
-                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Nombre de lots <span class="text-red-500">*</span></label>
-                <input [(ngModel)]="newMarche.NombreLot" name="nombreLot" min="1" required type="number"
-                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors" />
-              </div>
-              <div appFieldGroup>
-                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Mode de passation</label>
-                <select [(ngModel)]="newMarche.ModePassation" name="modePassation"
-                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
-                  <option value="Appel d'Offres Ouvert">Appel d'Offres Ouvert</option>
-                  <option value="Appel d'Offres Restreint">Appel d'Offres Restreint</option>
-                  <option value="Gré à Gré">Gré à Gré</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Modalités de financement</p>
-          <div class="space-y-4">
-            <div class="grid grid-cols-2 gap-4">
-              <div appFieldGroup>
-                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Bailleur <span class="text-red-500">*</span></label>
-                <select [(ngModel)]="newMarcheBailleurId" (ngModelChange)="onNewBailleurChange()" name="bailleur" required
-                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
-                  <option [ngValue]="null" disabled>Sélectionner un bailleur...</option>
-                  <option *ngFor="let b of bailleurs" [ngValue]="b.idBailleur">{{ b.nomBailleur }}</option>
-                </select>
-              </div>
-              <div appFieldGroup>
-                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Financement <span class="text-red-500">*</span></label>
-                <select [(ngModel)]="newMarche.IdFinancement" (ngModelChange)="onNewFinancementChange()" name="idFinancement" required
-                  [disabled]="!newMarcheBailleurId"
-                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors disabled:opacity-50">
-                  <option [ngValue]="undefined" disabled>{{ newMarcheBailleurId ? 'Sélectionner un financement...' : 'Choisir un bailleur d\'abord' }}</option>
-                  <option *ngFor="let f of financementsForNewBailleur" [ngValue]="f.idFinancement">{{ f.nomFinancement }}</option>
-                </select>
-              </div>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-              <div appFieldGroup>
-                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Budget estimatif</label>
-                <input [(ngModel)]="newMarche.BudgetEstimatif" name="budgetEstimatif" min="0" type="number"
-                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 placeholder-slate-300 focus:outline-none focus:border-slate-400 transition-colors"
-                  placeholder="45 000 000" />
-              </div>
-              <div appFieldGroup>
-                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Devise</label>
-                <select [(ngModel)]="newMarche.Devise" name="devise"
-                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
-                  <option value="XOF">XOF</option>
-                  <option value="EUR">EUR</option>
-                  <option value="USD">USD</option>
-                </select>
-              </div>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-              <div appFieldGroup>
-                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Nature d'ouverture</label>
-                <select [(ngModel)]="newMarche.NatureOuverture" name="natureOuverture"
-                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
-                  <option value="" disabled>Sélectionner une nature</option>
-                  <option *ngFor="let option of natureOuvertureOptions" [value]="option.valeur">{{ option.valeur }}</option>
-                </select>
-              </div>
-              <div appFieldGroup>
-                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Date d'enregistrement</label>
-                <input [(ngModel)]="newMarche.DateEnregistrement" name="dateEnregistrement" type="date"
-                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors" />
-              </div>
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-              <div appFieldGroup>
-                <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Date prévisionnelle réception</label>
-                <input [(ngModel)]="newMarche.DatePrevReception" name="datePrevReception" type="date"
-                  class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors" />
-              </div>
-            </div>
-            <div appFieldGroup>
-              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Statut</label>
-              <select [(ngModel)]="newMarche.Statut" name="statut"
-                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
-                <option>À lancer</option>
-                <option>En cours</option>
-                <option>Clôturé</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <p class="text-[9px] font-bold uppercase tracking-[0.14em] text-slate-400 pb-2 border-b border-slate-200 mb-4">Responsable</p>
-          <div class="space-y-4">
-            <div appFieldGroup>
-              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Demandeur du marché</label>
-              <select [(ngModel)]="newMarche.Demandeur" name="demandeur"
-                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
-                <option value="" disabled>Sélectionner un département</option>
-                <option *ngFor="let option of demandeurOptions" [value]="option.valeur">{{ option.valeur }}</option>
-              </select>
-            </div>
-            <div appFieldGroup>
-              <label class="block text-[9px] font-semibold uppercase tracking-[0.12em] text-slate-400 mb-1.5">Responsable suivi</label>
-              <select [(ngModel)]="newMarche.ResponsableSuivi" name="responsableSuivi"
-                class="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 px-3.5 text-sm text-slate-900 focus:outline-none focus:border-slate-400 transition-colors">
-                <option value="" disabled>Sélectionner un responsable</option>
-                <option *ngFor="let option of responsableSuiviOptions" [value]="option.valeur">{{ option.valeur }}</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </form>
-      <footer class="px-8 py-5 border-t border-slate-100 shrink-0 flex justify-end gap-3">
-        <button type="button" (click)="toggleAddMarket()" [disabled]="submitting"
-          class="px-5 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors disabled:opacity-60">
-          Annuler
-        </button>
-        <button type="submit" form="addMarketForm" [disabled]="submitting"
-          class="px-6 py-2.5 rounded-lg bg-primary text-white text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity disabled:opacity-60 flex items-center gap-2">
-          <span *ngIf="submitting" class="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin"></span>
-          {{ submitting ? 'Enregistrement...' : 'Enregistrer le marché' }}
-          <span *ngIf="!submitting" class="material-symbols-outlined text-sm">check</span>
-        </button>
-      </footer>
-    </aside>
   </main>
 </div>

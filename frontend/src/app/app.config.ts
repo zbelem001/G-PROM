@@ -3,12 +3,14 @@ import { provideClientHydration, withEventReplay } from '@angular/platform-brows
 import { provideRouter, Route } from '@angular/router';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { MarketsComponent } from './pages/markets/markets.component';
+import { PpmComponent } from './pages/ppm/ppm.component';
 import { DetailsMarchesComponent } from './pages/details-marches/details-marches.component';
 import { FournisseursComponent } from './pages/fournisseurs/fournisseurs.component';
 import { DetailsFournisseursComponent } from './pages/details-fournisseurs/details-fournisseurs.component';
 import { RapportsComponent } from './pages/rapports/rapports.component';
 import { ArchivesComponent } from './pages/archives/archives.component';
 import { ConnexionComponent } from './pages/connexion/connexion.component';
+import { MotDePasseOublieComponent } from './pages/mot-de-passe-oublie/mot-de-passe-oublie.component';
 import { BailleursFinancementsComponent } from './pages/admin/bailleurs-financements/bailleurs-financements.component';
 import { UtilisateursComponent } from './pages/admin/utilisateurs/utilisateurs.component';
 import { ListesParametrablesComponent } from './pages/admin/listes-parametrables/listes-parametrables.component';
@@ -19,7 +21,9 @@ import { adminGuard } from './guards/admin.guard';
 const routes: Route[] = [
   { path: '', component: ConnexionComponent, pathMatch: 'full' },
   { path: 'connexion', component: ConnexionComponent },
+  { path: 'mot-de-passe-oublie', component: MotDePasseOublieComponent },
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },
+  { path: 'ppm', component: PpmComponent, canActivate: [authGuard] },
   { path: 'marches', component: MarketsComponent, canActivate: [authGuard] },
   { path: 'marches/details', component: DetailsMarchesComponent, canActivate: [authGuard] },
   { path: 'fournisseurs', component: FournisseursComponent, canActivate: [authGuard] },
