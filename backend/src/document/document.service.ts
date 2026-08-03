@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
 import { AuditService } from '../audit/audit.service';
+import { MarcheStatusService } from '../marche-status/marche-status.service';
 import { CreateDocumentDto } from './dto/create-document.dto';
 
 function normalizeDocPayload(dto: Partial<CreateDocumentDto>): Record<string, unknown> {
@@ -16,6 +17,8 @@ function normalizeDocPayload(dto: Partial<CreateDocumentDto>): Record<string, un
   if (dto.Avenant !== undefined) payload.avenant = dto.Avenant || null;
   if (dto.OrdreService !== undefined) payload.ordreservice = dto.OrdreService || null;
   if (dto.PV_reception_tech !== undefined) payload.pv_reception_tech = dto.PV_reception_tech || null;
+  if (dto.PV_reception_prov !== undefined) payload.pv_reception_prov = dto.PV_reception_prov || null;
+  if (dto.PV_reception_def !== undefined) payload.pv_reception_def = dto.PV_reception_def || null;
   return payload;
 }
 
@@ -24,6 +27,7 @@ export class DocumentService {
   constructor(
     private readonly supabaseService: SupabaseService,
     private readonly auditService: AuditService,
+    private readonly marcheStatusService: MarcheStatusService,
   ) {}
 
   async create(createDocumentDto: CreateDocumentDto, userEmail?: string) {
@@ -35,6 +39,7 @@ export class DocumentService {
       .single();
     if (error) throw new BadRequestException(error.message);
     await this.auditService.log('Document', (payload.numblot as string) ?? '', 'CREATE', userEmail, null, data);
+    await this.syncMarcheStatus(payload.numblot as string, payload.pv_reception_def);
     return data;
   }
 
@@ -66,6 +71,7 @@ export class DocumentService {
       .single();
     if (error) throw new BadRequestException(error.message);
     await this.auditService.log('Document', numbLot, 'UPDATE', userEmail, existing.data, data);
+    await this.syncMarcheStatus(numbLot, payload.pv_reception_def);
     return data;
   }
 
@@ -82,6 +88,7 @@ export class DocumentService {
       .single();
     if (error) throw new BadRequestException(error.message);
     await this.auditService.log('Document', numbLot, existing.data ? 'UPDATE' : 'CREATE', userEmail, existing.data, data);
+    await this.syncMarcheStatus(numbLot, payload.pv_reception_def);
     return data;
   }
 
@@ -94,5 +101,13 @@ export class DocumentService {
     if (error) throw new Error(error.message);
     await this.auditService.log('Document', numbLot, 'DELETE', userEmail, existing.data, null);
     return data;
+  }
+
+  // The définitive réception PV is what finally releases the provider from its
+  // obligations — that's the signal that closes the marché out entirely.
+  private async syncMarcheStatus(numbLot: string, pvReceptionDef: unknown): Promise<void> {
+    if (typeof pvReceptionDef === 'string' && pvReceptionDef.trim() !== '') {
+      await this.marcheStatusService.advanceForLot(numbLot, 'Clôturé');
+    }
   }
 }

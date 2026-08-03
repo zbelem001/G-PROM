@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
 import { AuditService } from '../audit/audit.service';
+import { MarcheStatusService } from '../marche-status/marche-status.service';
 import { CreateAnalyseDto } from './dto/create-analyse.dto';
 
 function normalizePayload(dto: Partial<CreateAnalyseDto>): Record<string, unknown> {
@@ -18,6 +19,7 @@ export class AnalyseService {
   constructor(
     private readonly supabaseService: SupabaseService,
     private readonly auditService: AuditService,
+    private readonly marcheStatusService: MarcheStatusService,
   ) {}
 
   async create(createAnalyseDto: CreateAnalyseDto, userEmail?: string) {
@@ -30,6 +32,7 @@ export class AnalyseService {
       throw new BadRequestException(error.message);
     }
     await this.auditService.log('Analyse', (payload.numblot as string) ?? '', 'CREATE', userEmail, null, data?.[0]);
+    await this.marcheStatusService.advanceForLot(payload.numblot as string, 'Analyse');
     return data;
   }
 

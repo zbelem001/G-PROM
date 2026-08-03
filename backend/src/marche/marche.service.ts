@@ -20,6 +20,9 @@ export class MarcheService {
 
   async create(createMarcheDto: CreateMarcheDto, userEmail?: string) {
     const payload = this.auditService.stampCreate(this.normalizeKeys(createMarcheDto), userEmail);
+    // Statut is system-managed (see MarcheStatusService) — every marché starts "À lancer"
+    // regardless of what the client sends.
+    payload.statut = 'À lancer';
 
     try {
       const { data, error } = await this.supabaseService.client
@@ -66,6 +69,9 @@ export class MarcheService {
   async update(numbMarche: string, updateMarcheDto: Partial<CreateMarcheDto>, userEmail?: string) {
     const existing = await this.supabaseService.client.from('Marche').select('*').eq('numbmarche', numbMarche).maybeSingle();
     const payload = this.auditService.stampUpdate(this.normalizeKeys(updateMarcheDto), userEmail);
+    // Statut is system-managed (see MarcheStatusService) — never editable through the
+    // general update endpoint.
+    delete payload.statut;
     const { data, error } = await this.supabaseService.client
       .from('Marche')
       .update(payload)

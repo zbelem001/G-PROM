@@ -20,6 +20,8 @@ const DOCUMENT_FIELDS: Record<string, string> = {
   avenant: 'avenant',
   ordre_service: 'ordreservice',
   pv_reception_tech: 'pv_reception_tech',
+  pv_reception_prov: 'pv_reception_prov',
+  pv_reception_def: 'pv_reception_def',
 };
 
 // All tools here are strictly read-only (SELECT only) — the chat assistant

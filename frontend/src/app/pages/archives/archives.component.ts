@@ -52,7 +52,10 @@ export class ArchivesComponent implements OnInit {
   getStatutClass(statut: string | undefined): string {
     switch (statut) {
       case 'À lancer': return 'bg-[#FFF3CD] text-[#856404]';
+      case 'Réception': return 'bg-[#E3F2FD] text-[#0d47a1]';
+      case 'Analyse': return 'bg-[#EDE7F6] text-[#4527A0]';
       case 'En cours': return 'bg-[#76d3c8]/15 text-[#006a62]';
+      case 'Exécuté': return 'bg-green-50 text-green-700';
       case 'Clôturé': return 'bg-[#E9ECEF] text-[#6C757D]';
       default: return 'bg-[#76d3c8]/15 text-[#006a62]';
     }

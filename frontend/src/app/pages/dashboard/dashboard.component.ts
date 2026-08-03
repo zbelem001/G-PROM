@@ -75,6 +75,18 @@ export class DashboardComponent implements OnInit {
     return this.marches.filter((m) => m.Statut === 'À lancer').length;
   }
 
+  get receptionCount(): number {
+    return this.marches.filter((m) => m.Statut === 'Réception').length;
+  }
+
+  get analyseCount(): number {
+    return this.marches.filter((m) => m.Statut === 'Analyse').length;
+  }
+
+  get executeCount(): number {
+    return this.marches.filter((m) => m.Statut === 'Exécuté').length;
+  }
+
   get clotureCount(): number {
     return this.marches.filter((m) => m.Statut === 'Clôturé').length;
   }
@@ -122,14 +134,20 @@ export class DashboardComponent implements OnInit {
   get statutBreakdown(): StatutSlice[] {
     const total = this.marches.length || 1;
     const aLancer = this.aLancerCount;
+    const reception = this.receptionCount;
+    const analyse = this.analyseCount;
     const enCours = this.enCoursCount;
+    const execute = this.executeCount;
     const cloture = this.clotureCount;
-    const autres = Math.max(0, this.marches.length - aLancer - enCours - cloture);
+    const autres = Math.max(0, this.marches.length - aLancer - reception - analyse - enCours - execute - cloture);
 
     const slices: StatutSlice[] = [
       { label: 'À lancer', count: aLancer, pct: Math.round((aLancer / total) * 100), color: '#FFD666' },
+      { label: 'Réception', count: reception, pct: Math.round((reception / total) * 100), color: '#64B5F6' },
+      { label: 'Analyse', count: analyse, pct: Math.round((analyse / total) * 100), color: '#9575CD' },
       { label: 'En cours', count: enCours, pct: Math.round((enCours / total) * 100), color: '#76d3c8' },
-      { label: 'Clôturé', count: cloture, pct: Math.round((cloture / total) * 100), color: '#ADB5BD' },
+      { label: 'Exécuté', count: execute, pct: Math.round((execute / total) * 100), color: '#66BB6A' },
+      { label: 'Clôturé', count: cloture, pct: Math.round((cloture / total) * 100), color: '#6C757D' },
     ];
     if (autres > 0) {
       slices.push({ label: 'Autres', count: autres, pct: Math.round((autres / total) * 100), color: '#c4c6cd' });
@@ -188,8 +206,14 @@ export class DashboardComponent implements OnInit {
     switch (statut) {
       case 'À lancer':
         return 'bg-[#FFF3CD] text-[#856404]';
+      case 'Réception':
+        return 'bg-[#E3F2FD] text-[#0d47a1]';
+      case 'Analyse':
+        return 'bg-[#EDE7F6] text-[#4527A0]';
       case 'En cours':
         return 'bg-[#76d3c8]/15 text-[#006a62]';
+      case 'Exécuté':
+        return 'bg-green-50 text-green-700';
       case 'Clôturé':
         return 'bg-[#E9ECEF] text-[#6C757D]';
       default:

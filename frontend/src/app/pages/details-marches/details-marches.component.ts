@@ -53,6 +53,8 @@ const DOC_TYPES: { key: keyof ApiDocument; label: string }[] = [
   { key: 'BonCommande', label: 'Bon de commande' },
   { key: 'OrdreService', label: "Ordre de service" },
   { key: 'PV_reception_tech', label: 'PV de réception technique' },
+  { key: 'PV_reception_prov', label: 'PV de réception provisoire' },
+  { key: 'PV_reception_def', label: 'PV de réception définitive' },
 ];
 
 const MARCHE_DOC_TYPES: { key: 'PV_ouverture' | 'PV_attribution'; label: string }[] = [
@@ -880,6 +882,23 @@ export class DetailsMarchesComponent implements OnInit {
 
   getAttributaireForSoumission(idSoumission: string): Attributaire | undefined {
     return this.attributaires.find((a) => a.idSoumissionAttribuee === idSoumission);
+  }
+
+  // Non-blocking reminder: when closing out an attribution as "Terminé", nudge
+  // the admin if the réception PVs haven't been uploaded yet for that lot.
+  get attributionReceptionReminder(): string | null {
+    if (this.newAttributionStatut !== 'Terminé' || !this.newAttributionId) return null;
+    const lotId = this.submissions.find((sub) => sub.id === this.newAttributionId)?.lotId;
+    if (!lotId) return null;
+    const doc = this.documents.find((d) => d.numbLot === lotId);
+    const isUploaded = (value: string | undefined) => !!value && value.startsWith('http');
+
+    const missing: string[] = [];
+    if (!isUploaded(doc?.PV_reception_prov)) missing.push('réception provisoire');
+    if (!isUploaded(doc?.PV_reception_def)) missing.push('réception définitive');
+
+    if (missing.length === 0) return null;
+    return `Pensez à charger le PV de ${missing.join(' et de ')} pour ce lot (page Documents).`;
   }
 
   getSoumissionLabel(idSoumission: string): string {

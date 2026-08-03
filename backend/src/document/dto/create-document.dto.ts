@@ -10,4 +10,6 @@ export class CreateDocumentDto {
   Avenant?: string;
   OrdreService?: string;
   PV_reception_tech?: string;
+  PV_reception_prov?: string;
+  PV_reception_def?: string;
 }
